@@ -1,0 +1,360 @@
+.et_container{
+    width: 100%;
+   padding: 2.1rem;
+}
+
+.et_container h1{
+    font-size: 25px;
+}
+
+/* profile section start */
+.profile_section{
+    margin-top: 10px;
+    width: 100%;
+    height: 16rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: white;
+    border-radius: 10px;
+    position: relative;
+}
+
+.profile_box{
+    width: 17rem;
+    height: 13rem;
+    border-radius: 20px;
+    margin-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--redTheme);
+}
+
+.profile_box img{
+   width: 6rem;
+   border-radius: 50%;
+   margin-top: 5px;
+}
+
+.profile_box div{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.profile_box div h4{
+    color: white;
+}
+
+.profile_box div h4:nth-child(2){
+    font-weight: 200;
+}
+.profile_box div h4:nth-child(3){
+    font-weight: 200;
+}
+
+.working_main{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.working_hours{
+    display: flex;
+    gap: 3.5rem;
+}
+
+.wr_box{
+    width: 8rem;
+}
+
+.wr_box h1{
+    font-size: 26px;
+}
+
+.wr_box h4{
+    font-weight: 100;
+    color: grey;
+}
+
+.wr_out{
+    text-align: center;
+    width: 15rem;
+    height: 2.5rem;
+    background: coral;
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+.wr_working{
+    text-align: center;
+    width: 15rem;
+    height: 2.5rem;
+    background: green;
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+.wr_buttons{
+    display: flex;
+    gap: 1rem;
+}
+/* profile section end */
+
+/* middle start */
+
+.middle_main{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.middle_links_main{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.middle_links{
+    display: flex;
+    gap: 2rem;
+}
+
+.middle_links h3{
+    cursor: pointer;
+}
+
+.active_link{
+    color: var(--redTheme);
+    border-bottom: 2px solid var(--redTheme);
+}
+
+.attend_leav_btn button{
+    width: 10rem;
+    height: 2.1rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--redTheme);
+    color: white;
+}
+
+.middle_mid{
+    margin-top: 3rem;
+    display: flex;
+    gap: 3rem;
+}
+
+.middle_dropdown{
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    gap: 10px;
+    color: grey;
+}
+
+.working_time{
+    display: flex;
+    align-items: center;
+}
+
+.working_time h4{
+    font-weight: 200;
+}
+
+.working_time h4:nth-child(2){
+    margin-left: 5px;
+    color: grey;
+}
+
+.working_time h4:nth-child(3){
+    color: green;
+}
+
+.working_time h4:nth-child(4){
+    margin-left: 1rem;
+    color: coral;
+    font-weight: 600;
+}
+/* middle end */
+
+/* calendar start */
+.calendar_container{
+    margin-top: 3rem;
+}
+
+.weekdays{
+    margin: 0;
+    padding: 10px 0;
+    background-color: #ddd;
+  }
+  
+.weekdays li{
+    display: inline-block;
+    width: 13.6%;
+    color: #666;
+    text-align: center;
+  }
+
+.days{
+    padding: 10px 0;
+    background: #eee;
+    margin: 0;
+}
+  
+.days li {
+    list-style-type: none;
+    display: inline-block;
+    width: 13.6%;
+    height: 5rem;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size:12px;
+    color: #777;
+    padding-top: 1rem;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.042);
+    border-radius: 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.days li h2 {
+ color: grey;
+}
+
+.calendar_attendance{
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 5px;
+}
+
+.calendar_attendance h3{
+ color: grey;
+}
+
+/* Add media queries for smaller screens */
+@media screen and (max-width:720px) {
+    .weekdays li, .days li {width: 13.1%;}
+  }
+  
+  @media screen and (max-width: 420px) {
+    .weekdays li, .days li {width: 12.5%;}
+    .days li .active {padding: 2px;}
+  }
+  
+  @media screen and (max-width: 290px) {
+    .weekdays li, .days li {width: 12.2%;}
+  }
+/* calendar end */ 
+/* leave start */
+.lv_container{
+    margin-top: 1rem;
+    width: 100%;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;  
+    gap: 0.5rem;
+}
+
+.lv_card{
+    width: 100%;
+    height: 5rem;
+    border-radius: 10px;
+}
+
+.lv_table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    border-radius: 10px;
+}
+
+.lv_table th{
+    text-align: left;
+    padding: 8px;
+    background: white;
+    height: 3rem;
+    width: 20%;
+    border: 0.1px solid #0000000f;
+    text-align: center;
+}
+
+.lv_table th:first-child{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.lv_table th:last-child{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.lv_table td{
+    text-align: center;
+    padding: 8px;
+    height: 4.3rem;
+    background: white;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 100;
+}
+
+.lv_table td:first-child{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.lv_table td:last-child{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.lv_table span{
+    color: white;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.approved{
+    background: #238636;
+}
+
+.cancel{
+    color: white;
+    background: black;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.rejected{
+    background: red;
+}
+
+.report_ls{
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.report_ls_btn{
+    width: 10rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--redTheme);
+    color: white;
+}

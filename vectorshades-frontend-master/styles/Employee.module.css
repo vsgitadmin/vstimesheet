@@ -1,0 +1,861 @@
+/* employee analytics start */
+.emp_analytics {
+  width: 100%;
+  padding: 33.6px;
+  padding-top: 0;
+}
+
+.emp_top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.emp_det_graph_main{
+  margin-top: 1rem;
+  background: #f8e5e9;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.emp_det_graph {
+  margin-top: 20px;
+  width: 100%;
+  height: 18rem;
+  display: flex;
+  gap: 10px;
+}
+
+.emp_det_graph_left {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.emp_det_box {
+  width: 48%;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 10px 0.1px #00000008;
+}
+
+.emp_det_box div {
+  display: flex;
+  gap: 10px;
+}
+
+.ep_container button {
+  width: max-content;
+  padding-right:10px;
+  padding-left:10px;
+  height: 35px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--redTheme);
+  color: white;
+  border: none;
+  font-weight:600;
+  gap: 5px;
+}
+
+.emp_det_box span {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  background: #90ee904e;
+  color: #75cc75;
+  font-size: 13px;
+  padding: 0 8px 0 8px;
+  gap: 5px;
+}
+
+.emp_det_box span svg {
+  fill: #75cc75;
+  font-size: 15px;
+}
+
+.emp_det_box h5:first-of-type {
+  font-weight: 500;
+  color: grey;
+}
+
+.emp_det_box h5:last-of-type {
+  font-weight: 400;
+  color: #a3a0a0;
+}
+
+.emp_det_box:last-child,
+.emp_det_box:nth-child(3) {
+  border-bottom: none !important;
+}
+
+.emp_det_graph_right {
+  padding: 20px;
+  width: 60%;
+  background: white;
+  border-radius: 15px;
+}
+
+.emp_graph_top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.emp_graph_top div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp_graph_top div h5 {
+  display: flex;
+  align-items: center;
+}
+
+.emp_graph_top div svg {
+  font-size: 13px;
+}
+
+.emp_graph_bottom {
+  margin-top: 15px;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 8px;
+}
+
+.emp_status_format {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.emp_status_format .left {
+  width: 60%;
+  max-height: 26rem;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.emp_status_format .left .left_top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.emp_status_table_main{
+  width: 100%;
+  margin-top: 15px;
+  border: 1px solid #d3d3d379;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.emp_status_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.emp_status_table th {
+  border-bottom: 1px solid #d3d3d379;
+  text-align: left;
+  padding: 8px;
+  background: #d3d3d321;
+  color: grey;
+  height: 2.5rem;
+}
+
+.emp_status_table td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #d3d3d379;
+}
+
+.emp_status_table td:first-child div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.emp_status_table td:first-child div h4 {
+  font-weight: 300;
+}
+
+.emp_status_table td:nth-last-child(2) div, .emp_status_table td:nth-last-child(3) div {
+  height: 15px;
+  padding: 11px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: green;
+  background: #90ee9067;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emp_status_table td:last-child div{
+  display: flex;
+  justify-content: center;
+}
+
+.emp_status_table td:last-child div svg{
+  cursor: pointer;
+}
+
+.mid_box_table_bottom {
+  width: 100%;
+  border: 1px solid #d3d3d379;
+  border-top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.mid_box_table_bottom h4 {
+  color: lightgrey;
+}
+
+.mid_box_table_bottom div {
+  display: flex;
+  gap: 5px;
+}
+
+.mid_box_table_bottom div button {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+}
+
+.mid_box_table_bottom div button:last-child {
+  width: 100px;
+}
+
+.emp_status_format .right {
+  width: 30%;
+  background: white;
+  border-radius: 15px;
+  max-height: 26rem;
+  padding: 20px;
+  position: relative;
+}
+
+.emp_status_format .right .right_top {
+  display: flex;
+  align-items: center;
+  height: 2.4rem;
+}
+
+.emp_status_format .right .right_bottom{
+    margin-top: 15px;
+    height: 60%;
+    border-radius: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+}
+
+.working_format{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    border-top: 1px solid lightgrey;
+}
+
+.working_format div{
+    width: 33.3333%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 19px;
+}
+
+.working_format div svg{
+    font-size: 10px;
+}
+
+.working_format div h6{
+  font-size: 11px;
+}
+
+.bottom_cards_main{
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* sales performance page start */
+
+.sp_container{
+  padding: 33.6px;
+  padding-top: 0;
+}
+
+.sales_cards_container{
+  margin-top: 2rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sales_card{
+  min-width: 20rem;
+  min-height: 11rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 3px 1px #00000006;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 0px;
+  width: 100%;
+}
+
+.sales_person{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sales_person h5{
+  color: grey;
+  font-weight: 400;
+}
+
+.sales_details{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+.sales_details span{
+  font-size: 14px;
+  font-weight: 500;
+  color: grey;
+}
+
+.sales_details h4{
+  margin-top: 8px;
+  color: black;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* employee analytics start */
+
+/* employee performance start */
+.ep_container{
+  padding: 33.6px;
+  padding-top: 0;
+}
+
+.pro_details{
+  margin-top: 1.6rem;
+}
+
+.pro_details_title h3{
+  font-size: 20px;
+}
+
+.pro_card{
+  margin-top: 10px!important;
+  width: 40%;
+}
+
+.pro_card:hover{
+  transform: none!important;
+}
+
+.ep_static_main{
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.ps_statics_left{
+  width: 40%;
+  height: auto;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.ps_statics_left_chart{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ps_chart{
+  width: 50%;
+}
+
+.ps_static_left_chart_det{
+  display: flex;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+
+.ps_static_left_chart_det div{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ps_static_left_chart_det div svg{
+  font-size: 15px;
+}
+
+.ps_static_left_chart_det div h4{
+  font-weight: 400;
+}
+
+.ps_statics_main{
+  width: 60%;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.ps_static_heading{
+  margin-top: 1rem;
+}
+
+.ps_static_heading h3{
+  font-size: 20px;
+}
+
+.ps_members_profile{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ps_statics_right_chart{
+  margin-top: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  background: white;
+}
+
+.acq_item{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acq_item_top{
+  display: flex;
+  gap: 10px;
+}
+
+.acq_item_top div{
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.acq_item_top svg{
+  font-size: 15px;
+}
+
+.acq_item div:last-child{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress_bar {
+  width: 100%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 10px;
+}
+
+.progress_bar div {
+  max-width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+/* employee performance end */
+
+/* employee profile start */
+.emp_profile_container {
+  width: 100%;
+  padding: 33.6px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.emp_profile_section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.emp_profile_section div {
+  text-align: center;
+}
+
+.emp_profile_section div h2:nth-child(2) {
+  color: grey;
+  font-weight: 400;
+}
+
+.online_label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.online_label div{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  width: 5rem;
+  height: 1rem;
+  justify-content: center;
+  border-radius: 50px;
+  background: #78de45;
+  background: #008000ac;
+  color: white;
+  font-weight: 600;
+}
+
+.online_label span{
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offline_label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.offline_label div{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  width: 5rem;
+  height: 1rem;
+  justify-content: center;
+  border-radius: 50px;
+  background: #de4545;
+  background: #800000ac;
+  color: white;
+  font-weight: 600;
+}
+
+.offline_label span{
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.online_label span svg{
+  font-size: 10px;
+  fill: #008000ac;
+  fill: #78de45;
+}
+
+.sub_menu {
+  margin-top: 5px;
+}
+
+.sub_menu ul {
+  display: flex;
+  gap: 15px;
+  border-bottom: 2px solid lightgrey;
+  position: relative;
+}
+
+.sub_menu ul li {
+  list-style: none;
+  color: grey;
+  font-size: 15px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+.sub_menu ul li:last-child{
+  position: absolute;
+  right: 0;
+  top: -8px;
+}
+
+.sub_menu ul li:last-child button{
+  width: 5rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.active {
+  color: var(--redTheme) !important;
+  font-weight: 600;
+  border-bottom: 3px solid var(--redTheme) !important;
+  margin-bottom: -2px;
+}
+
+.emp_details_main {
+  margin-top: 1rem;
+  border-radius: 20px;
+  background: white;
+  display: flex;
+}
+
+.emp_details {
+  margin-top: 15px;
+  width: 60%;
+  height: 10rem;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.emp_details div h4 {
+  font-weight: 400;
+}
+
+.project_settings {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.pro_left {
+  width: 20%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 15px;
+}
+
+.settings_item {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-left: 1rem;
+  cursor: pointer;
+}
+
+.settings_item:hover {
+  background: #d3d3d38a;
+}
+
+.settings_active{
+    background: #d3d3d38a;
+}
+
+.settings_item h3 {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.settings_item svg {
+  fill: grey;
+}
+
+.pro_right {
+  width: 80%;
+}
+
+.actions{
+  padding: 33.6px;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+/* employee profile end */
+
+/* performance review start */
+
+.per_container{
+  margin-top: 2rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.per_title{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+}
+
+.per_title div{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.per_broadcast{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.per_broadcast_box{
+  width: 18rem;
+  height: 7rem;
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.per_broadcast_box p{
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.per_broadcast_comp{
+  width: 18rem;
+  background: white;
+  border-radius: 15px;
+}
+
+.per_broadcast_comp div:first-child{
+  width: 100%;
+  height: 3.5rem;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1.9px solid lightgrey;
+}
+
+.per_broadcast_comp div:nth-child(2), .per_broadcast_comp div:nth-child(3), .per_broadcast_comp div:nth-child(4){
+  width: 100%;
+  height: 5rem;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.per_broadcast_comp div:nth-child(2) p, .per_broadcast_comp div:nth-child(3) p, .per_broadcast_comp div:nth-child(4) p{
+  color: grey;
+}
+
+.per_contacts{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.per_contact_box{
+  width: 40rem;
+  background: white;
+  background: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.per_contact_box div {
+  height: 7rem;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.per_contact_box div p{
+  color: grey;
+}
+
+.per_contact_table{
+  width: 40rem;
+  min-height: 18.5rem;
+  background: white;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.per_contact_table table{
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.per_contact_table table td{
+  text-align: left;
+  padding: 13px;
+  font-size: 19px;
+}
+
+.per_contact_table th{
+  text-align: left;
+  padding: 8px;
+  font-size: 20px;
+}
+
+.per_latest_broadcast{
+  margin-top: 2rem;
+}

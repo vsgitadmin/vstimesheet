@@ -1,0 +1,125 @@
+.top {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    background: white;
+    padding: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+}
+
+.top .child {
+    width: 25%;
+    height: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.points {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.points div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.points div svg {
+    font-size: 18px;
+}
+
+.bar {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    gap: 5px;
+}
+
+.bar_item {
+    height: 1.8rem;
+    border-radius: 5px;
+    transition: 1s;
+}
+
+.calendar {
+    margin-top: 1rem;
+    background: white;
+    border-radius: 10px;
+}
+
+.calendar table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar table th {
+    text-align: left;
+    padding: 10px;
+    border: 2px solid whitesmoke;
+    color: grey;
+}
+
+.calendar table td {
+    border: 2px solid whitesmoke;
+}
+
+.day {
+    min-width: 5rem;
+    height: 5rem;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.day:hover {
+    background: #52525227;
+}
+
+.day_labeles {
+    margin-top: 8px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.day_label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    height: 1rem;
+    border-radius: 15px;
+    background: #daf6f4;
+    min-width: 8rem;
+}
+
+.day_label span {
+    font-size: 11px;
+}
+
+.none {
+    background: white;
+}
+
+.day:hover .none {
+    background: none;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter div {
+    display: flex;
+    gap: 1rem;
+}

@@ -1,0 +1,249 @@
+/* filter component */
+
+.job_flt_container{
+    position: absolute;
+    z-index: 5;
+    border-radius: 8px;
+    width: 28.6vw;
+    top: -15px;
+    max-height: 34rem;
+    overflow-y: auto;
+    background: white;
+    box-shadow: 0 0 2px 1px #00000016;
+    padding: 15px;
+}
+
+.flt_container {
+  position: absolute;
+  z-index: 5;
+  border-radius: 8px;
+  width: 27.2vw;
+  top: 10px;
+  max-height: 34rem;
+  overflow-y: auto;
+  background: white;
+  box-shadow: 0 0 4px 1px #00000011;
+  padding: 15px;
+}
+
+.emp_container{
+    position: absolute;
+    z-index: 5;
+    border-radius: 8px;
+    width: 27.2vw;
+    top: -2.3rem;
+    max-height: 34rem;
+    overflow-y: auto;
+    background: white;
+    box-shadow: 0 0 4px 1px #00000011;
+    padding: 15px;
+}
+
+.leave_contr{
+    top: 0!important;
+}
+
+.report_container{
+    height: 25rem;
+    overflow-y: auto;
+
+}
+
+.awrd_container{
+    position: absolute;
+    z-index: 5;
+    border-radius: 8px;
+    width: 28.2vw;
+    top: -16px;
+    height: 25.3rem;
+    overflow-y: auto;
+    background: white;
+    box-shadow: 0 0 4px 1px #00000011;
+    padding: 15px;
+}
+
+.pro_container {
+    position: absolute;
+    z-index: 5;
+    border-radius: 8px;
+    width: 27vw;
+    height: 40rem;
+    overflow-y: scroll;
+    top: -15px;
+    background: white;
+    box-shadow: 0 0 4px 1px #00000011;
+    padding: 15px;
+  }
+
+.crf_container{
+    border-radius: 8px;
+    width: 100%;
+    top: 10px;
+    background: white;
+    box-shadow: 0 0 4px 1px #00000011;
+    padding: 15px;
+}
+
+.flt_title {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+}
+
+.flt_title svg {
+  fill: grey;
+}
+
+.price_range {
+  margin-top: 5px;
+}
+
+.price_range h4{
+    font-size: 15px;
+}
+
+.price_range p {
+  color: grey;
+  font-size: 13px;
+}
+
+.price_range_box{
+    margin-top: 5px;
+    display: flex;
+    gap: 8px;
+}
+
+.price_range_box label{
+    font-size: 15px;
+}
+
+.price_range_box div:first-of-type {
+  width: 50%;
+}
+
+.price_range_box div:nth-of-type(2) {
+  width: 50%;
+}
+
+.price_range_box div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 6px;
+  border: 1px solid lightgrey;
+  padding: 6px;
+}
+
+.price_range_box div input{
+    font-size: 13px;
+    outline: none;
+    border: none;
+}
+
+.price_range_box div select{
+    font-size: 13px;
+    outline: none;
+    border: none;
+}
+
+.price_range_box div label{
+    color: grey;
+    font-size: 12px;
+}
+
+.type_of_places{
+    margin-top: 10px;
+}
+
+.type_of_place{
+    display: flex;
+    gap: 8px;
+}
+
+.type_of_place div {
+   width: 50%;
+   cursor: pointer;
+   border: 3px solid lightgrey;
+
+}
+  
+.toggled_place{
+     border: 2px solid var(--redTheme);
+}
+
+.type_of_place div{
+    border-radius: 6px;
+    border: 1px solid lightgrey;
+    padding: 10px;
+}
+
+.type_of_place div h4{
+    font-size: 15px;
+}
+
+.type_of_place div p{
+    font-size: 13px;
+}
+
+.rooms{
+    margin-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rooms h4{
+    font-size: 15px;
+}
+
+.rooms_option{
+    margin-top: 6px;
+}
+
+.rooms_option h5{
+    color: grey;
+}
+
+.options{
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}   
+
+.options div{
+    height: 2rem;
+    background: lightgrey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 19px;
+    cursor: pointer;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.clear_flt{
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.clear_flt button{
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
+    border-radius: 50px;
+    border: none;
+    height: 2.4rem;
+}
+
+.clear_flt button:first-of-type{
+    background: white;
+    border: 1px solid lightgrey;
+    color: grey;
+    width: 6rem;
+}
+
+.clear_flt button:last-of-type{
+    background: var(--redTheme)!important;
+    color: white!important;
+}
+

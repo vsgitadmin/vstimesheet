@@ -1,0 +1,9 @@
+.page_content{padding:3rem;width: 100%;}
+.welcome_note{background-color:#f8e5e9;border-radius: 10px;}
+.welcome_note h3{color: var(--redTheme);font-weight: 600;}
+.welcome_note p{font-size: 14px;color: #333;line-height: 30px;font-weight: 500;}
+.dashboard_image img{width: auto;height: auto;max-width: 200px;}
+
+.course_list_wrapper svg{font-size: 18px;}
+.course_list_wrapper .course_item{padding:20px;background-color:#fff;border-radius:10px;}
+.course_code{border-radius:5px;padding: 10px;background-color: #E64848;color: #F4DEDE;font-weight: 600;}

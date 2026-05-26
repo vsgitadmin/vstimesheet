@@ -1,0 +1,1 @@
+export default ["Modeling", "Detailing", "Rework", "Erection", "QC Modeling", "QC detailing", "QC erection", "Team review" , "Closed"]

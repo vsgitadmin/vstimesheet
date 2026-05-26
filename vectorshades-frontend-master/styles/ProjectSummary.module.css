@@ -1,0 +1,300 @@
+.ps_container{
+    width: 100%;
+    display: flex;
+    padding-right: 20.6px;
+    padding-bottom: 20.6px;
+}
+
+/* left side start */
+.ps_left{
+    width: 75%;
+    height: 55.2rem;
+    padding: 20.6px;
+    padding-top: 0;
+}
+
+.ps_title_search{
+    display: flex;
+    justify-content: space-between;
+}
+
+.ps_title_search div:last-child{
+    display: flex;
+    align-items: center;
+    height: 2.5rem;
+    gap: 5px;
+}
+
+.ps_title_search div:last-child input{
+    height: 100%;
+    width: 20rem;
+    padding: 15px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+}
+
+.ps_title_search div:last-child div{
+    width: 2.8rem;
+    background: var(--redTheme);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.ps_title_search div:last-child div svg{
+    fill: white;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.ps_summary_cards{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.ps_summary_card{
+    width: 33.3333%;
+    height: 9rem;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ps_summary_card h4{
+    font-weight: 400;
+    color: grey;
+}
+
+.ps_members{
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 2rem;
+}
+
+.ps_members_static{
+    width: 48%;
+    border-radius: 10px;
+    padding: 20px;
+    background: white;
+}
+
+.ps_members_profile{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ps_statics{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.ps_statics_right{
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.ps_statics_right_chart{
+    margin-top: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.acq_item{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.acq_item_top{
+    display: flex;
+    gap: 10px;
+}
+
+.acq_item_top div{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.acq_item_top svg{
+    font-size: 15px;
+}
+
+.acq_item div:last-child{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress_bar {
+    width: 100%;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 10px;
+}
+  
+.progress_bar div {
+    max-width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+/* left side end */
+/* right side start */
+.ps_right{
+    width: 25%;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.ps_profile_box{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.ps_profile_box h4:nth-child(3){
+    font-weight: 400;
+    color: grey;
+}
+
+.ps_profile_box div:last-child{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ps_profile_box div:last-child h4{
+    color: var(--redTheme);
+}
+
+.ps_profile_box div:last-child svg{
+    fill: var(--redTheme);
+}
+
+.jobs_posted{
+    margin-top: 25px;
+}
+
+.jobs_posted_add{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.jobs_posted_add button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: var(--redTheme);
+    color: white;
+    height: 2rem;
+    width: 5rem;
+    border: none;
+    border-radius: 5px;
+}
+
+.jobs_posted_add button svg{
+    font-size: 15px;
+    fill: white;
+}
+
+.jobs_boxes{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.jobs_box{
+    width: 100%;
+    height: 6rem;
+    background: #ff7f50;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 20px;
+}
+
+.jobs_count{
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    background: #ffffff8f;
+}
+
+.job_det{
+    height: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.job_det h3{
+    color: white;
+}
+
+.job_det h4{
+    color: white;
+    font-weight: 400;
+}
+
+.reminders{
+    margin-top: 20px;
+}
+
+.reminders_title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.reminders_boxes{
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reminders_box{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reminders_box div:first-child svg{
+    fill: white;
+}
+
+.reminders_box div:last-child{
+    display: flex;
+    align-items: flex-start;
+    width: 10rem;
+    height: 3.5rem;
+    font-size: 12px;
+    color: grey;
+}

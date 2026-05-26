@@ -1,0 +1,512 @@
+.cloud_container{
+    width: 100%;
+    padding: 33.6px;
+    padding-top: 0;
+}
+
+.cloud_top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.cloud_top .left{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cloud_top .left p{
+    color: grey;
+}
+
+.cloud_upload{
+    margin-top: 30px;
+    width: 100%;
+    height: 12rem;
+    border: 2px solid #80808013;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cloud_upload p{
+    color: grey;
+}
+
+.cloud_upload p:first-of-type{
+    margin-top: 15px;
+}
+
+.cloud_upload p:first-of-type span{
+    text-decoration: underline;
+    font-weight: 500;
+    color: black;
+    cursor: pointer;
+}
+
+.cloud_upload div:first-of-type{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: #d3d3d367;
+    border-radius: 50%;
+}
+
+.cloud_upload div:first-child svg{
+    fill: grey;
+}
+
+.cloud_uploading{
+    margin-top: 10px;
+    width: 100%;
+    height: 6rem;
+    border: 2px solid #80808013;
+    border-radius: 15px;
+}
+
+.cloud_uploading .top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cloud_uploading .top div:first-child{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.cloud_uploading .top div:last-child{
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 1rem;
+    padding-top: 1rem;
+}
+
+.cloud_uploading .top img{
+    width: 2.6rem;
+}
+
+.cloud_uploading .top p:nth-of-type(2){
+    font-weight: 500;
+}
+
+.cloud_uploading .bottom{
+    margin-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.progress {
+    width: 100%;
+    height: 10px;
+    background-color: lightgrey;
+    border-radius: 10px;
+  }
+  
+.progress .progress_bar {
+    height: 100%;
+    background-color: var(--redTheme);
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+}
+
+.attached_files{
+    margin-top: 30px;
+}
+
+.attached_files .title{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.attached_files .title p{
+    color: grey;
+}
+
+.menu_search{
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu_search .right{
+    display: flex;
+    align-items: center;
+    background: #d3d3d339;
+    border-radius: 8px;
+    width: 20rem;
+    height: 2.5rem;
+    padding-left: 8px;
+}
+
+.menu_search .right svg{
+    fill: grey;
+}
+
+.menu_search .right input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 5px;
+}
+
+
+.table{
+    margin-top: 15px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table th{
+    color: grey;
+    font-weight: 400;
+    border-top: none;
+    background: #d3d3d349;
+    height: 2.5rem;
+}
+
+.table tr td:first-child div{
+    color: var(--redTheme);
+    font-weight: 600;
+}
+
+.table th:last-child{
+    border-top-right-radius: 8px;
+}
+
+.table th:first-child{
+    border-top-left-radius: 8px;
+}
+
+.table tr td:last-child {
+    border-bottom-left-radius: 8px;
+}
+
+.table td, .table th {
+    border-bottom: 1px solid #d3d3d35f;
+    border-right: 1px solid #d3d3d35f;
+    border-left: 1px solid #d3d3d35f;
+    text-align: left;
+    padding: 8px;
+}
+
+.table th:first-of-type div{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.table td:first-of-type div{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.table td:nth-of-type(2) div:first-child{
+    display: flex;
+    align-content: center;
+    gap: 10px;
+}
+
+.table td:nth-of-type(2) div:first-child div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.table td:nth-of-type(2) div:first-child div p:nth-child(1){
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.table td:nth-of-type(2) div:first-child div p:nth-child(1) div{
+    min-width: 100px;
+    height: 22px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 50px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table td:nth-of-type(2) div:first-child div p:nth-child(2){
+    font-weight: 500;
+}
+
+.table td:nth-of-type(2) img{
+    width: 2.2rem;
+}
+
+.table td:last-of-type div:first-of-type{
+    display: flex;
+    gap: 10px;
+}
+
+.table td:last-of-type div:first-of-type h3{
+    font-weight: 500;
+}
+
+.table td:last-child, .table td:nth-last-child(2), .table td:nth-last-child(3){
+    text-align: center;
+}
+
+.table td:last-child svg, .table td:nth-last-child(2) svg, .table td:nth-last-child(3){
+    cursor: pointer;
+}
+
+/* cloud alert */
+.cloud_alert{
+    background: var(--redTheme);
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border-radius: 8px;
+}
+
+.cloud_alert h2{
+    color: white;
+}
+
+.cloud_alert p{
+    color: white!important;
+}
+
+/* project clud ui start*/
+.pr_cloud{
+    width: 100%;
+    padding: 30px;
+}
+
+.pr_cloud_top_folders{
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pr_cloud_top_folder{
+    width: 32%;
+    min-height: 12rem;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #00000011;
+    padding: 7px;
+}
+
+.pr_cloud_top_folder .pr_cloud_top_folder_bottom{
+    width: 100%;
+    height: 2rem;
+}
+
+.pr_cloud_top_folder_top{
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+    padding-top: 10px;
+}
+
+.pr_cloud_top_folder_top_users{
+    width: 100%;
+    height: 38%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.pr_cloud_top_folder_name{
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+}
+
+.pr_cloud_top_folder_name svg{
+    fill: #54aeff;
+}
+
+.pr_cloud_top_folder_name h2{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: sans-serif;
+}
+
+.pr_cloud_top_folder_top_details{
+    height: 62%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.pr_cloud_top_folder_top_details h4{
+    color: white;
+}
+
+.pr_cloud_top_folder_bottom{
+    width: 100%;
+    height: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 25px;
+}
+
+.pr_cloud_top_folder_bottom span{
+    color: grey;
+    font-weight: 500;
+}
+
+.pr_cloud_small_folders{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pr_cloud_small_folder{
+    min-width: 20.000%;
+    height: 11rem;
+    border-radius: 15px;
+    background: white;
+    border: 1px solid #80808018;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.pr_cloud_small_folder_bottom{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pr_cloud_small_folder_bottom div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pr_cloud_small_folder_bottom h3{
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.pr_cloud_small_folder_bottom h4:first-of-type{
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.pr_cloud_small_folder_bottom h4:last-child{
+    color: grey;
+}
+
+.pinned_files{
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+.pinned_files h3{
+    color: #000000eb;
+}
+
+.cloud_back{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+/* project cloud ui end */
+
+/* company document ui start */
+.cod_recent_files{
+    margin-top: 2rem;
+}
+
+.cod_recent_files_list{
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cod_recent_file_box{
+    width: 13rem;
+    min-height: 9rem;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.cod_recent_file_box a{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.cod_recent_file_box a p{
+    text-align: center;
+}
+
+.company_doc_btn span{
+    border: none;
+    height: 2.2rem;
+    background: var(--redTheme);
+    border-radius: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.company_doc_btn svg{
+    fill: white;
+    font-size: 18px;
+}
+
+.company_doc_btns{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

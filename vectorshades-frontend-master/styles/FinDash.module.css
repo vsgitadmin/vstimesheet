@@ -1,0 +1,392 @@
+.findash_container{
+    padding: 33.6px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.fin_top{
+    height: 3.6rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.1px solid #00000018;
+}
+
+.top_left{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.choose_account{
+    width: 13rem;
+    height: 2.3rem;
+    background: #d3d3d35d;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.choose_account h3{
+    font-weight: 400;
+    color: grey;
+    font-size: 15px;
+}
+
+.choose_account div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.choose_account div svg:first-child{
+    position: absolute;
+    top: -17px;
+    right: 0;
+}
+
+.choose_account div svg:nth-child(2){
+    position: absolute;
+    bottom: -16px;
+    right: 0px;
+}
+
+.top_left h2{
+    font-size: 28px;
+}
+
+.top_icons{
+    display: flex;
+    gap: 8px;
+}
+
+.top_icons div{
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: #d3d3d35d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fin_bottom{
+    width: 100%;
+    display: flex;
+}
+
+.fin_bottom_left{
+    width: 70%;
+}
+
+.my_card{
+    margin-top: 8px;
+    width: 100%;
+    height: 10rem;
+    border-radius: 15px;
+    background: #f8e5e9;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.my_card div{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.my_card h3, .my_card h2{
+    color: var(--redTheme);
+}
+
+.my_card div button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 2rem;
+    padding: 0 10px 0 10px;
+    border: none;
+    border-radius: 50px;
+}
+
+.my_card div button:first-child{
+    background: #e64848d8;
+    color: white;
+}
+
+.my_card div button:nth-child(2){
+    border: 1px solid #e64848d8;
+    color: #e64848d8;
+}
+
+.fin_record{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.fin_record_top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown{
+    display: flex;
+    align-items: center;
+    border: 1px solid lightgrey;
+    border-radius: 20px;
+    width: 6rem;
+    height: 1.7rem;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
+    font-size: 13px;
+}
+
+.fin_record_bottom{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    gap: 15px;
+}
+
+.fin_record_box{
+    width: 33%;
+    height: 10rem;
+    border-radius: 15px;
+    background: #e64848db;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fin_record_box div:first-of-type{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fin_record_box div:first-of-type h4{
+    font-size: 12px;
+    color: white;
+    font-weight: 100;
+}
+
+.fin_record_box div:nth-of-type(2){
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fin_record_box div:nth-of-type(2) div{
+    display: flex;
+}
+
+.fin_record_box div:nth-of-type(2) h2{
+    color: white;
+}
+
+.fin_record_box div:nth-of-type(2) div h4{
+    font-size: 15px;
+}
+
+.money_flow{
+    display: flex;
+    flex-direction: column;
+}
+
+.money_flow_top{
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.graph_label{
+    display: flex;
+    gap: 15px;
+}
+
+.graph_label div{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.graph_label h4{
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.dropdown{
+    display: flex;
+    align-items: center;
+    border: 1px solid lightgrey;
+    border-radius: 20px;
+    width: 6rem;
+    height: 1.7rem;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
+    font-size: 13px;
+}
+
+.money_flow_graph{
+    margin-top: 10px;
+    width: 100%;
+    height: 15rem;
+}
+
+.money_cards{
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.send_money{
+    width: 50%;
+    height: 12rem;
+    border: 0.1px solid #2222222a;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.send_top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.send_bottom{
+    display: flex;
+    gap: 10px;
+}
+
+.send_bottom div:first-child{
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: #e64848d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scheduled_cards{
+    display: flex;
+    gap: 5px;
+}
+
+.scheduled_cards div{
+    width: 33.33%;
+    height: 3rem;
+    border-radius: 8px;
+    background: lightgrey;
+    padding: 5px;
+    padding-left: 10px;
+}
+
+.scheduled_cards div h4:first-child{
+    color: grey;
+}
+
+.scheduled_cards div h4{
+    font-weight: 400;
+}
+
+.fin_bottom_right{
+    width: 30%;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.transactions{
+    margin-top: 12px;
+    width: 100%;
+    padding: 15px;
+    height: 26rem;
+    border-radius: 15px;
+    border: 1px solid #0000003a;
+}
+
+.tran_top{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.1px solid #00000018;
+    padding-bottom: 15px;
+}
+
+.tran_top h3{
+    font-weight: 300;
+}
+
+.tran_cards{
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tran_card{
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;         
+}
+
+.tran_card_left{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tran_card_left div:first-child{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: white;
+}
+
+.tran_card_left div:nth-child(2) h4{
+    font-weight: 400;
+}
+
+.tran_card_left div:nth-child(2) h5{
+    font-weight: 400;
+    color: grey;
+}
+
+.tran_card_right{
+    display: flex;
+    align-items: center;
+}
+
+.tran_card_right h3{
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.cred_cards{
+    margin-top: 4px;
+    width: 100%;
+    height: 28rem;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #0000003a;
+}

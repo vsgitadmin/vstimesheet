@@ -1,0 +1,2 @@
+const RoutesPermission = [{ path: '/hr', roles: ['SA','RB' ,'HR', 'PA','STL'] }, { path: '/jobs', roles: ['SA','STL'] },{ path: '/projects', roles: ['SA','RB' , 'PA','STL','EMP'] }, { path: '/rebar', roles: ['SA','RB'] }, { path: '/employee', roles: ['SA','RB' ,'HR', 'PA','STL','EMP'] }]
+module.exports = { RoutesPermission }
