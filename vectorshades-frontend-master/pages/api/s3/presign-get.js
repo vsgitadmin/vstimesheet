@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     const bucket = getBucket();
-    const s3Key = resolveS3KeyFromInput(key, bucket);
+    const s3Key = resolveS3KeyFromInput(key, bucket)?.replace(/\/{2,}/g, "/");
     if (!s3Key) {
       res.status(400).json({ error: "Invalid key" });
       return;

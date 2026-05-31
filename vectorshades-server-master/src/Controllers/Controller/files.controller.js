@@ -4,6 +4,35 @@ const { employee: { employeeModel } } = require('../../Models/Extractor/index');
 const { employee: { processEmployeeActivationRequest } } = require("../../Helpers/Extractor/index")
 const axios = require('axios');
 const { fillOnboardingBody } = require('../../Helpers/Functions/General/data');
+const { FILE_SERVER } = require('../../../config');
+const { s3KeyFromLocationOrKey } = require('../../Helpers/Functions/S3/index');
+
+/**
+ * Normalize profile photo for the file server. The Python service downloads from S3
+ * directly, so pass the object key (not a presigned URL that can expire before embed).
+ */
+function resolvePhotoPathForGeneration(photoPath) {
+    if (!photoPath || typeof photoPath !== 'string') return '';
+    const trimmed = photoPath.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) {
+        try {
+            return s3KeyFromLocationOrKey(trimmed);
+        } catch (err) {
+            console.warn('extract S3 key from photo URL failed:', err.message);
+            return trimmed;
+        }
+    }
+
+    const fileName = trimmed.split('/').filter(Boolean).pop();
+    const localPath = path.join(__dirname, '../../../public/profile', fileName);
+    if (fileName && fs.existsSync(localPath)) {
+        const port = process.env.PORT || 8000;
+        return `http://127.0.0.1:${port}/public/profile/${fileName}`;
+    }
+
+    return trimmed.replace(/^\/+/, '');
+}
 
 const documentUploadActivationController = async (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -82,25 +111,36 @@ const deleteFileController = async (req, res) => {
 const getEmployeeActivatedDocumentController = async (req, res) => {
     try {
         const details = await employeeModel.findOne({ _id: req.query.id }).lean()
-        const processedData = processEmployeeActivationRequest(details?.publicDetails)
-        const data = fillOnboardingBody(processedData) 
-        if (details) {
-            axios.post(
-                'http://127.0.0.1:8000/files/generate/activation',
-                { id: req.query.id, data, name: details.firstName },
-            ).then(async (response) => {
-                // const fileName = path.join('http://localhost:3000', `${response.data.path}`);
-                res.json({ path: response.data.path, success: true });
-            }).catch((err) => {
-                console.log(err);
-                res.status(500).json('error occured');
-            });
+        if (!details) {
+            return res.status(400).json("Employee not yet Activated")
         }
-        else {
-            res.status(400).json("Employee not yet Activated")
+
+        const processedData = processEmployeeActivationRequest(details.publicDetails)
+        const data = fillOnboardingBody(processedData)
+        if (data.photo_path) {
+            data.photo_path = resolvePhotoPathForGeneration(data.photo_path)
         }
+
+        const fileServer = (FILE_SERVER || 'http://127.0.0.1:50000/').replace(/\/+$/, '')
+        const response = await axios.post(
+            `${fileServer}/files/generate/activation`,
+            { id: req.query.id, data, name: details.firstName },
+        )
+
+        const docPath = response.data?.path
+        if (!docPath) {
+            console.error('activation doc generation missing path:', response.data)
+            return res.status(500).json({
+                success: false,
+                message: 'error occured',
+                error: response.data?.error,
+            })
+        }
+
+        res.json({ path: docPath, success: true })
     } catch (err) {
-        res.json(err);
+        console.error('activation doc generation failed:', err.response?.data || err.message)
+        res.status(500).json({ success: false, message: 'error occured' })
     }
 }
 

@@ -6,6 +6,7 @@ const PublicRoutes = [
   '/projects/timer/tasks',
   '/projects/timer/task/edit',
   '/files/download/file',
+  '/files/generate/activation',
   '/management/create/activation/request',
   '/management/update/activation',
   '/management/get/activation/single',

@@ -23,6 +23,11 @@ const { createNotification } = require("../Communication");
 const ActivityTemplate = require("../../../Config/Templates/ActivityTemplate");
 const { withEmailBanner } = require("../../../Helpers/Functions/General/emailBanner");
 const ACTIVITIES_PER_PAGE = 20;
+const {
+    syncProfilePictureToEmployeeKey,
+    setEmployeeProfileImageKey,
+    employeeProfilePictureKey,
+} = require('../../../Helpers/Functions/S3/profilePicture');
 
 const getAllEmployees = (pageNumber) => {
     let page = pageNumber >= 1 ? pageNumber : 1;
@@ -300,11 +305,21 @@ const editEmployeeTODO = async (body) => {
     }
 }
 
+const updateEmployeeProfilePicture = async (authUser, body) => {
+    const targetId = body?.employeeId && ['HR', 'SA'].includes(authUser?.role)
+        ? body.employeeId
+        : authUser?.id;
+    if (!targetId) throw new Error('Employee not found');
+
+    const profileKey = body?.profileKey || employeeProfilePictureKey(targetId);
+    return setEmployeeProfileImageKey(targetId, profileKey);
+};
+
 const getEmployeePrivateDetails = async (prop) => {
     try {
         if (prop.user) {
             const details = await employeeBasicDetailsModel.findOne({ employeeId: prop.user });
-            const emp = await employeeModel.findOne({ _id: prop.user }).select('-pwd -publicDetails')
+            const emp = await employeeModel.findOne({ _id: prop.user }).select('-pwd -publicDetails profileImageKey icon')
             return { details, emp }
         } else if (prop.uid) {
             const response = await employeeBasicDetailsModel.findOne({ uid: prop.uid })
@@ -931,5 +946,7 @@ module.exports = {
     getClientList,
     getEmployeeWithUid,
     generateTimerToken,
-    getWorkStats
+    getWorkStats,
+    updateEmployeeProfilePicture,
+    syncProfilePictureToEmployeeKey,
 }

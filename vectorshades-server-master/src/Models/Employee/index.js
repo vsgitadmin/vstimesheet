@@ -37,6 +37,7 @@ const employeeSchema = new Schema({
     pwd: { type: String, default: "initial" },
     gender: { type: String, default: "" },
     icon: { type: Boolean, default: false },
+    profileImageKey: { type: String, default: '' },
     socket: { type: String, default: null },
     timer: { type: Boolean, default: false },
     lastTimerAt: { type: Date, required: false },

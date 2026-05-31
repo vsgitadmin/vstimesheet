@@ -78,7 +78,11 @@ const EmployeeProfile = () => {
             {ResignationPopup && <EmployeerResignationPopup submit={triggerResignationConfirmationPopup} createNoticePopup={ResignationPopup} setcreateNoticePopup={setResignationPopup} />}
             <div className={styles.emp_profile_container} >
                 <div className={styles.emp_profile_section} >
-                    <ProfileImage size="12rem" id={Employee._id} />
+                    <ProfileImage
+                        size="12rem"
+                        id={Employee._id}
+                        imageKey={Employee.profileImageKey}
+                    />
                     <div>
                         <h2>{Employee.firstName + ' ' + Employee.lastName}</h2>
                         <h2>{Employee.designation}</h2>

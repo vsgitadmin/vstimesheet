@@ -1,5 +1,5 @@
 const { management: { employeeActivationRequest }, employee: { employeeModel } } = require("../../../Models/Extractor/index");
-const { updateEmpByEmp } = require("../../../Controllers/ControllerFunction/Employees/index")
+const { updateEmpByEmp, syncProfilePictureToEmployeeKey } = require("../../../Controllers/ControllerFunction/Employees/index")
 const { employee: { sendEmployeeActivationReviewMail } } = require("../../../Helpers/Extractor/index");
 const encryptDataToJwt = require("../../../Helpers/Functions/Authentication/JWTEncoder");
 const sendEmail = require("../../../Helpers/Functions/Email/sendEmail");
@@ -68,6 +68,14 @@ const ApproveEmployeeActivationRequests = async (id) => {
         const eData = await employeeModel.findById(id);
         eData.onBoarded = true
         await eData.save()
+        const activationImg = approveRequestData?.updatedDetails?.personal_details?.img;
+        if (activationImg) {
+            try {
+                await syncProfilePictureToEmployeeKey(id, activationImg);
+            } catch (profileErr) {
+                console.warn('activation profile sync failed:', profileErr.message);
+            }
+        }
         let passwordConfigKey = await encryptDataToJwt({ _id: id })
         await sendEmail(eData.personalEmail, 'Set password for vectorshades', OnboardingSuccessTemplate(await withEmailBanner({ link: `http://localhost:3000/auth/password/set?key=${passwordConfigKey}`, name: eData.firstName, email: eData.email })))
         return approveRequest

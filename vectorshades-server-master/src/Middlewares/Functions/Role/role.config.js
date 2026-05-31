@@ -45,6 +45,10 @@ const roleConfig = [
         permissions: ['EMP', 'SA', 'HR', 'PA', 'RB', 'STL']
     },
     {
+        path: '/employee/profile/picture',
+        permissions: ['EMP', 'SA', 'HR', 'PA', 'RB', 'STL']
+    },
+    {
         path: '/employee/update/public',
         permissions: ['EMP', 'SA', 'HR', 'PA', 'RB', 'STL']
     },

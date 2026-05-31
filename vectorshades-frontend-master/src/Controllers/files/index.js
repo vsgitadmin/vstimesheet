@@ -82,10 +82,18 @@ async function uploadViaSignedPut(uploadUrl, file, onProgress) {
   });
 }
 
+function normalizeS3UploadKey(key) {
+  return String(key || "")
+    .trim()
+    .replace(/^\/+/, "")
+    .replace(/\/{2,}/g, "/");
+}
+
 const uploadS3Document = async (file, fileName) => {
-  const { uploadUrl, location } = await presignUpload(fileName, file?.type);
+  const key = normalizeS3UploadKey(fileName);
+  const { uploadUrl, location } = await presignUpload(key, file?.type);
   await uploadViaSignedPut(uploadUrl, file);
-  return { Location: location };
+  return { Location: location, key };
 };
 
 const uploadCloudS3Document = (file, fileName) => {

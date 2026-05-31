@@ -1,4 +1,4 @@
-const { getAllEmployees, createEmployee, updateEmpByEmp, employeeDashboard, getEmployeeProfileData, fetchEmployeeAccountActivationID, fetchEmployeeAccountSingle, fetchEmployeeAccount, getTotalNumberofEmployee, FilterEmployees, deleteEmployee, createTODO, getEmployeeTODO, editEmployeeTODO, deleteEmployeeTODO, filterEmployeeTODO, getHRDashboard, getEmployeePrivateDetails, getEmployeeTodoCount, getEmployeeActivities, createEmployeeActivity, getSingleEmployeeActivities, updateEmployeeDetailsAndBasicDetails, getLatestEmployeeActivites, getEmployeeWithUid, updatePunchInStateFunction, getPunchStats, getAllEmployeesBasicData, getClientList, generateTimerToken, getWorkStats } = require("../ControllerFunction/Employees/index");
+const { getAllEmployees, createEmployee, updateEmpByEmp, employeeDashboard, getEmployeeProfileData, fetchEmployeeAccountActivationID, fetchEmployeeAccountSingle, fetchEmployeeAccount, getTotalNumberofEmployee, FilterEmployees, deleteEmployee, createTODO, getEmployeeTODO, editEmployeeTODO, deleteEmployeeTODO, filterEmployeeTODO, getHRDashboard, getEmployeePrivateDetails, getEmployeeTodoCount, getEmployeeActivities, createEmployeeActivity, getSingleEmployeeActivities, updateEmployeeDetailsAndBasicDetails, getLatestEmployeeActivites, getEmployeeWithUid, updatePunchInStateFunction, getPunchStats, getAllEmployeesBasicData, getClientList, generateTimerToken, getWorkStats, updateEmployeeProfilePicture } = require("../ControllerFunction/Employees/index");
 const { response: { employeeResponse } } = require("../../Classes/index")
 const { updatePasswordFunction, requestUpdatePasswordFunction } = require("../ControllerFunction/Employees");
 
@@ -231,7 +231,12 @@ const getClientListController = async (req, res) => {
     res.status(response.failed ? 400 : 200).json(response)
 }
 
-
+const updateEmployeeProfilePictureController = async (req, res) => {
+    const response = await updateEmployeeProfilePicture(req.headers.data, req.body)
+        .then((data) => new employeeResponse('Profile picture updated', { data }, false))
+        .catch((err) => new employeeResponse(err.message, null, true))
+    res.status(response.failed ? 400 : 200).json(response)
+}
 
 module.exports = {
     updatePunchStatusController,
@@ -266,5 +271,6 @@ module.exports = {
     getAllEmployeesBasicDataController,
     getClientListController,
     generateTimerTokenController,
-    getEmployeesWorkStatusController
+    getEmployeesWorkStatusController,
+    updateEmployeeProfilePictureController,
 }

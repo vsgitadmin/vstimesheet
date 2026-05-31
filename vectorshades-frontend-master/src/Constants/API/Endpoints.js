@@ -22,6 +22,7 @@ const Endpoints = {
         getEmployeeHRDashboard: "/employee/hr/dashboard",
         employeeDashboard: "/employee/dashboard",
         getProfile: "/employee/profile",
+        updateProfilePicture: "/employee/profile/picture",
         generateTimerToken:"/employee/generate/timer/token",
         basicDeatils: "/employee/details",
         getEmployeeTodoCount: "/employee/todo/count",

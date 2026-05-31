@@ -8,7 +8,8 @@ const { getAllEmployeeController, getEmployeeProfileController, createEmployeeCo
     getAllEmployeesBasicDataController,
     getClientListController,
     generateTimerTokenController,
-    getEmployeesWorkStatusController
+    getEmployeesWorkStatusController,
+    updateEmployeeProfilePictureController
 } = require("../../Controllers/Controller/employee.controller");
 
 employeeRoute.get('/all', getAllEmployeeController);
@@ -29,6 +30,7 @@ employeeRoute.get('/todo/filter', filterEmployeeTodoController);
 employeeRoute.get('/hr/dashboard', getHRDashboardController);
 employeeRoute.get('/dashboard', getEmployeeDashboardController);
 employeeRoute.get('/profile', getEmployeeProfileController);
+employeeRoute.post('/profile/picture', updateEmployeeProfilePictureController);
 employeeRoute.get('/details', getEmployeePrivateDetailsController);
 employeeRoute.get('/todo/count', getEmployeeTodoCountController)
 employeeRoute.get('/activities/all', getAllEmployeeActivitiesController)

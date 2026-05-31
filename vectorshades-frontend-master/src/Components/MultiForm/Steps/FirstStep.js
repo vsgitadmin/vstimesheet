@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { NavigateNext } from '@mui/icons-material';
 import styles from '../MultiForm.module.css'
 import { uploadS3Document , deleteS3Document} from '../../../Controllers/files/index'
+import { employeeProfilePictureKey } from '../../../Helpers/Constants/profilePicture'
 import TopBar from '../TopBar';
 import PresignedLink from '../../S3/PresignedLink';
 import { toast } from 'react-toastify';
 import Router from 'next/router';
 
-const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId ,section}) => {
+const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId , employeeDbId, section}) => {
   const [Step1Data, setStep1Data] = useState({})
   const [Gender, setGender] = useState('')
   const [Marital, setMarital] = useState('')
@@ -40,17 +41,19 @@ const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId ,section}) =
   }
 
   const uploadProfilePicture = () => {
-    if (Img) {
-      var formData = new FormData();
-      formData.append("file", Img);
-      uploadS3Document(Img, `profile//${empId}.jpeg`)
-        .then((data) => {
-          Step1Data['img'] = data.Location
-          setimgSrc(data.Location)
-          toast.success("Profile Picture Uploaded")
-        })
-        .catch((err) => toast.error("unable to process request"))
+    const profileId = employeeDbId || empId
+    if (!Img || !profileId) {
+      toast.error("Unable to upload profile picture")
+      return
     }
+    const key = employeeProfilePictureKey(profileId)
+    uploadS3Document(Img, key)
+      .then((data) => {
+        Step1Data['img'] = data.key || data.Location
+        setimgSrc(data.key || data.Location)
+        toast.success("Profile Picture Uploaded")
+      })
+      .catch(() => toast.error("unable to process request"))
   }
 
   const changeInputValue = (e) => Step1Data[e.target.name] = e.target.value

@@ -321,6 +321,12 @@ const getAllBasicEmployees = async (query) => {
     } catch (e) { throw e }
 }
 
+const updateEmployeeProfilePictureController = async (body) => {
+    try {
+        return await instance.post(employee.updateProfilePicture, body)
+    } catch (err) { throw err }
+}
+
 export {
     updatePunchStatus,
     getPunchStats,
@@ -365,5 +371,6 @@ export {
     getAllBasicEmployees,
     generateTimerTokenController,
     getEmployeeWorkStatusController,
-    getEmployeeUIDStatusController
+    getEmployeeUIDStatusController,
+    updateEmployeeProfilePictureController,
 }

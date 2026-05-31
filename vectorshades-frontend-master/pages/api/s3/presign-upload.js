@@ -7,11 +7,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { key, contentType } = req.body || {};
+    let { key, contentType } = req.body || {};
     if (!key) {
       res.status(400).json({ error: "Missing `key`" });
       return;
     }
+
+    key = String(key).trim().replace(/^\/+/, "").replace(/\/{2,}/g, "/");
 
     const bucket = getBucket();
     const s3 = getS3();

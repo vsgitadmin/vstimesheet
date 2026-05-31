@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import styles from './MultiForm.module.css'
 import { FifthStep, FirstStep, FourthStep, SecondStep, SixthStep, ThirdStep } from './Steps'
 
-const MultiForm = ({ dataDefault, submit, readOnly, empId, section }) => {
+const MultiForm = ({ dataDefault, submit, readOnly, empId, employeeDbId, section }) => {
   const [Data, setData] = useState({})
   const [stepIndex, setStepIndex] = useState(1)
 
@@ -23,7 +23,7 @@ const MultiForm = ({ dataDefault, submit, readOnly, empId, section }) => {
     case 1:
       return (
         <div className={styles.mf_main}>
-          <FirstStep stepIndex={stepIndex} section={section} key={Data} setStepIndex={setStepIndex} empId={empId} setData={setDataFunction} Data={Data} />
+          <FirstStep stepIndex={stepIndex} section={section} key={Data} setStepIndex={setStepIndex} empId={empId} employeeDbId={employeeDbId} setData={setDataFunction} Data={Data} />
         </div>
       )
     case 2:
