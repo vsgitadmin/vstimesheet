@@ -94,18 +94,19 @@ function SelectUserInput({ returnUser, createProject, deleteUser, label, noitce,
                 {noTitle === true && allRebarSelected === false ? null : <label>{label ? label : (isUserSelected) ? "Selected User" : "Add User"}</label>}
                 {allRebarSelected && <label>{selectedUsers.length} Users Added (<span style={{ color: 'grey' }}>Existing Project Users Will be Ignored</span>)</label>}
                 {(isUserSelected && !noSelectedUsers) &&
-                    <div className={`award_selected_users ${noitce && 'notice_add_user'} } `}>
+                    <div className={`award_selected_users ${noitce && 'notice_add_user'} `}>
                         {selectedUsers.map((user) => (
-                            <div key={user._id} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, paddingTop: "5px" }}>
+                            <div key={user._id} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, padding: "6px" }} >
                                 <ProfileImage id={user._id} size="25px" />
-                                <h3 style={{ marginLeft: 8, display: 'flex', gap: "4px", fontSize: "13px" }}>
+                                <h3 style={{ paddingLeft: 8, display: 'flex', alignItems: 'center', gap: "4px", fontSize: "13px", whiteSpace: 'nowrap', margin: 0 }}>
                                     <span>{user.firstName}</span>
                                     <span>{user.lastName}</span>
                                 </h3>
-                                <Close style={{ position: "absolute", right: 10}} onClick={() => handleUserRemove(user)} />
+                                <Close style={{ marginLeft: 6, cursor: 'pointer', flexShrink: 0 }} onClick={() => handleUserRemove(user)} />
                             </div>
                         ))}
-                    </div>}
+                    </div>
+                }
                 {(!isUserSelected || multiSelect) && !allRebarSelected && <input className='notice_input' placeholder='Search User' onChange={searchEmployee} type='text' />}
                 {isDropDownOpen &&
                     <div className='list_style' style={{ top: createGroup && '47px' }} >

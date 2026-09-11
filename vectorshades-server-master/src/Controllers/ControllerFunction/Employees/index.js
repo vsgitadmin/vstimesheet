@@ -49,6 +49,7 @@ const createEmployee = async (body) => {
         }
 
         body.publicDetails = {}
+        body.rebar = body.department == "Rebar"
         await new employeeModel(body).save();
         const employee = await employeeModel.findOne({ email: body.email });
         await new employeeBasicDetailsModel({ ['employeeId']: employee._id, ...body.basicDetails }).save();
@@ -162,6 +163,7 @@ const updateEmployeeDetailsAndBasicDetails = async (body, params, authUser) => {
         if (authUser?.role !== 'HR' && body.role) {
             delete body.role;
         }
+        body.rebar = body.department == "Rebar"
         const employee = await employeeModel.findByIdAndUpdate(params.id, { $set: { ...body, uid: body.basicDetails ? body.basicDetails.uid : '' } });
         const activities = getUpdateActivities(employee.toObject(), body);
         if (!("basicDetails" in body) || body.basicDetails == null) {

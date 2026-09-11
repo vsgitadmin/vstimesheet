@@ -258,7 +258,6 @@ const TopBar = ({ openSettings }) => {
       />
       <div id='top_bar' className={`${styles.rp_top_bar} ${scrollDown ? styles.rp_top_bar_hidden : ''}`}>
         <div className={styles.rp_top_right} >
-          <div className={styles.rp_round} onClick={logOutFunction} style={{ cursor: "pointer" }} ><Logout /></div>
           <OutsideClickHandler onOutsideClick={() => setNotificationDrop(false)} >
             <div style={{ cursor: "pointer" }} className={styles.rp_round} onClick={() => setNotificationDrop(prev => !prev)} >
               <Badge color="error" badgeContent={unReadCount} >
@@ -308,6 +307,7 @@ const TopBar = ({ openSettings }) => {
             </div>
             {profileDropdown && <ProfileDropdown setProfileDropdown={setProfileDropdown} openSettings={openSettings} />}
           </OutsideClickHandler>
+          <div className={styles.rp_round} onClick={logOutFunction} style={{ cursor: "pointer" }} ><Logout /></div>
         </div>
       </div>
     </>

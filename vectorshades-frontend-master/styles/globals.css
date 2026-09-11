@@ -1605,6 +1605,7 @@ a {
   padding-left: 10px;
   padding-right: 10px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .award_selected_users h3 {
@@ -2569,4 +2570,17 @@ a {
 .work_log_details i svg {
   font-size: 15px;
   fill: gray;
+}
+
+.vs_logo{
+  height: auto;
+  width: max-content;
+  max-width: 80%;
+}
+
+.logo-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }

@@ -1,4 +1,8 @@
-const {genSalt, hash, compare} = require('bcrypt');
+const { hash, compare } = require('bcrypt');
+
+const isPasswordHashed = (password) => {
+    return typeof password === 'string' && /^\$2[aby]\$/.test(password);
+}
 
 const encryptPassword = async (password) => {
     return new Promise((r, j) => {
@@ -25,4 +29,11 @@ const comparePassword = async (password, hash) => {
     })
 }
 
-module.exports = {encryptPassword, comparePassword}
+const validatePassword = async (plainPassword, storedPassword) => {
+    if (isPasswordHashed(storedPassword)) {
+        return comparePassword(plainPassword, storedPassword);
+    }
+    return plainPassword === storedPassword;
+}
+
+module.exports = { encryptPassword, comparePassword, isPasswordHashed, validatePassword }

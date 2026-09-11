@@ -3,3 +3,6 @@
 *.bak
 node_modules
 public
+filesSystem/
+*.archive.gz
+*.bak
