@@ -169,7 +169,7 @@ const getSingleEmployeeActivitiesController = async (req, res) => {
 }
 
 const updateEmployeeDetailsAndBasicDetailsController = async (req, res) => {
-    const response = await updateEmployeeDetailsAndBasicDetails(req.body, req.query)
+    const response = await updateEmployeeDetailsAndBasicDetails(req.body, req.query, req.headers.data)
         .then((data) => new employeeResponse("updated successfully", { data }, false))
         .catch((err) => new employeeResponse(err.message, null, true))
     res.status(response.failed ? 400 : 200).json(response)

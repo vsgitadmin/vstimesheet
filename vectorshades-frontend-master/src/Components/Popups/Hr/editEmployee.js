@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
+import { ParentStore } from '../../../../pages/_app';
 import { useRouter, Router } from 'next/router';
 import styles from './Popup.module.css'
 import { toast } from 'react-toastify';
@@ -11,6 +12,8 @@ const EditEmployee = ({ employeeData, basicData, onFormSubmitAction, setBasicDat
   let [body] = useState({})
   const router = useRouter();
   const [ConfirmPopupOpen, setConfirmPopupOpen] = useState(false)
+  const { ParentState } = useContext(ParentStore)
+  const isHrUser = ParentState?.auth?.role === 'HR'
 
   const updateEmpoloyee = (e) => {
     const payload = { ...employeeData, basicDetails: basicData }
@@ -162,18 +165,22 @@ const EditEmployee = ({ employeeData, basicData, onFormSubmitAction, setBasicDat
                 </div>
               </div>
 
-              {/* <div className={styles.ce_form_group_main} >
-                <div className={`${styles.ce_form_group} ${styles.ce_label}`} >
-                  <label>Role</label>
-                  <select defaultValue={employeeData.role} required onChange={(e) => employeeData.role = e.target.value}>
-                    <option hidden>Select</option>
-                    <option value={'HR'}>Human Resources</option>
-                    <option value={'EMP'}>Employee</option>
-                    <option value={'SA'}>Super Admin</option>
-                    <option value={'PA'}>Project Admin</option>
-                  </select>
+              {isHrUser && employeeData &&
+                <div className={styles.ce_form_group_main} >
+                  <div className={`${styles.ce_form_group} ${styles.ce_label}`} >
+                    <label>Role</label>
+                    <select defaultValue={employeeData.role} required onChange={(e) => employeeData.role = e.target.value}>
+                      <option hidden>Select</option>
+                      <option value={'SA'}>Super Admin</option>
+                      <option value={'HR'}>Human Resources</option>
+                      <option value={'EMP'}>Employee</option>
+                      <option value={'PA'}>Project Admin</option>
+                      <option value={'RB'}>Steel Rebar Employee</option>
+                      <option value={'STL'}>Steel Employee</option>
+                    </select>
+                  </div>
                 </div>
-              </div> */}
+              }
             </>
           }
 

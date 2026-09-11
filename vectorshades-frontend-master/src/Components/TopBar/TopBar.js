@@ -268,16 +268,6 @@ const TopBar = ({ openSettings }) => {
             {notificationDrop && <NotificationDropdown unseen={unReadCount} data={NotificationData} notificationDrop={notificationDrop} setNotificationDrop={setNotificationDrop} />}
           </OutsideClickHandler>
 
-          <div className='sidebar_badge' style={{ display: "flex", backgroundColor: '#e64848cf', minWidth: '10rem', justifyContent: "space-between", alignItems: "center" }}>
-            <Tooltip style={{ width: "100%" }} title="Logged in time">
-              <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <span style={{ fontWeight: "bold", color: "white", marginLeft: "5px", width: 'max-content' }}>
-                  BETA SOFTWARE
-                </span>
-              </div>
-            </Tooltip>
-          </div>
-
           <OutsideClickHandler onOutsideClick={() => { }}>
             <div className='sidebar_badge' style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Tooltip style={{ width: "100%" }} title="Logged in time">

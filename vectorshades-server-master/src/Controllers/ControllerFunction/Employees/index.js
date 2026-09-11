@@ -157,8 +157,11 @@ function getUpdateActivities(employee, changes) {
     return activities;
 }
 
-const updateEmployeeDetailsAndBasicDetails = async (body, params) => {
+const updateEmployeeDetailsAndBasicDetails = async (body, params, authUser) => {
     try {
+        if (authUser?.role !== 'HR' && body.role) {
+            delete body.role;
+        }
         const employee = await employeeModel.findByIdAndUpdate(params.id, { $set: { ...body, uid: body.basicDetails ? body.basicDetails.uid : '' } });
         const activities = getUpdateActivities(employee.toObject(), body);
         if (!("basicDetails" in body) || body.basicDetails == null) {
@@ -319,7 +322,7 @@ const getEmployeePrivateDetails = async (prop) => {
     try {
         if (prop.user) {
             const details = await employeeBasicDetailsModel.findOne({ employeeId: prop.user });
-            const emp = await employeeModel.findOne({ _id: prop.user }).select('-pwd -publicDetails profileImageKey icon')
+            const emp = await employeeModel.findOne({ _id: prop.user }).select('-pwd -publicDetails')
             return { details, emp }
         } else if (prop.uid) {
             const response = await employeeBasicDetailsModel.findOne({ uid: prop.uid })
