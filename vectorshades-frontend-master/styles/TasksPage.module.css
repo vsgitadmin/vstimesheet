@@ -1,0 +1,499 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+/* Dedicated module for pages/admin/dashboard/tasks.js - kept separate from
+   ActiveTasks.module.css since that file is shared by several other
+   components (ActiveTasks, Activity, Home, ProjectSettings, TeamTable,
+   Drawing, JobAnalytics...) and editing its classnames would restyle those
+   too. Mirrors the card/list pattern already used on the Review Requests
+   page. */
+
+.page {
+  width: 100%;
+  padding: 30px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---------- header ---------- */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.titleBlock h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.titleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: grey;
+}
+
+/* ---------- stat tiles ---------- */
+
+.statsRow {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.statTile {
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px solid #ececec;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.statTile:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(50, 50, 93, 0.12) 0px 6px 14px -6px;
+}
+
+.statIcon {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.statIcon svg {
+  font-size: 20px;
+}
+
+.statTile h3 {
+  font-size: 12px;
+  font-weight: 500;
+  color: grey;
+  white-space: nowrap;
+}
+
+.statTile h2 {
+  margin-top: 2px;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  margin-top: 22px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filterField label {
+  font-size: 12px;
+  color: grey;
+  margin-left: 2px;
+}
+
+.statusSelect {
+  height: 2.6rem;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1.5px solid #e9e9e9;
+  outline: none;
+  background: #fff;
+  font-size: 13.5px;
+  min-width: 160px;
+}
+
+.statusSelect:focus {
+  border-color: var(--redTheme);
+}
+
+/* SelectUserInput renders its own label + input stacked via the shared
+   global .award_add_user/.notice_input classes (used across many other
+   award/job/notice popups) - scoping the override to .assignedToBox here
+   instead of editing those globals keeps this fix local to this page. */
+.assignedToBox {
+  display: flex;
+  align-items: center;
+}
+
+.assignedToBox :global(.award_add_user) {
+  padding-bottom: 0;
+  gap: 5px;
+  min-width: 220px;
+}
+
+.assignedToBox :global(.award_add_user) > label {
+  font-size: 12px;
+  color: grey;
+  margin-left: 2px;
+}
+
+.assignedToBox :global(.notice_input) {
+  height: 2.6rem;
+  border-radius: 10px;
+  border: 1.5px solid #e9e9e9;
+  padding: 0 14px;
+}
+
+.assignedToBox :global(.notice_input):focus {
+  border-color: var(--redTheme);
+}
+
+.countBadge {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+.countBadge strong {
+  color: #333;
+}
+
+.viewToggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.viewToggleBtn {
+  height: 2.2rem;
+  width: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #8a8a8a;
+  transition: background .15s, color .15s;
+}
+
+.viewToggleBtn svg {
+  font-size: 20px;
+}
+
+.viewToggleBtnActive {
+  background: #fff;
+  color: var(--redTheme);
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px;
+}
+
+/* ---------- status pill ---------- */
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 13px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(154, 154, 154, 0.16);
+  color: #6b6b6b;
+}
+
+.statusCompleted {
+  background: rgba(46, 158, 91, 0.14);
+  color: #2e9e5b;
+}
+
+.statusInProgress {
+  background: rgba(41, 121, 255, 0.13);
+  color: #2979ff;
+}
+
+.statusPaused {
+  background: rgba(255, 152, 0, 0.15);
+  color: #e08600;
+}
+
+.statusReview {
+  background: rgba(156, 39, 176, 0.13);
+  color: #9c27b0;
+}
+
+.statusQueued {
+  background: rgba(120, 120, 120, 0.14);
+  color: #6b6b6b;
+}
+
+.statusOverdue {
+  background: rgba(255, 99, 99, 0.14);
+  color: var(--redTheme);
+}
+
+/* left accent bar on cards/rows, colored to match the status pill */
+.accentCompleted { border-left-color: #2e9e5b; }
+.accentInProgress { border-left-color: #2979ff; }
+.accentPaused { border-left-color: #ff9800; }
+.accentReview { border-left-color: #9c27b0; }
+.accentQueued { border-left-color: #9a9a9a; }
+.accentOverdue { border-left-color: var(--redTheme); }
+
+/* ---------- grid view ---------- */
+
+.cardsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  border-left: 4px solid #ececec;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.person h4 {
+  font-size: 16px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.person h5 {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: grey;
+  margin-top: 3px;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 14px;
+}
+
+.metaItem {
+  min-width: 0;
+}
+
+.metaItem .metaLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: grey;
+}
+
+.metaItem h5 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardFooter {
+  padding-top: 12px;
+  border-top: 1px solid #f2f2f2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- list view ---------- */
+
+.rowsList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  background: #fff;
+  border-radius: 12px;
+  border-left: 4px solid #ececec;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.row:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.rowPerson {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+.rowPerson h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.rowPerson h5 {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--redTheme);
+  margin-top: 2px;
+}
+
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: grey;
+}
+
+.rowMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rowMeta svg {
+  font-size: 15px;
+  fill: grey;
+}
+
+.rowRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------- empty state ---------- */
+
+.emptyState {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 50px 20px;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1.5px dashed #e6e6e6;
+  color: #9a9a9a;
+  text-align: center;
+}
+
+.emptyState svg {
+  font-size: 30px;
+  color: #cfcfcf;
+  margin-bottom: 6px;
+}
+
+.emptyState h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+}
+
+.emptyState p {
+  font-size: 12.5px;
+}
+
+.loadingState {
+  padding: 30px;
+  text-align: center;
+  color: grey;
+}
+
+.paginationWrap {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1200px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+
+  .rowRight {
+    margin-left: 0;
+  }
+
+  .metaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+}

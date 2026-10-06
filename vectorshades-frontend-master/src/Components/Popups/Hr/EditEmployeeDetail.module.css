@@ -1,0 +1,99 @@
+/* Section-card layout for the Edit Employee detail page.
+   Kept in its own module (instead of touching Popup.module.css) since that
+   file's classnames (.section_heading, .ce_form_group_main, etc.) are shared
+   with CreateEmployee and every other popup under Popups/Hr - changing them
+   there would restyle those too. */
+
+.pageContainer {
+  /* This page (unlike CreateEmployee's actual modal, which also uses
+     .ce_popup for its 65%-wide dialog) renders full-width, so widen it here
+     rather than touching the shared .ce_popup rule. */
+  width: 100% !important;
+  max-width: 1100px;
+}
+
+.card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 20px 24px 24px;
+  margin-bottom: 20px;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 1px 4px;
+}
+
+/* The shared Popup.module.css leaves inputs/selects with no background of
+   their own (they were previously legible against the popup's own light
+   grey backdrop); now that each field sits on a white card, give them a
+   visible fill/border so they read as fields rather than plain text. */
+.card input:not([type="submit"]),
+.card select {
+  background: #f5f6f7 !important;
+  border: 1px solid #e0e0e0 !important;
+}
+
+.card input:not([type="submit"]):focus,
+.card select:focus {
+  border-color: var(--redTheme) !important;
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cardIcon {
+  width: 2.1rem;
+  height: 2.1rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fdeceb;
+  color: var(--redTheme);
+}
+
+.cardIcon svg {
+  font-size: 20px;
+}
+
+.cardTitle {
+  margin: 0;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.submitRow {
+  width: 100%;
+  /* display: flex;
+  justify-content: flex-end;
+  margin-top: 4px; */
+}
+
+.submitBtn {
+  width: 100%;
+  min-width: 10rem;
+  height: 2.6rem;
+  padding: 0 1.5rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  background: var(--redTheme);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background: #e64848e4;
+}
+
+.submitBtn:focus {
+  outline: 2px solid var(--redTheme);
+}

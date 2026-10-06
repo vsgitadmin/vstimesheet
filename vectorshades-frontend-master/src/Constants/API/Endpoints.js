@@ -280,6 +280,15 @@ const Endpoints = {
     config: {
         updateConfig: '/config/update',
         getConfig: '/config/get'
+    },
+    backup: {
+        create: '/backup/create',
+        list: '/backup/list',
+        restore: '/backup/restore',
+        progress: '/backup/progress',
+        download: '/backup/download',
+        upload: '/backup/upload',
+        delete: '/backup/delete'
     }
 }
 

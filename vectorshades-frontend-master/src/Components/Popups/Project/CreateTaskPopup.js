@@ -14,6 +14,7 @@ const CreateTaskPopup = ({
   projectId,
   createTaskPopup,
   section,
+  sections,
   loading,
   setCreateTaskPopup,
   edit,
@@ -33,6 +34,10 @@ const CreateTaskPopup = ({
   const [selectedSubTask, setselectedSubTask] = useState(defaultData && defaultData.subTask)
   const [selectedTask, setselectedTask] = useState(defaultData && defaultData.task)
   const [selectedMultiUser, setselectedMultiUser] = useState([])
+  // editable in-modal, defaults to whatever section the caller opened the
+  // popup with - only shown/changeable while creating, not editing (an
+  // existing task's section isn't otherwise touched by this form)
+  const [taskSection, setTaskSection] = useState(section)
 
 
   const handleSelectChange = (e) => {
@@ -67,7 +72,7 @@ const CreateTaskPopup = ({
       selectedMultiUser.forEach(async (user) => {
         const dataToSubmit = defaultData
           ? { ...defaultData, ...data }
-          : { ...data, section };
+          : { ...data, section: taskSection };
         dataToSubmit.assignedTo = user._id
         dataToSubmit.assignedToName = `${user.firstName} ${user.lastName}`
         await submit(dataToSubmit);
@@ -75,7 +80,7 @@ const CreateTaskPopup = ({
     } else {
       const dataToSubmit = defaultData
         ? { ...defaultData, ...data }
-        : { ...data, section };
+        : { ...data, section: taskSection };
       submit(dataToSubmit);
       setData({});
       setIsUserSelected(false);
@@ -128,6 +133,34 @@ const CreateTaskPopup = ({
 
         <div className={styles.project_popup_input_wrap} >
 
+          {/* Section - only choosable while creating; editing an existing
+              task's section isn't otherwise handled by this form. Comes
+              first since it drives which activities/sub tasks are valid */}
+          {defaultData === null && sections && (
+            <div className={styles.form_group}>
+              <label>Section</label>
+              <select
+                name="taskSection"
+                value={taskSection}
+                onChange={(e) => {
+                  // the Sub Task list is filtered by section (steelConditions),
+                  // so a previously chosen activity/sub task/task may no
+                  // longer be valid once the section changes - clear the
+                  // whole cascade rather than leave a stale, invalid pick
+                  setTaskSection(e.target.value)
+                  setselectedActivity('')
+                  setselectedSubTask('')
+                  setselectedTask('')
+                  setData((prev) => ({ ...prev, activity: '', subTask: '', task: '' }))
+                }}
+              >
+                {sections.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Non-rebar: Activity / Sub Task / Task */}
           {!projectData.rebar && (
             <>
@@ -175,9 +208,9 @@ const CreateTaskPopup = ({
                       {ConditionLessActivities.includes(selectedActivity) ? Object.keys(steelActivities[selectedActivity]).map((sub) => (
                         <option key={sub} value={sub}>{sub}</option>
                       )) : (
-                        steelConditions?.[section]
+                        steelConditions?.[taskSection]
                           ? Object.keys(steelActivities[selectedActivity] || {}).filter((sub) =>
-                            steelConditions[section].includes(sub)
+                            steelConditions[taskSection].includes(sub)
                           )
                           : Object.keys(steelActivities[selectedActivity])
                       ).map((sub) => (
@@ -227,7 +260,7 @@ const CreateTaskPopup = ({
         */}
 
           {/* Due Date */}
-          {section !== 'Rework' && (
+          {taskSection !== 'Rework' && (
             <div className={styles.form_group}>
               <label>Due Date</label>
               <input
@@ -240,7 +273,7 @@ const CreateTaskPopup = ({
           )}
 
           {/* Rebar: Task Name select */}
-          {projectData.rebar && rebarTasks[section] && (
+          {projectData.rebar && rebarTasks[taskSection] && (
             <div className={styles.form_group}>
               <label>Task Name</label>
               <select
@@ -249,7 +282,7 @@ const CreateTaskPopup = ({
                 defaultValue={defaultData?.name || ''}
               >
                 <option hidden>Select Sub Task</option>
-                {rebarTasks[section].map((name) => (
+                {rebarTasks[taskSection].map((name) => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
@@ -259,7 +292,7 @@ const CreateTaskPopup = ({
 
 
           {/* Rebar Job coordination */}
-          {projectData.rebar && section === 'Job coordination' && (
+          {projectData.rebar && taskSection === 'Job coordination' && (
             <>
               <div className={styles.form_group}>
                 <label>Task Name</label>
@@ -299,7 +332,7 @@ const CreateTaskPopup = ({
               />
             </div>
           )}
-          {section !== 'Rework' && (
+          {taskSection !== 'Rework' && (
             <div className={styles.form_group}>
               <label>Estimated Hour</label>
               <input

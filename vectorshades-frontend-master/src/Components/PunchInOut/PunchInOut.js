@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import styles from '../../../styles/PunchInOut.module.css'
 import BulletPoints from '../Popups/Hr/BulletPointsPopup'
 import { FiberManualRecord } from '@mui/icons-material'
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined'
 import { getPunchStats } from "../../Controllers/Employee";
 import { formatTime } from "../../Helpers/General/Time";
 import months from "../../Constants/months"
+
 const PunchInOut = () => {
 
     const [openBulletPoints, setBulletPoints] = useState(false)
     const [punchData, setPunchData] = useState()
     const [infoLineData, setinfoLineData] = useState({ in: 0, out: 0 })
     const TotalWorkingHrs = 12
+    const now = new Date()
 
     useEffect(() => {
         getPunchStats().then(({ data }) => {
@@ -24,9 +27,13 @@ const PunchInOut = () => {
         })
     }, []);
 
-    return (<div className='container'>
-        <h2>Punch In Punch Out</h2>
-        <p className='mt_1 grey'>Here is you can track your punch ins and punch outs</p>
+    return (<div className={styles.page}>
+        <div className={styles.headerRow}>
+            <div className={styles.titleBlock}>
+                <h1><span className={styles.titleIcon}><AccessTimeOutlinedIcon /></span>Punch In Punch Out</h1>
+                <p className={styles.subtitle}>Here you can track your punch ins and punch outs</p>
+            </div>
+        </div>
 
         <div className={styles.top}>
             <div className={styles.child}>
@@ -48,145 +55,144 @@ const PunchInOut = () => {
             </div>
         </div>
 
-        <div className={styles.points}>
-            <div><FiberManualRecord style={{ fill: "green" }} />In time</div>
-            <div><FiberManualRecord style={{ fill: "grey" }} />Balance time</div>
+        <div className={styles.barCard}>
+            <div className={styles.points}>
+                <div><FiberManualRecord style={{ fill: "#2e9e5b" }} />In time</div>
+                <div><FiberManualRecord style={{ fill: "#cfcfcf" }} />Balance time</div>
+            </div>
+
+            <div className={styles.bar}>
+                <div className={styles.bar_item} style={{ width: `${infoLineData.in.toFixed()}%`, background: "#2e9e5b" }}></div>
+                <div className={styles.bar_item} style={{ width: `${infoLineData.out.toFixed()}%`, background: "#e9e9e9" }}></div>
+            </div>
         </div>
 
-        <div className={styles.bar}>
-            <div className={styles.bar_item} style={{ width: `${infoLineData.in.toFixed()}%`, background: "green" }}></div>
-            {/* <div className={styles.bar_item} style={{width: "60%", background: "#097c69"}}></div> */}
-            <div className={styles.bar_item} style={{ width: `${infoLineData.out.toFixed()}%`, background: "grey" }}></div>
-            {/* <div className={styles.bar_item} style={{width: "40%", background: "#dfe2e7"}}></div> */}
-        </div>
-
-        <div className={`mt_3 ${styles.filter}`}>
-            <h3>September 2023</h3>
+        <div className={styles.filter}>
+            <h3>{now.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
             <div>
-                <select className='year_select_dropdown'>
+                <select className={styles.select} defaultValue={now.getMonth()}>
                     {months.map((month) => {
                         return <option key={month.index} value={month.index}>{month.name}</option>
                     })}
                 </select>
-                <select className='year_select_dropdown'>
-                    <option>2019</option>
-                    <option>2020</option>
-                    <option>2021</option>
-                    <option>2022</option>
-                    <option>2023</option>
-                    <option>2024</option>
+                <select className={styles.select} defaultValue={now.getFullYear()}>
+                    {Array.from({ length: 8 }, (_, i) => now.getFullYear() - 6 + i).map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                    ))}
                 </select>
             </div>
         </div>
 
         <div className={styles.calendar}>
             <table>
-                <tr>
-                    <th>SUN</th>
-                    <th>MON</th>
-                    <th>TUE</th>
-                    <th>WED</th>
-                    <th>THU</th>
-                    <th>FRI</th>
-                    <th>SAT</th>
-                </tr>
-                <tr>
-                    <td>
-                        <div onClick={() => setBulletPoints(true)} className={styles.day}>
-                            <h3>1</h3>
-                            <div className={styles.day_labeles}>
-                                <div className={styles.day_label}>
-                                    <span>Testrisly Redesign</span>
-                                    <span>8h</span>
-                                </div>
-                                <div className={styles.day_label}>
-                                    <span>Redesign</span>
-                                    <span>8h</span>
+                <tbody>
+                    <tr>
+                        <th>SUN</th>
+                        <th>MON</th>
+                        <th>TUE</th>
+                        <th>WED</th>
+                        <th>THU</th>
+                        <th>FRI</th>
+                        <th>SAT</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div onClick={() => setBulletPoints(true)} className={styles.day}>
+                                <h3>1</h3>
+                                <div className={styles.day_labeles}>
+                                    <div className={styles.day_label}>
+                                        <span>Testrisly Redesign</span>
+                                        <span>8h</span>
+                                    </div>
+                                    <div className={styles.day_label}>
+                                        <span>Redesign</span>
+                                        <span>8h</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>2</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>3</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>4</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>5</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>6</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>7</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>8</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>9</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>10</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>11</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>12</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>13</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className={styles.day}>
-                            <h3>14</h3>
-                            <div className={`${styles.day_label} ${styles.none}`}></div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>2</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>3</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>4</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>5</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>6</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>7</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>8</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>9</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>10</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>11</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>12</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>13</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={styles.day}>
+                                <h3>14</h3>
+                                <div className={`${styles.day_label} ${styles.none}`}></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
 

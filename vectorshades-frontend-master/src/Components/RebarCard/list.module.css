@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 1rem 1.4rem;
+  transition: .15s transform, .15s box-shadow;
+}
+
+.row:hover {
+  cursor: pointer;
+  transform: translateY(-1px);
+  box-shadow: rgb(0 0 0 / 13%) 0px 5px 15px;
+}
+
+.rowMain {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: grey;
+}
+
+.metaLabel {
+  color: #9a9a9a;
+}
+
+.rowStatus {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: grey;
+  margin-left: auto;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.statusBadge svg {
+  font-size: 16px;
+}
+
+.rowMoreIcon {
+  flex: 0 0 auto;
+  color: #9a9a9a;
+}
+
+@media (max-width: 900px) {
+  .row {
+    flex-wrap: wrap;
+  }
+
+  .rowStatus {
+    flex: 1 1 auto;
+    margin-left: 0;
+  }
+}

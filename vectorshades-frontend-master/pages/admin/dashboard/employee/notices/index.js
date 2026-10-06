@@ -28,8 +28,15 @@ function Notices({emp}) {
 
     const checkAndFetch = () => {
         if (!emp) {
+            // HR manages notices for the whole org, so it gets the unscoped
+            // "every notice" admin view. Every other role that can reach this
+            // page from their sidebar (SA, STL, RB, PA) - like EMP - should
+            // only see notices addressed to themselves, so they get the
+            // employee-scoped fetch (getNoticeBYEMPController reads the
+            // recipient off the auth token when no `emp` id is passed, i.e.
+            // "my own notices").
             if (ParentState?.auth.role === "HR") getDataByHR()
-            else if (ParentState?.auth.role === "EMP") getDataByEMP()
+            else getDataByEMP()
         } else getDataByEMP()
 
     }
@@ -37,7 +44,7 @@ function Notices({emp}) {
     const getDataByHR = () => {
         getTotalNumberOfNoticesByHr()
             .then((response) => {
-                let pageCount = Math.ceil(response.data.response.count / 4)
+                let pageCount = Math.ceil(response.data.response.count / 12)
                 setNoOfPages(pageCount)
             })
         getNoticeBYHRController({page: currentPage})
@@ -54,7 +61,7 @@ function Notices({emp}) {
     const getDataByEMP = () => {
         getTotalNumberOfNoticesByEmp()
             .then((response) => {
-                const pageCount = response.data.response.count / 20
+                const pageCount = Math.ceil(response.data.response.count / 12)
                 setNoOfPages(pageCount)
             })
         getNoticeBYEMPController({page: currentPage, emp})

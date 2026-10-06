@@ -3,6 +3,7 @@ import { SideBar } from '../Components/index'
 import TopBar from '../Components/TopBar/TopBar'
 import { useRouter } from 'next/router';
 import SettingPopup from '../Components/Popups/Settings/SettingsPopup';
+import ActiveWorkingWidget from '../Components/ActiveWorkingTask/ActiveWorkingWidget';
 
 export default function Layout({ children }) {
     const [URL, setURL] = useState('');
@@ -24,6 +25,7 @@ export default function Layout({ children }) {
                     </div>
                 </div>
                 <SettingPopup open={openSettings} onClose={()=>setOpenSettings(false)} />
+                <ActiveWorkingWidget />
             </section>
         )
     else return children

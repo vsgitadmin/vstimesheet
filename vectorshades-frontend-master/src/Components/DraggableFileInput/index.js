@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
 function FileInput(props) {
     const [dragging, setDragging] = useState(false);
@@ -21,28 +22,17 @@ function FileInput(props) {
     }
 
     return (
-        <div
-            className={'draggable'}
+        <label
+            className={`${props.className || 'draggable'} ${dragging ? (props.activeClassName || '') : ''}`}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnter}
             onDrop={handleDrop}
-            style={{
-                border: '2px dotted black',
-                height: '150px',
-                borderRadius: '6px',
-                marginTop: '11px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
         >
-            <div style={{display:"flex",flexDirection:"column",gap:"5px"}} >
-                <input multiple={props.multi} type="file" onChange={event => {props.onFileSelect(event.target.files);event.target.value=''}} />
-                <p>Drag and drop files here, or click to select files</p>
-            </div>
-
-        </div>
+            <CloudUploadOutlinedIcon />
+            <p>Drag and drop files here, or <span className={props.browseClassName}>click to browse</span></p>
+            <input multiple={props.multi} type="file" onChange={event => { props.onFileSelect(event.target.files); event.target.value = '' }} />
+        </label>
     );
 }
 

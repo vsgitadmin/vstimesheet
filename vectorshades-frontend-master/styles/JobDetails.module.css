@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.page {
+  width: 100%;
+  padding: 30px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: grey;
+  font-size: 13px;
+  text-decoration: none;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.backLink:hover {
+  color: var(--redTheme);
+}
+
+.backLink svg {
+  font-size: 17px;
+}
+
+/* ---------- header card ---------- */
+
+.headerCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px 26px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.headerTitleRow h1 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.jobNoBadge {
+  color: #9a9a9a;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.statusChip svg {
+  font-size: 15px;
+}
+
+.statusAwarded {
+  background: #e6f6ec;
+  color: #1e9e52;
+}
+
+.statusPending {
+  background: #fdecec;
+  color: var(--redTheme);
+}
+
+.statusEstimate {
+  background: #f2f2f2;
+  color: #6b6b6b;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  background-color: var(--redTheme);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter .15s, transform .15s;
+}
+
+.primaryBtn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.primaryBtn svg {
+  font-size: 18px;
+}
+
+.secondaryBtn {
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  background: none;
+  border: 1.5px solid #e2e2e2;
+  color: #555;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+
+.secondaryBtn:hover {
+  background: #f7f7f7;
+}
+
+.iconBtn {
+  height: 2.5rem;
+  width: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fbeaea;
+  border: none;
+  color: var(--redTheme);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+
+.iconBtn:hover {
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.awardBtn {
+  composes: iconBtn;
+  background: #fff6e0;
+  color: #c98a00;
+}
+
+.awardBtn:hover {
+  background: #c98a00;
+  color: #fff;
+}
+
+.awardBtn[data-disabled="true"] {
+  background: #f2f2f2;
+  color: #b5b5b5;
+}
+
+.awardBtn[data-disabled="true"]:hover {
+  background: #ececec;
+  color: #999;
+}
+
+/* ---------- info card / view mode ---------- */
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px 26px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  margin-bottom: 22px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 18px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.infoItem label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #9a9a9a;
+  margin-bottom: 5px;
+}
+
+.infoItem p {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.infoItem p.muted {
+  color: #b5b5b5;
+  font-weight: 400;
+}
+
+.softwareTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.softwareTag {
+  background: #f2f2f2;
+  color: #555;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* ---------- edit form ---------- */
+
+.editFormGrid {
+  margin-top: 4px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 14px;
+}
+
+.editFormGroup {
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+
+.editFormGroup label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.editFormGroup input,
+.editFormGroup select {
+  font-size: 14px;
+  padding: 9px 10px;
+  border: 1.5px solid #e2e2e2;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+  background: #fafafa;
+  transition: border-color .15s, background .15s;
+}
+
+.editFormGroup input:focus,
+.editFormGroup select:focus {
+  border-color: var(--redTheme);
+  background: #fff;
+}
+
+.editActions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ---------- breakdown table (view mode, read-only) ---------- */
+
+.breakdownTableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.breakdownTable {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 720px;
+  font-size: 13px;
+}
+
+.breakdownTable th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #faf7f7;
+  color: #8a8a8a;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.breakdownTable td {
+  text-align: left;
+  padding: 10px 12px;
+  border-top: 1px solid #f2f2f2;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.breakdownTable tr.totalRow td {
+  border-top: 2px solid var(--redTheme);
+  font-weight: 700;
+  color: #111;
+}
+
+.emptyBreakdown {
+  padding: 26px 12px;
+  text-align: center;
+  color: #9a9a9a;
+  font-size: 13px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+
+  .headerCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editFormGroup {
+    width: 100%;
+  }
+}

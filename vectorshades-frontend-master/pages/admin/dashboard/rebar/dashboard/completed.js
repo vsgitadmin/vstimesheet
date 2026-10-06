@@ -17,6 +17,7 @@ import { filterAwardedJobsDashboardDynamicController } from '../../../../../src/
 import { animateScroll } from 'react-scroll'
 import Months from '../../../../../src/Constants/months'
 import { useRouter } from 'next/router';
+import { useViewMode } from '../../../../../src/Hooks/useViewMode';
 
 function Dashboard() {
     const [InitialData, setInitialData] = useState([])
@@ -24,7 +25,9 @@ function Dashboard() {
     const [editPopupData, seteditPopupData] = useState(null);
     const [Loading, setLoading] = useState(true);
     const [noOfPages, setNoOfPages] = useState(null)
-    const [componentView, setComponentView] = useState(false)
+    const [viewMode, setViewMode] = useViewMode()
+    const componentView = viewMode === 'grid'
+    const setComponentView = (isGrid) => setViewMode(isGrid ? 'grid' : 'list')
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [filterToggled, setfilterToggled] = useState(false)
     const [selectedMonth, setselectedMonth] = useState(0);

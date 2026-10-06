@@ -1,4 +1,4 @@
-import { DownloadDoneOutlined, DownloadOutlined, TrendingFlatOutlined } from '@mui/icons-material'
+import { AddCircleOutline, DownloadDoneOutlined, DownloadOutlined, TrendingFlatOutlined } from '@mui/icons-material'
 import styles from '../../Components/JobActivity/JobActivity.module.css'
 import style from '../../../styles/ActiveTasks.module.css'
 import ProfileImage from '../ProfileImage/Image'
@@ -39,8 +39,8 @@ const JobAnalytics = ({ perHour, submit, orders, update, deleteOrder, jobLinks, 
         <h1>Change Orders</h1>
       </div>
       <div className={styles.ja_top} >
-        <button onClick={() => setcreatePopup(true)}>CREATE</button>
-        <button style={coPath && {backgroundColor:'green'}} onClick={() => { createCOReportFunction() }}>{!coPath ? <SummarizeOutlinedIcon /> : <DownloadOutlined />} </button>
+        <button onClick={() => { setedit(false); setdefaultData({}); setcreatePopup(true) }}><AddCircleOutline style={{ fontSize: '17px', marginRight: '5px' }} />Create</button>
+        <button style={coPath ? { backgroundColor: '#1e9e52' } : undefined} onClick={() => { createCOReportFunction() }}>{!coPath ? <SummarizeOutlinedIcon style={{ fontSize: '18px' }} /> : <DownloadOutlined style={{ fontSize: '18px' }} />}</button>
       </div>
       <br />
       {/* <div className='job_months'>
@@ -68,40 +68,51 @@ const JobAnalytics = ({ perHour, submit, orders, update, deleteOrder, jobLinks, 
 
       <div className={styles.ja_table_main} >
         <table>
-          <tr>
-            <th>Order</th>
-            <th>Description</th>
-            <th>Estimated CO</th>
-            <th>Actual CO</th>
-            <th>$PH</th>
-            <th>Detailer</th>
-            <th>Revision</th>
-            <th>Billing</th>
-          </tr>
-          {orders.map((data) => {
-            return (
-              <tr>
-                <td>
-                  {data.name}
-                </td>
-                <td>{data.description}</td>
-                <td>{data.estimatedCOhours}</td>
-                <td>{data.actualCOhours}</td>
-                <td>{data.perHour}</td>
-                <td>{data.detailer.firstName + ' ' + data.detailer.lastName}</td>
-                <td>{data.revisionStatus ? 'Completed' : 'Pending'}</td>
-                <td>{data.readyToBill ? 'Billed' : 'Not Billed'}</td>
-                <td onClick={() => {
-                  setedit(true)
-                  setdefaultData(data)
-                  setcreatePopup(true)
-                }}><EditOutlinedIcon style={{ fontSize: "18px", cursor: "pointer" }} /></td>
-                <td onClick={() => {
-                  deleteOrder(data._id)
-                }}><DeleteOutlineOutlinedIcon style={{ fontSize: "18px", cursor: "pointer" }} /></td>
-              </tr>
-            )
-          })}
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Description</th>
+              <th>Estimated CO</th>
+              <th>Actual CO</th>
+              <th>$PH</th>
+              <th>Detailer</th>
+              <th>Revision</th>
+              <th>Billing</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.length === 0 && <tr className={styles.ja_empty_row}><td colSpan={10}>No change orders yet</td></tr>}
+            {orders.map((data) => {
+              return (
+                <tr key={data._id}>
+                  <td>
+                    {data.name}
+                  </td>
+                  <td>{data.description}</td>
+                  <td>{data.estimatedCOhours}</td>
+                  <td>{data.actualCOhours}</td>
+                  <td>{data.perHour}</td>
+                  <td>{data.detailer.firstName + ' ' + data.detailer.lastName}</td>
+                  <td><span className={`${styles.ja_chip} ${data.revisionStatus ? styles.ja_chip_positive : styles.ja_chip_pending}`}>{data.revisionStatus ? 'Completed' : 'Pending'}</span></td>
+                  <td><span className={`${styles.ja_chip} ${data.readyToBill ? styles.ja_chip_positive : styles.ja_chip_pending}`}>{data.readyToBill ? 'Billed' : 'Not Billed'}</span></td>
+                  <td>
+                    <span className={styles.ja_action_icon} onClick={() => {
+                      setedit(true)
+                      setdefaultData(data)
+                      setcreatePopup(true)
+                    }}><EditOutlinedIcon style={{ fontSize: "17px" }} /></span>
+                  </td>
+                  <td>
+                    <span className={styles.ja_action_icon} onClick={() => {
+                      deleteOrder(data._id)
+                    }}><DeleteOutlineOutlinedIcon style={{ fontSize: "17px" }} /></span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
       {!steel &&

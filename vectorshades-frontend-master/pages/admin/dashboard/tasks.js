@@ -1,29 +1,66 @@
 import { Pagination } from '@mui/material';
-import styles from '../../../styles/Project.module.css'
+import styles from '../../../styles/TasksPage.module.css'
 import ProfileImage from '../../../src/Components/ProfileImage/Image';
 import { useContext, useEffect, useState } from 'react';
 import { ParentStore } from '../../_app';
 import { useRouter } from 'next/router';
-import taskStyles from "../../../styles/ActiveTasks.module.css";
 import { getAssignedTasksController } from '../../../src/Controllers/projects';
-import { AlarmOn, BookOnlineOutlined, CheckBox, DataObjectOutlined, Person, Schedule } from '@mui/icons-material';
-import EventIcon from '@mui/icons-material/Event';        // <-- Import the MUI Event icon
-import { toast } from 'react-toastify';                  // optional: if you use toast elsewhere
+import { AssignmentOutlined, BookOnlineOutlined, DataObjectOutlined, Person, Schedule } from '@mui/icons-material';
+import AssignmentLateOutlinedIcon from '@mui/icons-material/AssignmentLateOutlined';
+import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
+import EventIcon from '@mui/icons-material/Event';
+import InboxIcon from '@mui/icons-material/Inbox';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
+import { toast } from 'react-toastify';
 import SelectUserInput from '../../../src/Components/SelectUserInput';
+import { useViewMode } from '../../../src/Hooks/useViewMode';
+
+const STAT_TILES = [
+    { key: 'totalTasks', label: 'Total Tasks', icon: <AssignmentLateOutlinedIcon />, color: '#555', bg: '#f0f0f0' },
+    { key: 'inProgress', label: 'In Progress', icon: <HourglassBottomOutlinedIcon />, color: '#2979ff', bg: 'rgba(41, 121, 255, 0.13)' },
+    { key: 'completed', label: 'Completed', icon: <CheckCircleOutlinedIcon />, color: '#2e9e5b', bg: 'rgba(46, 158, 91, 0.14)' },
+    { key: 'paused', label: 'Paused', icon: <PauseCircleOutlinedIcon />, color: '#e08600', bg: 'rgba(255, 152, 0, 0.15)' },
+    { key: 'review', label: 'Review', icon: <RateReviewOutlinedIcon />, color: '#9c27b0', bg: 'rgba(156, 39, 176, 0.13)' },
+    { key: 'queued', label: 'Queued', icon: <PendingActionsOutlinedIcon />, color: '#6b6b6b', bg: 'rgba(120, 120, 120, 0.14)' },
+    { key: 'overdue', label: 'Overdue', icon: <ReportProblemOutlinedIcon />, color: 'var(--redTheme)', bg: 'rgba(255, 99, 99, 0.14)' },
+]
+
+// Maps a task's raw status string to the matching pill/accent-bar style key.
+const getStatusKey = (status) => {
+    const s = (status || '').toLowerCase()
+    if (s === 'completed') return 'Completed'
+    if (s === 'in progress') return 'InProgress'
+    if (s === 'paused') return 'Paused'
+    if (s === 'review') return 'Review'
+    if (s === 'queued') return 'Queued'
+    if (s === 'due' || s === 'overdue') return 'Overdue'
+    return ''
+}
+
+const formatDate = (date) =>
+    date
+        ? new Date(date)
+            .toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+            .replace(",", "")
+        : '-';
 
 const Tasks = () => {
     const { ParentState } = useContext(ParentStore)
-    const [taskPopup, setTaskPopup] = useState(false);
     const [tasks, setTasks] = useState([]);
-    const [selectedID, setSelectedID] = useState(0);
     const [statusFilter, setstatusFilter] = useState()
     const [User, setUser] = useState()
     const [analytics, setanalytics] = useState({})
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState(1)
     const [pageCount, setPageCount] = useState(0)
-    const [selectedTask, setSelectedTask] = useState()
     const [Loading, setLoading] = useState(false)
+    const [viewMode, setViewMode] = useViewMode()
 
     const routeTask = (id, section, projectId) => { router.push({ pathname: `/admin/dashboard/projects/${projectId}`, query: { taskpopup: id, group: section } }); }
 
@@ -61,174 +98,175 @@ const Tasks = () => {
         fetchYourTasks(1)
     }, [statusFilter, User])
 
-    return (<>
-        <div className={styles.pro_container}>
-            <div className={styles.pro_left}>
-                <div className={styles.pro_top}>
-                    <div className="head">
-                        <h1>Tasks</h1>
-                    </div>
-                    <p className='mt_1 grey'>Access and manage all listed projects here</p>
-                </div>
-                <div className={taskStyles.tasks_boxes} style={{ marginLeft: '40px' }}>
-                    <div className='job_month_analytics'>
-                        <div className='job_analytics_title'>
-                            <h3>Total Tasks</h3>
-                            <h2>{analytics?.totalTasks ?? 0}</h2>
-                        </div>
-
-                        <div className='job_analytics_title'>
-                            <h3>In Progress</h3>
-                            <h2>{analytics?.inProgress ?? 0}</h2>
-                        </div>
-
-                        <div className='job_analytics_title'>
-                            <h3>Completed</h3>
-                            <h2>{analytics?.completed ?? 0}</h2>
-                        </div>
-
-                        {/* paused */}
-                        <div className='job_analytics_title'>
-                            <h3>Paused</h3>
-                            <h2>{analytics?.paused ?? 0}</h2>
-                        </div>
-
-                        {/* review */}
-                        <div className='job_analytics_title'>
-                            <h3>Review</h3>
-                            <h2>{analytics?.review ?? 0}</h2>
-                        </div>
-
-                        {/* queued */}
-                        <div className='job_analytics_title'>
-                            <h3>Queued</h3>
-                            <h2>{analytics?.queued ?? 0}</h2>
-                        </div>
-
-                        {/* overdue */}
-                        <div className='job_analytics_title'>
-                            <h3>Overdue</h3>
-                            <h2>{analytics?.overdue ?? 0}</h2>
-                        </div>
-                    </div>
-                    <div className={taskStyles.filter_main}>
-                        <select className='year_select_dropdown'
-                            onChange={(e) => setstatusFilter(e.target.value)}
-                        >
-                            <option disabled value={null}>Select Status</option>
-                            <option value={'In Progress'}>In Progress</option>
-                            <option value={'queued'}>Queue</option>
-                            <option value={'Paused'}>Paused</option>
-                            <option value={'Due'}>Overdue</option>
-                            <option value={'Review'}>Review</option>
-                            <option value={'Completed'}>Completed</option>
-                        </select>
-                        {ParentState?.auth?.role === 'SA' && <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <SelectUserInput returnUser={(user) => setUser(user._id)} label={'Assigned To'} />
-                        </div>}
-
-
-                    </div>
-                    {Loading && <div style={{ padding: 12 }}>Loading...</div>}
-                    {tasks.map((data, i) => {
-                        const { createdAt, updatedAt, taskIndex , projectName } = data || {};
-                        const formatDate = (date) =>
-                            new Date(date)
-                                .toLocaleDateString("en-US", {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                })
-                                .replace(",", "");
-                        const created_at = createdAt ? formatDate(createdAt) : '-';
-                        const updated_at = updatedAt ? formatDate(updatedAt) : '-';
-                        return (
-                            <div
-                                key={data?._id ?? i}
-                                onClick={() => {
-                                    setSelectedID(data._id);
-                                    setSelectedTask(data)
-                                    setTaskPopup(true);
-                                    routeTask(data._id, data.section, data.projectId)
-                                }}
-                                className={taskStyles.tasks_box}
-                            >
-                                <div className={taskStyles.tb_1}>
-                                    <div>
-                                        <ProfileImage size={'100%'} id={data.assignedTo} />
-                                    </div>
-                                </div>
-                                <div className={taskStyles.tb_3}>
-                                    <div className={taskStyles.tb_title} >
-                                        <h4>{data.name}</h4>
-                                        {data.completed === true &&
-                                            <div className={taskStyles.labels} >Completed</div>
-                                        }
-                                    </div>
-                                    <div className={taskStyles.tb_3_ac}>
-                                        <div>
-                                            <div>
-                                                <Person style={{ fill: "grey", fontSize: "18px" }} />
-                                                <h4>Assigned To</h4>
-                                            </div>
-                                            <h5>{data.assignedToName}</h5>
-                                        </div>
-
-                                        <div>
-                                            <div>
-                                                <Schedule
-                                                    style={{ fill: "grey", fontSize: "15px" }}
-                                                />
-                                            </div>
-                                            <h5>{data.allocatedHours}h</h5>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <AlarmOn style={{ fill: "grey", fontSize: "15px" }} />
-                                            </div>
-                                            <h5>{parseInt(data.completedHours) || 0}h</h5>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <DataObjectOutlined style={{ fill: "grey", fontSize: "16px" }} />
-                                            </div>
-                                            <h5>#{taskIndex}</h5>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <EventIcon style={{ fill: "grey", fontSize: "15px" }} />
-                                                <h4>Created At</h4>
-                                            </div>
-                                            <h5>{created_at}</h5>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <BookOnlineOutlined style={{ fill: "grey", fontSize: "15px" }} />
-                                                <h4>Project</h4>
-                                            </div>
-                                            <h5>{projectName.slice(0,17)}...</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={taskStyles.tb_5}>
-                                    <div>
-                                        <h5>{data.status}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-                <div className='project_pagination' >
-                    <Pagination
-                        count={pageCount}
-                        page={currentPage}
-                        onChange={(e, v) => fetchYourTasks(v)}
-                        className='pagination-center'
-                    />
-                </div>
+    const TaskMeta = ({ data, taskIndex, projectName, created_at }) => (
+        <div className={styles.metaGrid}>
+            <div className={styles.metaItem}>
+                <div className={styles.metaLabel}><Person style={{ fontSize: "14px" }} />Assigned To</div>
+                <h5>{data.assignedToName}</h5>
+            </div>
+            <div className={styles.metaItem}>
+                <div className={styles.metaLabel}><Schedule style={{ fontSize: "14px" }} />Allocated / Done</div>
+                <h5>{data.allocatedHours}h / {parseInt(data.completedHours) || 0}h</h5>
+            </div>
+            <div className={styles.metaItem}>
+                <div className={styles.metaLabel}><DataObjectOutlined style={{ fontSize: "14px" }} />Task ID</div>
+                <h5>#{taskIndex}</h5>
+            </div>
+            <div className={styles.metaItem}>
+                <div className={styles.metaLabel}><EventIcon style={{ fontSize: "14px" }} />Created At</div>
+                <h5>{created_at}</h5>
+            </div>
+            <div className={styles.metaItem} style={{ gridColumn: '1 / -1' }}>
+                <div className={styles.metaLabel}><BookOnlineOutlined style={{ fontSize: "14px" }} />Project</div>
+                <h5>{(projectName || '').slice(0, 30)}{(projectName || '').length > 30 ? '...' : ''}</h5>
             </div>
         </div>
+    )
+
+    return (<>
+        <section className={styles.page}>
+            <div className={styles.headerRow}>
+                <div className={styles.titleBlock}>
+                    <h1><span className={styles.titleIcon}><AssignmentOutlined /></span>Tasks</h1>
+                    <p className={styles.subtitle}>Access and manage all listed projects here</p>
+                </div>
+            </div>
+
+            <div className={styles.statsRow}>
+                {STAT_TILES.map((tile) => (
+                    <div className={styles.statTile} key={tile.key}>
+                        <span className={styles.statIcon} style={{ color: tile.color, background: tile.bg }}>{tile.icon}</span>
+                        <div>
+                            <h3>{tile.label}</h3>
+                            <h2>{analytics?.[tile.key] ?? 0}</h2>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className={styles.toolbar}>
+                <div className={styles.filterField}>
+                    <label>Status</label>
+                    <select
+                        className={styles.statusSelect}
+                        onChange={(e) => setstatusFilter(e.target.value)}
+                    >
+                        <option disabled value={null}>Select Status</option>
+                        <option value={'In Progress'}>In Progress</option>
+                        <option value={'queued'}>Queue</option>
+                        <option value={'Paused'}>Paused</option>
+                        <option value={'Due'}>Overdue</option>
+                        <option value={'Review'}>Review</option>
+                        <option value={'Completed'}>Completed</option>
+                    </select>
+                </div>
+
+                {ParentState?.auth?.role === 'SA' &&
+                    <div className={styles.assignedToBox}>
+                        <SelectUserInput returnUser={(user) => setUser(user._id)} label={'Assigned To'} />
+                    </div>
+                }
+
+                <div className={styles.viewToggle}>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('grid')}
+                        aria-label="Grid view"
+                    >
+                        <GridViewRoundedIcon />
+                    </button>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('list')}
+                        aria-label="List view"
+                    >
+                        <ViewListRoundedIcon />
+                    </button>
+                </div>
+            </div>
+
+            {Loading ? (
+                <div className={styles.loadingState}>Loading...</div>
+            ) : tasks.length > 0 ? (
+                viewMode === 'grid' ? (
+                    <div className={styles.cardsGrid}>
+                        {tasks.map((data, i) => {
+                            const { createdAt, taskIndex, projectName } = data || {};
+                            const created_at = formatDate(createdAt);
+                            const statusKey = getStatusKey(data.status);
+                            return (
+                                <div
+                                    className={`${styles.card} ${styles[`accent${statusKey}`] || ''}`}
+                                    key={data?._id ?? i}
+                                    onClick={() => routeTask(data._id, data.section, data.projectId)}
+                                >
+                                    <div className={styles.cardTop}>
+                                        <div className={styles.person}>
+                                            <ProfileImage size={45} id={data.assignedTo} />
+                                            <div>
+                                                <h4>{data.name}</h4>
+                                                <h5>{projectName}</h5>
+                                            </div>
+                                        </div>
+                                        <span className={`${styles.statusPill} ${styles[`status${statusKey}`] || ''}`}>{data.status}</span>
+                                    </div>
+                                    <TaskMeta data={data} taskIndex={taskIndex} projectName={projectName} created_at={created_at} />
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className={styles.rowsList}>
+                        {tasks.map((data, i) => {
+                            const { createdAt, taskIndex, projectName } = data || {};
+                            const created_at = formatDate(createdAt);
+                            const statusKey = getStatusKey(data.status);
+                            return (
+                                <div
+                                    className={`${styles.row} ${styles[`accent${statusKey}`] || ''}`}
+                                    key={data?._id ?? i}
+                                    onClick={() => routeTask(data._id, data.section, data.projectId)}
+                                >
+                                    <div className={styles.rowPerson}>
+                                        <ProfileImage size={44} id={data.assignedTo} />
+                                        <div>
+                                            <h4>{data.name}</h4>
+                                            <h5>{data.assignedToName}</h5>
+                                        </div>
+                                    </div>
+                                    <div className={styles.rowMeta}>
+                                        <span><Schedule style={{ fontSize: "15px" }} />{data.allocatedHours}h / {parseInt(data.completedHours) || 0}h</span>
+                                        <span><DataObjectOutlined style={{ fontSize: "15px" }} />#{taskIndex}</span>
+                                        <span><EventIcon style={{ fontSize: "15px" }} />{created_at}</span>
+                                        <span><BookOnlineOutlined style={{ fontSize: "15px" }} />{(projectName || '').slice(0, 17)}{(projectName || '').length > 17 ? '...' : ''}</span>
+                                    </div>
+                                    <div className={styles.rowRight}>
+                                        <span className={`${styles.statusPill} ${styles[`status${statusKey}`] || ''}`}>{data.status}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )
+            ) : (
+                <div className={styles.emptyState}>
+                    <InboxIcon />
+                    <h4>No tasks found</h4>
+                    <p>Try adjusting the status or assigned-to filter</p>
+                </div>
+            )}
+
+            <div className={styles.paginationWrap}>
+                <Pagination
+                    shape="rounded"
+                    count={pageCount}
+                    page={currentPage}
+                    onChange={(e, v) => fetchYourTasks(v)}
+                />
+            </div>
+        </section>
     </>)
 }
 

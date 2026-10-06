@@ -3,8 +3,11 @@ import { StyledTable, Flexspan, Blockspan, Avatar, Container } from './Table.Sty
 import Image from 'next/image'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useRouter } from 'next/router';
 
 function RebarAwardedDisplayTable({ data, enableEditPopup, navId, hideEdit }) {
+    const router = useRouter();
+
     return (
         <Container>
             <StyledTable>
@@ -55,6 +58,9 @@ function RebarAwardedDisplayTable({ data, enableEditPopup, navId, hideEdit }) {
                         <th>
                             Bid%
                         </th>
+                        <th>
+                            Notes
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,8 +69,14 @@ function RebarAwardedDisplayTable({ data, enableEditPopup, navId, hideEdit }) {
                         const date = new Date(data.date).toString().split(" ").slice(1, 3).join(" ")
                         const estimatedDate = new Date(jobData.estimate).toString().split(" ").slice(1, 3).join(" ")
                         return (
-                            <tr key={data._id} className={navId == data._id ? 'blinking' : ''}>
-                                {!hideEdit && <td onClick={() => enableEditPopup(data)} style={{ cursor: "pointer" }}>
+                            <tr
+                                key={data._id}
+                                className={navId == data._id ? 'blinking' : ''}
+                                onClick={() => data.projectId && router.push(`/admin/dashboard/projects/${data.projectId}`)}
+                                style={{ cursor: data.projectId ? "pointer" : undefined }}
+                                title={data.projectId ? "Open project" : undefined}
+                            >
+                                {!hideEdit && <td onClick={(e) => { e.stopPropagation(); enableEditPopup(data) }} style={{ cursor: "pointer" }}>
                                     <EditOutlinedIcon />
                                 </td>}
                                 <td>
@@ -140,6 +152,11 @@ function RebarAwardedDisplayTable({ data, enableEditPopup, navId, hideEdit }) {
                                 <td>
                                     <Blockspan>
                                         <Blockspan className='tb-md-title'>{data.jobData.total_breakpoints.bidPercentage}</Blockspan>
+                                    </Blockspan>
+                                </td>
+                                <td>
+                                    <Blockspan>
+                                        <Blockspan style={{ whiteSpace: "normal", display: "block", minWidth: "200px", maxWidth: "320px" }} className='tb-md-title'>{data.notes || ""}</Blockspan>
                                     </Blockspan>
                                 </td>
                             </tr>

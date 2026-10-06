@@ -1,53 +1,117 @@
-import React, {useState} from 'react';
-import styles from '../../../../styles/Hr.module.css';
-import {Visibility, Tune} from '@mui/icons-material';
-import {useRouter} from 'next/router';
+import React from 'react';
+import styles from '../../../../styles/ActivationRequests.module.css';
+import { useRouter } from 'next/router';
 import ProfileImage from '../../ProfileImage/Image';
-import NoDataFound from "../../NoDataFound/NoDataFound";
+import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
+import InboxIcon from '@mui/icons-material/Inbox';
+import { useViewMode } from '../../../Hooks/useViewMode';
 
-
-function ActivationRequest({props, onChange}) {
+function ActivationRequest({ props, onChange }) {
     const router = useRouter()
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const [viewMode, setViewMode] = useViewMode()
 
-    const noStyle = {
-        height: '76%', display: 'flex', alignItems: 'center'
-    }
-    return (<>
-            {/* search filter start */}
-            <div className={styles.ar_search_filter}>
-                <input placeholder='Search' type="text" onChange={onChange}/>
+    const formatDate = (date) => date.substring(0, date.indexOf('T'))
+
+    const StatusPill = ({ approved }) => (
+        <span className={`${styles.statusPill} ${approved ? styles.statusApproved : styles.statusPending}`}>
+            {approved ? 'Approved' : 'Pending'}
+        </span>
+    )
+
+    return (
+        <>
+            <div className={styles.headerRow}>
+                <div className={styles.titleBlock}>
+                    <h1><span className={styles.titleIcon}><HowToRegOutlinedIcon /></span>Activation Requests</h1>
+                    <p className={styles.subtitle}>Efficiently handle all account activation requests in one place</p>
+                </div>
             </div>
-            {/* search filter end */}
 
-            {/* activation request list start */}
-            <div className={styles.ar_list_container}>
-                {!props || props?.length === 0 && <div style={noStyle}><NoDataFound/></div>}
-                {props && props.length !== 0 && props.map((data, index) => {
-                    return (<div className={styles.ar_list_box} key={index}>
-                            <div className={styles.ar_profile}>
-                                <ProfileImage size={45} id={data.empId}/>
-                            </div>
-                            <div className={styles.ar_user_name_des}>
-                                <h3 style={{fontSize: '15px'}}>{data.empName}</h3>
-                                <h4>{data.designation}</h4>
-                                <h5>Requested on
-                                    - {data.requestedDate.substring(0, data.requestedDate.indexOf('T'))}</h5>
-                            </div>
-                            {data.approved && <div className={`${styles.ar_request_status} ${styles.status_pending}`}>
-                                <div>approved</div>
-                            </div>}
-                            <div className={styles.view_btn}>
-                                <button onClick={() => router.push(`/admin/dashboard/hr/activation/${data._id}`)}>
-                                    <Visibility style={{fontSize: "15px", fill: "white"}}/>VIEW
-                                </button>
-                            </div>
-                        </div>)
-                })}
+            <div className={styles.toolbar}>
+                <div className={styles.searchBox}>
+                    <SearchIcon />
+                    <input placeholder='Search' type="text" onChange={onChange} />
+                </div>
+                {props && <span className={styles.countBadge}><strong>{props.length}</strong> request{props.length === 1 ? '' : 's'}</span>}
+                <div className={styles.viewToggle}>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('grid')}
+                        aria-label="Grid view"
+                    >
+                        <GridViewRoundedIcon />
+                    </button>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('list')}
+                        aria-label="List view"
+                    >
+                        <ViewListRoundedIcon />
+                    </button>
+                </div>
             </div>
-            {/* activation request list end */}
 
-        </>)
+            {props && props.length > 0 ? (
+                viewMode === 'grid' ? (
+                    <div className={styles.cardsGrid}>
+                        {props.map((data, index) => (
+                            <div className={styles.card} key={data._id || index}>
+                                <div className={styles.cardTop}>
+                                    <div className={styles.person}>
+                                        <ProfileImage size={45} id={data.empId} />
+                                        <div>
+                                            <h4>{data.empName}</h4>
+                                            <h5>{data.designation}</h5>
+                                        </div>
+                                    </div>
+                                    <StatusPill approved={data.approved} />
+                                </div>
+                                <div className={styles.requestedOn}>Requested on - {formatDate(data.requestedDate)}</div>
+                                <div className={styles.cardFooter}>
+                                    <button type="button" className={styles.viewBtn} onClick={() => router.push(`/admin/dashboard/hr/activation/${data._id}`)}>
+                                        <VisibilityOutlinedIcon />VIEW
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className={styles.rowsList}>
+                        {props.map((data, index) => (
+                            <div className={styles.row} key={data._id || index}>
+                                <div className={styles.rowPerson}>
+                                    <ProfileImage size={40} id={data.empId} />
+                                    <div>
+                                        <h4>{data.empName}</h4>
+                                        <h5>{data.designation}</h5>
+                                    </div>
+                                </div>
+                                <div className={styles.rowRequestedOn}>Requested on - {formatDate(data.requestedDate)}</div>
+                                <div className={styles.rowRight}>
+                                    <StatusPill approved={data.approved} />
+                                    <button type="button" className={styles.viewBtn} onClick={() => router.push(`/admin/dashboard/hr/activation/${data._id}`)}>
+                                        <VisibilityOutlinedIcon />VIEW
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            ) : (
+                <div className={styles.emptyState}>
+                    <InboxIcon />
+                    <h4>No activation requests found</h4>
+                    <p>Try adjusting your search</p>
+                </div>
+            )}
+        </>
+    )
 }
 
 export default ActivationRequest;

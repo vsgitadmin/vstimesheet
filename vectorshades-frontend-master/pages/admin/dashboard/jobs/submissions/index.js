@@ -1,12 +1,18 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Table from '../../../../../src/Components/Jobs/Submission/index'
 import { toast } from 'react-toastify'
 import { getSubmissionsController, createSubmissionController, generateSubmissionReport } from '../../../../../src/Controllers/Jobs/index'
 import CreateSubmissionPopup from '../../../../../src/Components/Popups/Jobs/Submission'
 import SubmissionsFilter from '../../../../../src/Components/Filters/SubmissionsFilter'
-import { Close, Tune } from '@mui/icons-material'
-import { Box, Modal, Pagination } from '@mui/material'
+import { Tune } from '@mui/icons-material'
+import SearchIcon from '@mui/icons-material/Search'
+import PaymentsIcon from '@mui/icons-material/Payments'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import DownloadIcon from '@mui/icons-material/Download'
+import InboxIcon from '@mui/icons-material/Inbox'
+import { Pagination, Tooltip } from '@mui/material'
 import ReportView from '../../../../../src/Components/General/ReportView'
+import styles from '../../../../../styles/AwardedJobs.module.css'
 
 function Submissions({ project }) {
     const [Loading, setLoading] = useState(true)
@@ -14,9 +20,6 @@ function Submissions({ project }) {
     const [create, setCreate] = useState(false)
     const [filterToggled, setFilterToggled] = useState(false)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
-    const [openReportDownloadPopup, setOpenReportDownloadPopup] = useState(false)
-    const [downloadData, setDownloadData] = useState([])
-    const [downloadUrl, setDownloadUrl] = useState('')
     const [totalPages, setTotalPages] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [filters, setFilters] = useState({})
@@ -55,56 +58,68 @@ function Submissions({ project }) {
         }
     }
 
+    const clearAllFilters = () => {
+        setFilters({})
+        setFilterToggled(false)
+    }
 
     if (Loading) return <div className='loader_center_parent'><div className="lds-ring"><div></div><div></div><div></div><div></div></div></div>
 
-    else
-
-        return (
-            <section className='jobs'>
-                <div className="head">
-                    <h1>Submissions</h1>
+    return (
+        <section className={styles.page}>
+            <div className={styles.headerRow}>
+                <div className={styles.titleBlock}>
+                    <h1><span className={styles.titleIcon}><PaymentsIcon /></span>Submissions</h1>
+                    <p className={styles.subtitle}>Track and manage job billing submissions</p>
                 </div>
-                <p className='mt_1' >Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                {create && <CreateSubmissionPopup submit={createSubmission} closePopup={() => setCreate(false)} />}
-                <div className='crud'>
-                    <div style={{ display: "flex", alignItems: "center" }} >
-                        {!filterToggled ? <>
-                            <input type="text" placeholder='search submissions (location, project, client)' onChange={(e) => { if (e.target.value == '') { setSearch(undefined) } else { setSearch(e.target.value) } }} />
-                            <div style={{ backgroundColor: '#E64848', cursor: 'pointer', padding: '5px', borderRadius: '5px', width: "3rem", display: "flex", justifyContent: "center", alignItems: "center" }} onClick={() => setIsFilterOpen(!isFilterOpen)}><Tune style={{ fill: 'white' }} /></div></> :
-                            <div className='clear_filter' >
-                                <button onClick={() => { setFilters({}); setFilterToggled(false) }}>Clear filters</button>
-                                {!filterToggled && <button onClick={() => animateScroll.scrollToBottom(0)} >View Analytics</button>}
-                            </div>
-                        }
-                    </div>
-                    {project &&
-                        <div className='crud'>
-                            <div style={{ display: "flex", alignItems: "center" }} >
-                                <button onClick={() => setCreate(true)}>CREATE</button>
-                            </div>
+            </div>
+
+            {create && <CreateSubmissionPopup submit={createSubmission} closePopup={() => setCreate(false)} />}
+
+            <div className={styles.toolbar}>
+                <div className={styles.toolbarLeft}>
+                    {!filterToggled ? <>
+                        <div className={styles.searchBox}>
+                            <SearchIcon />
+                            <input type="text" placeholder='Search location, project, client...' onChange={(e) => setSearch(e.target.value === '' ? undefined : e.target.value)} />
                         </div>
-                    }
-                    <div className='crud'>
-                        <div style={{ display: "flex", alignItems: "center" }} >
-                            <button onClick={() => generateSubmissionReportFunction()}>GENERATE REPORT</button>
+                        <div className={styles.filterWrap}>
+                            <Tooltip title="Filters">
+                                <button type="button" className={styles.iconBtn} onClick={() => setIsFilterOpen(!isFilterOpen)} aria-label="Open filters">
+                                    <Tune />
+                                </button>
+                            </Tooltip>
+                            {isFilterOpen && <SubmissionsFilter
+                                render={(f) => { setIsFilterOpen(false); setFilters(f); setFilterToggled(true) }}
+                                setIsFilterOpen={setIsFilterOpen}
+                                onChange={() => { }}
+                            />}
                         </div>
-                    </div>
+                    </> : <button className={styles.clearBtn} onClick={clearAllFilters}>Clear filters</button>}
                 </div>
-                <div className='flt_main' >
-                    {isFilterOpen && <SubmissionsFilter render={(f) => { setIsFilterOpen(false); setFilters(f); setFilterToggled(true) }} setIsFilterOpen={setIsFilterOpen}
-                        onChange={() => { }}
-                    />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {project && <button className={styles.addBtn} onClick={() => setCreate(true)}><AddCircleOutlineIcon />Create</button>}
+                    <Tooltip title="Generate Report">
+                        <button type="button" className={styles.reportBtn} onClick={() => generateSubmissionReportFunction()}><DownloadIcon /></button>
+                    </Tooltip>
                 </div>
+            </div>
 
-
-                <Table onSortChange={(s) => setSortKey(s)} sortingHead={sortKey} data={submissions} projectView={project ? true : false} />
-                <div style={{ width: "100%", display: "flex", marginTop: '15px', justifyContent: "center" }}>
-                    <Pagination count={totalPages} shape="circular" onChange={(e, n) => setCurrentPage(n)} />
+            {submissions.length > 0 ? (
+                <div className={styles.tableWrap}>
+                    <Table onSortChange={(s) => setSortKey(s)} sortingHead={sortKey} data={submissions} projectView={project ? true : false} />
                 </div>
-                <ReportView ref={reportViewRef}/>
-            </section>
-        )
+            ) : (
+                <div className={styles.emptyMonth}><InboxIcon /><h4>No submissions found</h4><p>Try adjusting your search or filters</p></div>
+            )}
+
+            {totalPages > 1 && <div className={styles.paginationWrap}>
+                <Pagination count={totalPages} shape="rounded" onChange={(e, n) => setCurrentPage(n)} />
+            </div>}
+
+            <ReportView ref={reportViewRef} />
+        </section>
+    )
 }
 
 export default Submissions

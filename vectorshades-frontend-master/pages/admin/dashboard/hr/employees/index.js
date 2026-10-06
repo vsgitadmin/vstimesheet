@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Employees from '../../../../../src/Components/Hr/Employees/EmployeesList';
-import styles from '../../../../../styles/Hr.module.css';
+import styles from '../../../../../styles/EmployeesList.module.css';
 import { getAllemployeesController, getTotalNumberOfEmployeeController, filterEmployeeController, CreateEmployeeController, deleteEmployeeController } from '../../../../../src/Controllers/Employee/index';
-import CreateEmployee from '../../../../../src/Components/Popups/Hr/CreateEmployee';
 import { toast } from 'react-toastify'
-import Paging from '../../../../../src/Components/Pagination/Index';
 import EmployeeProfile from '../../../../../src/Components/Popups/Hr/EmployeeProfile'
 import Loader from '../../../../../src/Helpers/Loader';
 import { Pagination } from '@mui/material';
 import { filterEmployeesController } from '../../../../../src/Controllers/Filters/index'
+import { useViewMode } from '../../../../../src/Hooks/useViewMode'
 
 function Index() {
 
@@ -20,6 +19,7 @@ function Index() {
   const [selectedProfile, setSelectedProfile] = useState({})
   const [Loading, setLoading] = useState(true)
   const [Page, setPage] = useState(1)
+  const [viewMode, setViewMode] = useViewMode()
 
   useEffect(() => {
     InitialHydration()
@@ -102,16 +102,13 @@ function Index() {
 
   return (
     <>
-      <section className={styles.em_container} >
-        <h1>Employees</h1>
-        <p className='mt_1 grey' >View the list of employees and use the create button to add new members</p>
-        <Employees setOnFilters={setOnFilters} InitialHydration={InitialHydration} onFilter={OnFilters} render={renderEmployeesFilter} props={ListEmployees} onChange={filterEmployees} setProfileOpen={setProfileOpen} selectEmployee={selectEmployee} />
+      <section className={styles.page} >
+        <Employees setOnFilters={setOnFilters} InitialHydration={InitialHydration} onFilter={OnFilters} render={renderEmployeesFilter} props={ListEmployees} onChange={filterEmployees} setProfileOpen={setProfileOpen} selectEmployee={selectEmployee} viewMode={viewMode} setViewMode={setViewMode} />
         {noOfPages > 1 &&
-          <div className='awarded_jobs_pagination' >
-            <Pagination page={Page} count={noOfPages} className='pagination-center' onChange={onPageChange} />
+          <div className={styles.paginationWrap} >
+            <Pagination page={Page} count={noOfPages} shape="rounded" onChange={onPageChange} />
           </div>}
       </section>
-      {/* <CreateEmployee createEmp={addEmployee} /> */}
       <EmployeeProfile profileOpen={profileOpen} setProfileOpen={setProfileOpen} deleteEmp={deleteEmp} selectedEmp={selectedProfile} />
     </>
   )

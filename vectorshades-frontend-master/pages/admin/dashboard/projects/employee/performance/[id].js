@@ -27,6 +27,7 @@ function EmployeePerformance({ id }) {
             .catch((err) => {
                 console.log(err)
                 toast.error("error fetching the data")
+                setLoading(false)
             })
     }
 
@@ -39,7 +40,7 @@ function EmployeePerformance({ id }) {
     if (Loading) return <Loader />
     else return (
         <>
-            <EmployeePerformanceComponent employee={'ff'} metricType={metricType} metricToggle={toggleMetric} adminView={id ? true : false} Performance={Performance} Role={metricType === 'hourly' ? 'EMP' : 'SA'}/>
+            <EmployeePerformanceComponent employee={'ff'} metricType={metricType} metricToggle={toggleMetric} adminView={id ? true : false} Performance={Performance} Role={Role}/>
         </>
     )
 }

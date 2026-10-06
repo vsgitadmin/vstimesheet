@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { getAllActivationReq, getTotalNumberOfActivationRequestController, filterActivationReqController } from '../../../../src/Controllers/Hr/index'
 import ActivationRequest from '../../../../src/Components/Hr/ActivationRequest/ActivationRequest';
-import styles from '../../../../styles/Hr.module.css'
-import Paging from '../../../../src/Components/Pagination/Index';
+import styles from '../../../../styles/ActivationRequests.module.css'
 import Loader from '../../../../src/Helpers/Loader';
-import NoDataFound from '../../../../src/Components/NoDataFound/NoDataFound';
 import { Pagination } from '@mui/material';
 
 function HRRequests() {
@@ -16,7 +14,7 @@ function HRRequests() {
 
     useEffect(() => {
         getTotalNumberOfActivationRequestController().then((count) => {
-            let pageCount = Math.ceil (count.data.response.total / 6)
+            let pageCount = Math.ceil (count.data.response.total / 15)
             setNoOfPages(pageCount)
         }).then(() => setLoading(false))
     }, []);
@@ -34,13 +32,6 @@ function HRRequests() {
 
     const onPageChange = (event, value) => {
         setCurrentPage(value)
-    }
-
-
-    const noStyle = {
-        height: '76%',
-        display: 'flex',
-        alignItems: 'center'
     }
 
 
@@ -63,14 +54,11 @@ function HRRequests() {
 
     return (
         <>
-            <section className={styles.ar_container} >
-                <h1>Activation Requests</h1>
-                <p className='mt_1 grey' >Efficiently handle all account activation requests in one place</p>
+            <section className={styles.page} >
                 <ActivationRequest props={Actrequest} onChange={filterActivationrequest} />
-                {/*{Actrequest.length > 0 ?: <div style={noStyle}><NoDataFound /></div>}*/}
-                <div className='awarded_jobs_pagination' >
-                    {!searching&&<Pagination count={noOfPages} className='pagination-center' onChange={onPageChange} />}
-                </div>
+                {!searching && <div className={styles.paginationWrap} >
+                    <Pagination count={noOfPages} shape="rounded" onChange={onPageChange} />
+                </div>}
             </section>
         </>
     )

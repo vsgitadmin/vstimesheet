@@ -1,0 +1,29 @@
+# Environment files - never commit secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+.next/
+**/.next/
+
+# Backups and dumps
+*.archive.gz
+*.bak
+**/*.bak
+mongodb-dump/
+backups/
+**/backups/
+
+# Stray/system files
+**/.DS_Store
+filesSystem/
+
+# Large/unrelated folders sitting at repo root
+staging/
+nginx-fix/

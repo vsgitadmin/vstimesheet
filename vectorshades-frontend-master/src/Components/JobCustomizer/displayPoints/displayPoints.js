@@ -3,6 +3,7 @@ import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
 import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { general } from "../../../Helpers/index"
+import styles from '../JobCustomizer.module.css'
 
 function DisplayPoints({ data: { point, hours, cost, bid_hour, bid, total_cost, id, percent, eng_fee }, data, update, index, remove }) {
   const [edit, setedit] = useState(false)
@@ -32,36 +33,36 @@ function DisplayPoints({ data: { point, hours, cost, bid_hour, bid, total_cost, 
   const updatePoint = () => { update(index, objectValue, cacheData); setedit(false) }
 
   return (
-    <tr className={point == "Total" && 'total_row'}>
+    <tr className={`${styles.row} ${point == "Total" ? styles.totalRow : ''}`}>
       <th>
         {point !== "Total" &&
-          <div style={{ display: "flex" }}>
+          <div className={styles.rowActions}>
             {!edit ?
-              <div onClick={() => remove(id)}>
+              <span className={styles.iconBtn} onClick={() => remove(id)}>
                 <HighlightOffRoundedIcon />
-              </div> :
-              <div onClick={updatePoint}>
+              </span> :
+              <span className={`${styles.iconBtn} ${styles.iconBtnPositive}`} onClick={updatePoint}>
                 <CheckCircleOutlineRoundedIcon />
-              </div>
+              </span>
             }
-            <div onClick={() => { sessionStorage.setItem("cach_value", JSON.stringify(data)); setedit((e) => !e) }}>
+            <span className={styles.iconBtn} onClick={() => { sessionStorage.setItem("cach_value", JSON.stringify(data)); setedit((e) => !e) }}>
               <BorderColorRoundedIcon />
-            </div>
+            </span>
           </div>
         }
-        {point == "Total" && <div onClick={() => remove(id)}>
+        {point == "Total" && <span className={styles.iconBtn} onClick={() => remove(id)}>
           <HighlightOffRoundedIcon />
-        </div>}
+        </span>}
 
 
       </th>
-      <th>{edit ? <input type="text" placeholder='point name' name='point' onChange={updateInputValue} defaultValue={point} /> : point}</th>
-      <th>{edit ? <input type="number" placeholder='hours worked' name='hours' onChange={updateInputValue} defaultValue={hours} /> : hours}</th>
-      <th>{edit ? <input type="number" value={16} /> : cost}</th>
-      <th>{edit ? <input type="number" placeholder='cost' name='total_cost' onChange={updateInputValue} value={TotalCost} /> : total_cost}</th>
-      <th>{edit ? <input type="number" placeholder='0' name='bid' onChange={updateInputValue} defaultValue={bid} /> : bid}</th>
-      <th>{edit ? <input type="number" placeholder='0' name='bid_hour' onChange={updateInputValue} value={bidCost} /> : bid_hour}</th>
-      <th>{edit ? <input type="number" placeholder='0' name='eng_fee' onChange={updateInputValue} value={eng_fee} /> : eng_fee}</th>
+      <th>{edit ? <input className={styles.cellInput} type="text" placeholder='point name' name='point' onChange={updateInputValue} defaultValue={point} /> : point}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" placeholder='hours worked' name='hours' onChange={updateInputValue} defaultValue={hours} /> : hours}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" value={16} readOnly /> : cost}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" placeholder='cost' name='total_cost' onChange={updateInputValue} value={TotalCost} readOnly /> : total_cost}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" placeholder='0' name='bid' onChange={updateInputValue} defaultValue={bid} /> : bid}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" placeholder='0' name='bid_hour' onChange={updateInputValue} value={bidCost} readOnly /> : bid_hour}</th>
+      <th>{edit ? <input className={styles.cellInput} type="number" placeholder='0' name='eng_fee' onChange={updateInputValue} value={eng_fee} /> : eng_fee}</th>
       <th>{percent}</th>
     </tr>
   )

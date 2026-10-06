@@ -1,0 +1,451 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.page {
+  width: 100%;
+  padding: 30px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---------- header ---------- */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.backBtn {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #e9e9e9;
+  background: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #555;
+  margin-top: 2px;
+}
+
+.backBtn:hover {
+  border-color: var(--redTheme);
+  color: var(--redTheme);
+}
+
+.titleBlock h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.titleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: grey;
+}
+
+.viewerAlert {
+  background: rgba(217, 138, 0, 0.12);
+  border-radius: 10px;
+  padding: 8px 16px;
+  color: #d98a00;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* ---------- dropzone ---------- */
+
+.dropzone {
+  margin-top: 20px;
+  border: 2px dashed #dcdcdc;
+  border-radius: 14px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  text-align: center;
+}
+
+.dropzone:hover, .dropzoneActive {
+  border-color: var(--redTheme);
+  background: rgba(230, 72, 72, 0.04);
+}
+
+.dropzone svg {
+  font-size: 30px;
+  color: var(--redTheme);
+}
+
+.dropzone p {
+  font-size: 13.5px;
+  color: #666;
+}
+
+.dropzone input {
+  display: none;
+}
+
+.dropzoneBrowse {
+  color: var(--redTheme);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- upload progress ---------- */
+
+.uploadCard {
+  margin-top: 16px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+}
+
+.uploadTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.uploadTop p:first-child {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.uploadTop p:last-child {
+  font-size: 12px;
+  color: grey;
+}
+
+.uploadPercent {
+  font-weight: 700;
+  color: var(--redTheme);
+}
+
+.progress {
+  margin-top: 10px;
+  width: 100%;
+  height: 8px;
+  border-radius: 6px;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.progress_bar {
+  height: 100%;
+  border-radius: 6px;
+  background: var(--redTheme);
+  transition: width .2s;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9a9a9a;
+  font-size: 20px;
+}
+
+.searchBox input {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px 10px 38px;
+  border-radius: 10px;
+  border: 1.5px solid #e9e9e9;
+  outline: none;
+  height: 2.6rem;
+  background: #fff;
+  transition: border-color .15s;
+}
+
+.searchBox input:focus {
+  border-color: var(--redTheme);
+}
+
+.viewToggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.viewToggleBtn {
+  height: 2.2rem;
+  width: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #8a8a8a;
+  transition: background .15s, color .15s;
+}
+
+.viewToggleBtn svg {
+  font-size: 20px;
+}
+
+.viewToggleBtnActive {
+  background: #fff;
+  color: var(--redTheme);
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px;
+}
+
+/* ---------- tags ---------- */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+  background: rgba(46, 158, 91, 0.14);
+  color: #2e9e5b;
+  margin-top: 4px;
+}
+
+/* ---------- grid view ---------- */
+
+.cardsGrid {
+  margin-top: 20px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.fileName {
+  font-size: 13.5px;
+  font-weight: 700;
+  word-break: break-word;
+  flex: 1;
+  min-width: 0;
+}
+
+.fileMeta {
+  font-size: 11.5px;
+  color: grey;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cardFooter {
+  padding-top: 10px;
+  border-top: 1px solid #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.iconBtn {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #999;
+  transition: background .15s, color .15s;
+}
+
+.iconBtn:hover {
+  background: #f5f5f5;
+  color: var(--redTheme);
+}
+
+.iconBtn svg {
+  font-size: 18px;
+}
+
+.iconBtnPinned {
+  color: var(--redTheme);
+}
+
+/* ---------- list (table) view ---------- */
+
+.tableWrap {
+  margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #999;
+  padding: 14px 16px;
+  border-bottom: 1.5px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f4f4f4;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: #fafafa;
+}
+
+.tableFile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.tableActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+/* ---------- empty state ---------- */
+
+.emptyState {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 50px 20px;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1.5px dashed #e6e6e6;
+  color: #9a9a9a;
+  text-align: center;
+}
+
+.emptyState svg {
+  font-size: 30px;
+  color: #cfcfcf;
+  margin-bottom: 6px;
+}
+
+.emptyState h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+}
+
+/* ---------- pagination ---------- */
+
+.paginationWrap {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+
+  .searchBox {
+    max-width: none;
+    width: 100%;
+  }
+}

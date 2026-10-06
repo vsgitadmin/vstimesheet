@@ -1,6 +1,6 @@
-import { Add, ArrowBackIos, ArrowForwardIos, Delete, Download, FiberManualRecord, InsertDriveFile, IosShare, PushPin, ReplyAll, Search, Upload } from '@mui/icons-material'
-import { Avatar, Modal, Pagination, Tooltip } from '@mui/material'
-import styles from '../../../styles/Cloud.module.css'
+import { Tooltip } from '@mui/material'
+import { Modal } from '@mui/material'
+import styles from '../../../styles/CloudPage.module.css'
 import FileInput from '../DraggableFileInput'
 import Loader from '../Loader/loader'
 import FileIcon from '../FileIcon/FileIcon'
@@ -10,11 +10,36 @@ import { useEffect, useState } from 'react'
 import AsyncLoop from '../../Helpers/General/AsyncLoop'
 import { toast } from "react-toastify";
 import PresignedLink from "../S3/PresignedLink";
+import ComputerOutlinedIcon from '@mui/icons-material/ComputerOutlined'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import SearchIcon from '@mui/icons-material/Search'
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined'
+import ReplyAllIcon from '@mui/icons-material/ReplyAll'
+import InboxIcon from '@mui/icons-material/Inbox'
+import { useViewMode } from '../../Hooks/useViewMode'
 
 const Cloud = ({ viewer, data, loading, loadFile, forwardFile, deleteFunc, search, typeOfCloud, pinFunc, isCloud, setCloudSwitch, file, upload, uploading, getCloudObject, currentPage }) => {
   const [showAdminCloudPopup, setShowAdminCloudPopup] = useState(false)
   const [selectedFileId, setSelectedFileId] = useState('')
+  const [viewMode, setViewMode] = useViewMode()
   const [timeOutString, setTimeOutString] = useState('10:00')
+
+  useEffect(() => {
+    // when SA is viewing someone else's cloud, count down the token expiry
+    if (!viewer) return undefined
+    const timer = setInterval(() => {
+      const remaining_seconds = new Date(viewer.expiresIn).getTime() - new Date().getTime()
+      const minutesDiff = Math.floor((remaining_seconds % (1000 * 3600)) / (1000 * 60));
+      const secondsDiff = Math.floor((remaining_seconds % (1000 * 60)) / 1000);
+      setTimeOutString(`${minutesDiff}:${secondsDiff}`)
+      if (remaining_seconds < 0) clearInterval(timer)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [viewer])
 
   function handleFileSelect(files) {
     AsyncLoop(files, async (f) => {
@@ -33,146 +58,170 @@ const Cloud = ({ viewer, data, loading, loadFile, forwardFile, deleteFunc, searc
     setShowAdminCloudPopup(false)
   }
 
-  const timerHandler = () => {
-    // when SA is viewing other's cloud, the token expiry time out is handled here
-    let timer = setInterval(() => {
-      let remaining_seconds = new Date(viewer.expiresIn).getTime() - new Date().getTime()
-      var minutesDiff = Math.floor((remaining_seconds % (1000 * 3600)) / (1000 * 60));
-      var secondsDiff = Math.floor((remaining_seconds % (1000 * 60)) / 1000);
-      setTimeOutString(`${minutesDiff}:${secondsDiff}`)
-      remaining_seconds < 0 && clearTimeout(timer)
-    }, 1000)
+  const openForward = (id) => {
+    setSelectedFileId(id)
+    setShowAdminCloudPopup(true)
   }
 
   if (loading) return <Loader />
   else return (
     <>
-      {viewer && timerHandler()}
-      {<Modal open={showAdminCloudPopup} onClose={() => setShowAdminCloudPopup(false)} ><AddMemberPopup title={"Select users to forward"} subTitle={""} multiSelect={true} submit={handleForwardSubmit} /></Modal>}
-      <div className={`${styles.cloud_container}`} >
-        {isCloud && <div onClick={() => setCloudSwitch(false)} className={styles.cloud_back} >
-          <ArrowBackIos />
-        </div>}
-        {<div className={`${styles.cloud_top}  ${viewer && styles.cloud_alert}`}>
-          <div className={styles.left}>
-            <h2>{!viewer ? "Files And Assets" : `You are viewing ${viewer.firstName} ${viewer.lastName}`}</h2>
-            <p>{!viewer ? "Documents and attachements that have been uploaded as part of your projects" : `Token will expire in ${timeOutString}`}</p>
-          </div>
-        </div>}
-        {!viewer && <FileInput onFileSelect={handleFileSelect} />}
-        {/* <div className={styles.cloud_uploading}>
-          <div className={styles.top}>
-            <img src='https://cdn-icons-png.flaticon.com/512/5968/5968517.png' />
-            <div>
-              <p>Dashboard prototype requirements.pdf</p>
-              <p>1.6 MB</p>
+      <Modal open={showAdminCloudPopup} onClose={() => setShowAdminCloudPopup(false)} ><AddMemberPopup title={"Select users to forward"} subTitle={""} multiSelect={true} submit={handleForwardSubmit} /></Modal>
+      <div className={styles.page} >
+        <div className={styles.headerRow}>
+          <div className={styles.headerLeft}>
+            {isCloud && <button type="button" className={styles.backBtn} onClick={() => setCloudSwitch(false)} aria-label="Back"><ArrowBackIosNewIcon style={{ fontSize: '16px' }} /></button>}
+            <div className={styles.titleBlock}>
+              <h1><span className={styles.titleIcon}><ComputerOutlinedIcon /></span>{!viewer ? "Files And Assets" : `You are viewing ${viewer.firstName} ${viewer.lastName}`}</h1>
+              <p className={styles.subtitle}>{!viewer ? "Documents and attachments that have been uploaded as part of your projects" : `Token will expire in ${timeOutString}`}</p>
             </div>
           </div>
-          <div className={styles.bottom}>
-            <div className={styles.progress}  >
-              <div className={styles.progress_bar} style={{ width: "30%" }}></div>
+          {viewer && <span className={styles.viewerAlert}>Session active</span>}
+        </div>
+
+        {!viewer && <FileInput className={styles.dropzone} activeClassName={styles.dropzoneActive} browseClassName={styles.dropzoneBrowse} onFileSelect={handleFileSelect} />}
+
+        {uploading && file &&
+          <div className={styles.uploadCard}>
+            <div className={styles.uploadTop}>
+              <p>{file.name} <span style={{ fontWeight: 400, color: 'grey' }}>({(file.size / (1000 * 1000)).toFixed(2)} Mb)</span></p>
+              <p className={styles.uploadPercent}>{upload}%</p>
             </div>
-          </div>
-        </div> */}
-
-        {!viewer && <div className={styles.attached_files} >
-          <div className={styles.title} >
-            <h3>Attached files</h3>
-            <p>Files and assets that have been attached to this project</p>
-          </div>
-        </div>}
-
-        {uploading &&
-          <div className={styles.cloud_uploading}>
-            <div className={styles.top}>
-              <div>
-                <div>
-                  <p>{file.name}</p>
-                  <p>{(file.size / (1000 * 1000)).toFixed(2)} Mb</p>
-                </div>
-              </div>
-              <div>
-                {upload}%
-              </div>
-            </div>
-
-            <div className={styles.bottom}>
-              <div className={styles.progress}  >
-                <div className={styles.progress_bar} style={{ width: `${upload}%` }}></div>
-              </div>
+            <div className={styles.progress}>
+              <div className={styles.progress_bar} style={{ width: `${upload}%` }}></div>
             </div>
           </div>
         }
 
-        <div className={styles.menu_search} >
-          <div className={styles.right}>
-            <Search />
+        <div className={styles.toolbar}>
+          <div className={styles.searchBox}>
+            <SearchIcon />
             <input placeholder='Search' type="text" onChange={search} />
           </div>
+          <div className={styles.viewToggle}>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+              onClick={() => setViewMode('grid')}
+              aria-label="Grid view"
+            >
+              <GridViewRoundedIcon />
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+              onClick={() => setViewMode('list')}
+              aria-label="List view"
+            >
+              <ViewListRoundedIcon />
+            </button>
+          </div>
         </div>
-        <table className={styles.table} >
-          <tr>
-            <th><div>SL NO</div></th>
-            <th>File name</th>
-            <th>File size</th>
-            <th>Date uploaded</th>
-            <th>Last updated</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            {typeOfCloud == "projectCloud" && <th></th>}
-          </tr>
-          {data?.map((item, index) => {
-            const fileExtension = item.fileName.split('.').pop()
-            return (
-              <tr>
-                <td><div>{index + 1}</div></td>
-                <td>
-                  <div>
-                    <FileIcon fileType={fileExtension} />
-                    {/* <FileIcon extension={} {...defaultStyles.docx}   alt="" /> */}
-                    <div>
-                      <p>{item.fileName} {item.forwarded && <div className='relaxed' >Forwarded by {item.forwardedAttributes.employeeName}</div>} {item.bulk && <div className='relaxed' >Bulk batch : {item.batch}</div>} </p>
-                      {/* <p>{item.attributes.size}</p> */}
+
+        {data?.length > 0 ? (
+          viewMode === 'grid' ? (
+            <div className={styles.cardsGrid}>
+              {data.map((item, index) => {
+                const fileExtension = item.fileName.split('.').pop()
+                return (
+                  <div className={styles.card} key={item._id || index}>
+                    <div className={styles.cardTop}>
+                      <FileIcon fileType={fileExtension} />
+                      <div className={styles.fileName}>
+                        {item.fileName}
+                        {item.forwarded && <div className={styles.tag}>Forwarded by {item.forwardedAttributes.employeeName}</div>}
+                        {item.bulk && <div className={styles.tag}>Bulk batch : {item.batch}</div>}
+                      </div>
+                    </div>
+                    <div className={styles.fileMeta}>
+                      <span>{bytes(item.attributes.size)}</span>
+                      <span>Uploaded {new Date(item.createdAt).toDateString()}</span>
+                    </div>
+                    <div className={styles.cardFooter}>
+                      {typeOfCloud == "projectCloud" &&
+                        <Tooltip title={item.pinned ? "Unpin" : "Pin"}>
+                          <button type="button" className={`${styles.iconBtn} ${item.pinned ? styles.iconBtnPinned : ''}`} onClick={() => pinFunc(item._id)}><PushPinOutlinedIcon /></button>
+                        </Tooltip>
+                      }
+                      <Tooltip title="Forward">
+                        <button type="button" className={styles.iconBtn} onClick={() => openForward(item._id)}><ReplyAllIcon /></button>
+                      </Tooltip>
+                      <Tooltip title="Download">
+                        <PresignedLink s3Ref={item.attributes?.key || item.location} target="_blank" download rel="noreferrer">
+                          <span className={styles.iconBtn}><FileDownloadOutlinedIcon /></span>
+                        </PresignedLink>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <button type="button" className={styles.iconBtn} onClick={() => deleteFunc(item)}><DeleteOutlineOutlinedIcon /></button>
+                      </Tooltip>
                     </div>
                   </div>
-                </td>
-                <td>{bytes(item.attributes.size)}</td>
-                <td>{new Date(item.createdAt).toDateString()}</td>
-                <td>{new Date(item.updatedAt).toDateString()}</td>
-                <td>
-                  <Tooltip title="Delete" >
-                    <Delete onClick={() => deleteFunc(item)} />
-                  </Tooltip>
-                </td>
-                {typeOfCloud == "projectCloud" &&
-                  <td>
-                    <Tooltip title={item.pinned ? "Unpin" : "Pin"}  >
-                      <PushPin onClick={() => pinFunc(item._id)} />
-                    </Tooltip>
-                  </td>
-                }
-                <td>
-                  <PresignedLink s3Ref={item.attributes?.key || item.location} target="_blank" download rel="noreferrer">
-                    <Tooltip title="Download" >
-                      <Download />
-                    </Tooltip>
-                  </PresignedLink>
-                </td>
-                <td onClick={() => {
-                  setSelectedFileId(item._id)
-                  setShowAdminCloudPopup(true)
-                }}>
-                  <ReplyAll />
-                </td>
-              </tr>
-            )
-          })}
-        </table>
-
-        {/*<div className='awarded_jobs_pagination'>*/}
-        {/*  <Pagination count={5} className='pagination-center'/>*/}
-        {/*</div>*/}
+                )
+              })}
+            </div>
+          ) : (
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>File name</th>
+                    <th>File size</th>
+                    <th>Date uploaded</th>
+                    <th>Last updated</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => {
+                    const fileExtension = item.fileName.split('.').pop()
+                    return (
+                      <tr key={item._id || index}>
+                        <td>
+                          <div className={styles.tableFile}>
+                            <FileIcon fileType={fileExtension} />
+                            <div>
+                              {item.fileName}
+                              {item.forwarded && <div className={styles.tag}>Forwarded by {item.forwardedAttributes.employeeName}</div>}
+                              {item.bulk && <div className={styles.tag}>Bulk batch : {item.batch}</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td>{bytes(item.attributes.size)}</td>
+                        <td>{new Date(item.createdAt).toDateString()}</td>
+                        <td>{new Date(item.updatedAt).toDateString()}</td>
+                        <td>
+                          <div className={styles.tableActions}>
+                            {typeOfCloud == "projectCloud" &&
+                              <Tooltip title={item.pinned ? "Unpin" : "Pin"}>
+                                <button type="button" className={`${styles.iconBtn} ${item.pinned ? styles.iconBtnPinned : ''}`} onClick={() => pinFunc(item._id)}><PushPinOutlinedIcon /></button>
+                              </Tooltip>
+                            }
+                            <Tooltip title="Forward">
+                              <button type="button" className={styles.iconBtn} onClick={() => openForward(item._id)}><ReplyAllIcon /></button>
+                            </Tooltip>
+                            <Tooltip title="Download">
+                              <PresignedLink s3Ref={item.attributes?.key || item.location} target="_blank" download rel="noreferrer">
+                                <span className={styles.iconBtn}><FileDownloadOutlinedIcon /></span>
+                              </PresignedLink>
+                            </Tooltip>
+                            <Tooltip title="Delete">
+                              <button type="button" className={styles.iconBtn} onClick={() => deleteFunc(item)}><DeleteOutlineOutlinedIcon /></button>
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )
+        ) : (
+          <div className={styles.emptyState}>
+            <InboxIcon />
+            <h4>No files found</h4>
+          </div>
+        )}
       </div>
     </>
   )

@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import {
-    ArrowDropDown,
     DeleteOutline,
-    MoreVert,
     Refresh,
-    ViewAgenda,
-    Window,
 } from "@mui/icons-material";
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined'
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
+import { useViewMode } from '../../Hooks/useViewMode'
 import { toast } from "react-toastify";
-import styles from "../../../styles/Reports.module.css";
+import styles from "../../../styles/ReportsPage.module.css";
 import {
     getAllReportsController,
     deleteReportsController,
@@ -20,7 +24,6 @@ import {
 import Loader from "../Loader/loader";
 import CreateReportPopup from "../Popups/General/CreateReportPopup";
 import PresetsPopup from "../Popups/General/PresetReportsPopup";
-import { BACKEND_URL } from "../../Constants/Servers";
 import { Pagination } from "@mui/material";
 import { fetchCSVData } from "../../Helpers/Functions/Api Functions/readFileData";
 import AnchorReportView from "../General/AnchorReportView";
@@ -34,6 +37,7 @@ const Reports = () => {
     const [ReportData, setReportData] = useState(null)
     const [link, setlink] = useState()
     const [openPresetsPopup, setOpenPresetsPopup] = useState(false);
+    const [viewMode, setViewMode] = useViewMode()
 
     useEffect(() => {
         getNumberOfReports()
@@ -112,11 +116,16 @@ const Reports = () => {
         fetchReports(value)
     }
 
+    const formatDate = (createdAt) => {
+        const date = new Date(createdAt);
+        return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    }
+
     if (Loading) return <Loader />;
     else
         return (
             <>
-                <div className={styles.rp_container}>
+                <div className={styles.page}>
                     <CreateReportPopup
                         createReportPopup={createReportPopup}
                         setCreateReportPopup={setCreateReportPopup}
@@ -128,68 +137,104 @@ const Reports = () => {
                         setOpen={setOpenPresetsPopup}
                         clientList={["Client 1", "Client 2", "Client 3"]}
                     />
-                    <div className={styles.rp_bottom}>
-                        <div className={styles.rp_title}>
-                            <h2>Reports</h2>
-                        </div>
-                        <p className='mt_1 grey' >Effortlessly create comprehensive reports and download them with ease</p>
-                        <div className={styles.rp_filter}>
-                            <div>
-                                {/* <span>Sort by:</span> Type <ArrowDropDown /> */}
-                            </div>
-                            <div className={styles.rp_create_btn}>
-                                <button onClick={() => setCreateReportPopup(true)}>
-                                    CREATE
-                                </button>
-                                <button onClick={() => setOpenPresetsPopup(true)}>
-                                    PRESETS
-                                </button>
-                            </div>
+
+                    <div className={styles.headerRow}>
+                        <div className={styles.titleBlock}>
+                            <h1><span className={styles.titleIcon}><DescriptionOutlinedIcon /></span>Reports</h1>
+                            <p className={styles.subtitle}>Effortlessly create comprehensive reports and download them with ease</p>
                         </div>
                     </div>
 
-                    <div className={styles.rp_boxes}>
-                        {ReportsData.map((data) => {
-                            const date = new Date(data.createdAt);
-                            const options = {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                            };
-                            const formattedDate = date.toLocaleDateString("en-US", options);
-                            return (
-                                <div className={styles.rp_box}>
-                                    <div className={styles.more_icon}>
-                                        <div onClick={() => deleteReports(data._id)}>
-                                            <DeleteOutline style={{ fill: "grey", fontSize: "35px", cursor: "pointer" }} />
-                                        </div>
-                                        <div onClick={() => refreshReports(data._id)}>
-                                            <Refresh style={{ fill: "grey", fontSize: "35px" }} />
-                                        </div>
-
-                                    </div>
-                                    <div className={styles.rp_box_img}>
-                                        <img
-                                            src="https://www.svgrepo.com/show/532166/document-layout-left.svg"
-                                            alt="img"
-                                        />
-                                    </div>
-                                    <div className={styles.rp_box_name}>
-                                        <h3>{data.file}</h3>
-                                        <h4>{data.type}</h4>
-                                        <h4>{formattedDate}</h4>
-                                    </div>
-                                    <div className={styles.rp_box_bottom}>
-                                        <a onClick={() => fetchAndLoadTableView(data.url)} download>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                    <div className={styles.toolbar}>
+                        <button type="button" className={styles.actionBtn} onClick={() => setCreateReportPopup(true)}>
+                            <AddCircleOutlineIcon />CREATE
+                        </button>
+                        <button type="button" className={`${styles.actionBtn} ${styles.actionBtnOutline}`} onClick={() => setOpenPresetsPopup(true)}>
+                            <BookmarkAddOutlinedIcon />PRESETS
+                        </button>
+                        <div className={styles.viewToggle}>
+                            <button
+                                type="button"
+                                className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                                onClick={() => setViewMode('grid')}
+                                aria-label="Grid view"
+                            >
+                                <GridViewRoundedIcon />
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+                                onClick={() => setViewMode('list')}
+                                aria-label="List view"
+                            >
+                                <ViewListRoundedIcon />
+                            </button>
+                        </div>
                     </div>
-                    {ReportData && <AnchorReportView data={ReportData} link={link} close={() => setReportData(null)}/>}  
-                    {pageCount > 1 && <div className="mt_4 project_pagination" > <Pagination className="pagination-center" count={pageCount} onChange={onPageChange} /> </div>}
+
+                    {ReportsData.length > 0 ? (
+                        viewMode === 'grid' ? (
+                            <div className={styles.cardsGrid}>
+                                {ReportsData.map((data) => (
+                                    <div className={styles.card} key={data._id}>
+                                        <div className={styles.cardActions}>
+                                            <button type="button" className={styles.iconBtn} onClick={() => refreshReports(data._id)} aria-label="Refresh report">
+                                                <Refresh />
+                                            </button>
+                                            <button type="button" className={styles.iconBtn} onClick={() => deleteReports(data._id)} aria-label="Delete report">
+                                                <DeleteOutline />
+                                            </button>
+                                        </div>
+                                        <div className={styles.fileIconWrap}>
+                                            <InsertDriveFileOutlinedIcon />
+                                        </div>
+                                        <div className={styles.fileInfo}>
+                                            <h3>{data.file}</h3>
+                                            <h4>{data.type} &middot; {formatDate(data.createdAt)}</h4>
+                                        </div>
+                                        <div className={styles.cardFooter}>
+                                            <span className={styles.viewLink} onClick={() => fetchAndLoadTableView(data.url)}>
+                                                <VisibilityOutlinedIcon />View Report
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className={styles.rowsList}>
+                                {ReportsData.map((data) => (
+                                    <div className={styles.row} key={data._id}>
+                                        <div className={styles.fileIconWrap}>
+                                            <InsertDriveFileOutlinedIcon />
+                                        </div>
+                                        <div className={styles.rowInfo}>
+                                            <h3>{data.file}</h3>
+                                            <h4>{data.type} &middot; {formatDate(data.createdAt)}</h4>
+                                        </div>
+                                        <div className={styles.rowActions}>
+                                            <span className={styles.viewLink} onClick={() => fetchAndLoadTableView(data.url)}>
+                                                <VisibilityOutlinedIcon />View
+                                            </span>
+                                            <button type="button" className={styles.iconBtn} onClick={() => refreshReports(data._id)} aria-label="Refresh report">
+                                                <Refresh />
+                                            </button>
+                                            <button type="button" className={styles.iconBtn} onClick={() => deleteReports(data._id)} aria-label="Delete report">
+                                                <DeleteOutline />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    ) : (
+                        <div className={styles.emptyState}>
+                            <InsertDriveFileOutlinedIcon />
+                            <h4>No reports found</h4>
+                        </div>
+                    )}
+
+                    {ReportData && <AnchorReportView data={ReportData} link={link} close={() => setReportData(null)}/>}
+                    {pageCount > 1 && <div className={styles.paginationWrap} > <Pagination shape="rounded" count={pageCount} onChange={onPageChange} /> </div>}
                 </div>
             </>
         );

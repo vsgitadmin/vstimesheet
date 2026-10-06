@@ -24,7 +24,7 @@ function index() {
         updateEmployeeWithBasicDataController(data,{id:router.query.id})
         .then((response)=>{
             toast.success("Updating Employee Details")
-            router.push('/admin/dashboard/hr/employees')
+            router.push('/admin/dashboard')
         })
         .catch((err)=>toast("unable to process request"))
     }

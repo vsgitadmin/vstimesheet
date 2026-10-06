@@ -1,12 +1,17 @@
-import styles from '../../../styles/LMS.module.css'
-import style from '../../../styles/Hr.module.css';
+import styles from '../../../styles/LmsHrPage.module.css'
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getAllTraining, searchTraining, getHrCount } from '../../Controllers/LMS';
 import LmsPopup from '../Popups/LMS/LmsPopup';
 import HrCard from './LmsHrCard';
 import { Pagination } from "@mui/material";
-import NoDataFound from "../NoDataFound/NoDataFound"
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined'
+import SearchIcon from '@mui/icons-material/Search'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
+import InboxIcon from '@mui/icons-material/Inbox'
+import { useViewMode } from '../../Hooks/useViewMode'
 
 const LmsHr = () => {
 
@@ -16,6 +21,7 @@ const LmsHr = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [pageCount, setPageCount] = useState(1)
     const [searching, setSearching] = useState(false)
+    const [viewMode, setViewMode] = useViewMode()
 
     function fetchLmsData(page) {
         page = page ? page : 1
@@ -27,8 +33,12 @@ const LmsHr = () => {
     useEffect(() => {
         fetchLmsData()
         getHrCount().then((res) => {
-            let count = ((res.data.response) / 4)
-            setPageCount(Math.ceil(count) + 1)
+            // backend's TRAININGS_PER_PAGE is 3 - this used to divide by 4 (the
+            // wrong page size) and then add an unconditional +1 on top of that,
+            // so the pagination always showed one page more than actually had
+            // data, and the last page always rendered empty
+            let count = ((res.data.response) / 3)
+            setPageCount(Math.ceil(count))
         })
     }, [])
 
@@ -53,46 +63,71 @@ const LmsHr = () => {
         setCurrentPage(value)
     }
 
-    return (<div className="container">
-        <LmsPopup data={selectedTrainingData} lmsPopup={lmsPopup} setLmsPopup={setLmsPopup} />
-        <div>
-            <h2>LMS</h2>
-            {/* <p className='mt_1' >Lorem Ipsum is simply dummy text of the printing and typesetting industry</p> */}
-        </div>
+    return (
+        <div className={styles.page}>
+            <LmsPopup data={selectedTrainingData} lmsPopup={lmsPopup} setLmsPopup={setLmsPopup} />
 
-        <div className={style.em_search_filter_main}>
-            <div className={style.ar_search_filter}>
-                <input placeholder='Search' type="text" onChange={(e) => handleSearch(e.target.value)} />
-                {/* <div><Tune style={{ fill: 'white' }} /></div> */}
+            <div className={styles.headerRow}>
+                <div className={styles.titleBlock}>
+                    <h1><span className={styles.titleIcon}><SchoolOutlinedIcon /></span>LMS</h1>
+                    <p className={styles.subtitle}>Create and manage employee training programs</p>
+                </div>
             </div>
-            <div className={style.create_button}>
-                <Link href="/admin/dashboard/lms/create">
-                    <button>CREATE</button>
+
+            <div className={styles.toolbar}>
+                <div className={styles.searchBox}>
+                    <SearchIcon />
+                    <input placeholder='Search' type="text" onChange={(e) => handleSearch(e.target.value)} />
+                </div>
+                <div className={styles.viewToggle}>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('grid')}
+                        aria-label="Grid view"
+                    >
+                        <GridViewRoundedIcon />
+                    </button>
+                    <button
+                        type="button"
+                        className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+                        onClick={() => setViewMode('list')}
+                        aria-label="List view"
+                    >
+                        <ViewListRoundedIcon />
+                    </button>
+                </div>
+                <Link href="/admin/dashboard/lms/create" className={styles.addBtn}>
+                    <AddCircleOutlineIcon />CREATE
                 </Link>
             </div>
-        </div>
 
+            {lmsData.length > 0 ? (
+                viewMode === 'grid' ? (
+                    <div className={styles.cardsGrid}>
+                        {lmsData.map((i) => (
+                            <HrCard key={i._id} setLmsPopup={setLmsPopup} setselectedTriningData={setSelectedTrainingData} data={i} viewMode={viewMode} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className={styles.rowsList}>
+                        {lmsData.map((i) => (
+                            <HrCard key={i._id} setLmsPopup={setLmsPopup} setselectedTriningData={setSelectedTrainingData} data={i} viewMode={viewMode} />
+                        ))}
+                    </div>
+                )
+            ) : (
+                <div className={styles.emptyState}>
+                    <InboxIcon />
+                    <h4>No training programs found</h4>
+                </div>
+            )}
 
-        <div className={styles.lms_container}>
-            <div className={styles.ongoing_container} style={{ width: "100%" }}>
-                {lmsData?.map((i) => {
-                    return <HrCard setLmsPopup={setLmsPopup} setselectedTriningData={setSelectedTrainingData}
-                        data={i} />
-                })}
-            </div>
+            {!searching && pageCount > 1 && <div className={styles.paginationWrap}>
+                <Pagination shape="rounded" count={pageCount} onChange={handlePageChange} />
+            </div>}
         </div>
-        <div style={{
-            display: 'flex',
-            alignContent: 'center',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '30px'
-        }}>
-            {!searching && <Pagination count={pageCount} onChange={handlePageChange} />}
-        </div>
-        {lmsData.length===0&&<NoDataFound/>}
-
-    </div>)
+    )
 }
 
 export default LmsHr

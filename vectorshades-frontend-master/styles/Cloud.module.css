@@ -309,6 +309,27 @@
     background: white;
     border: 1px solid #00000011;
     padding: 7px;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+/* dragging a file over a folder card - drop it there to upload straight
+   into that section without opening the folder first */
+.pr_cloud_top_folder_dragover{
+    border: 2px dashed var(--redTheme);
+    background: #fff3f3;
+}
+
+.pr_cloud_top_folder_uploading_badge{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--redTheme);
 }
 
 .pr_cloud_top_folder .pr_cloud_top_folder_bottom{

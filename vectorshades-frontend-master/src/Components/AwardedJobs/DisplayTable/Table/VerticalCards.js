@@ -1,16 +1,36 @@
-import { EditOutlined } from '@mui/icons-material'
+import { EditOutlined, InfoOutlined } from '@mui/icons-material'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 const VerticalCards = ({data,enableEditPopup}) => {
   const { jobData, jobData: { total_breakpoints } } = data
   const date = new Date(data.date).toString().split(" ").slice(1, 3).join(" ")
   const estimatedDate = new Date(jobData.estimate).toString().split(" ").slice(1, 3).join(" ")
+  const [notesOpen, setNotesOpen] = useState(false)
+  const router = useRouter()
+
+  const openProject = () => {
+    if (!data.projectId) return
+    router.push(`/admin/dashboard/projects/${data.projectId}`)
+  }
 
   return (
     <>
-      <div className="vertical_card" >
-       <div onClick={() => enableEditPopup(data)} className="vertical_card_edit" >
+      <div className={`vertical_card ${data.projectId ? 'vertical_card_clickable' : ''}`} onClick={openProject} title={data.projectId ? 'Open project' : undefined} >
+       <div onClick={(e) => { e.stopPropagation(); enableEditPopup(data) }} className="vertical_card_edit" >
          <EditOutlined fontSize='small'/>
        </div>
+       {data.notes && (
+         <div onClick={(e) => { e.stopPropagation(); setNotesOpen((open) => !open) }} className="vertical_card_notes_btn" title="View notes" >
+           <InfoOutlined fontSize='small'/>
+         </div>
+       )}
+       {notesOpen && data.notes && (
+         <div className="vertical_card_notes_popover" onClick={(e) => e.stopPropagation()} >
+           <h5>Notes</h5>
+           <p>{data.notes}</p>
+         </div>
+       )}
         <div className="vertical_titles_main" >
           <div className="vertical_titles" >
             <h5>Client Name</h5>

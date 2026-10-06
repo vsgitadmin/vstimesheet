@@ -43,6 +43,5 @@ export const Avatar = Styled.img`
     border-radius: 10px;
 `
 export const Container = Styled.div`
-width: calc(100vw - 330px);
-overflow-x:auto;
+width: 100%;
 `

@@ -160,17 +160,20 @@
 }
 
 .job_analytics_container{
-  width: 60%;
-  border-left: 1px solid #d3d3d35a;
-  padding-left: 2rem;
+  min-width: 60%;
+  padding: 1.6rem 1.8rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
 }
 
 .ja_top{
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 10px;
 }
 
 .ja_top button{
@@ -178,47 +181,116 @@
   border: none;
   color: white;
   height: 2.5rem;
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 5.5rem;
+  border-radius: 8px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+
+.ja_top button:hover{
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .ja_title h1{
-  font-size: 30px;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .ja_table_main{
   width: 100%;
-  background: white;
-  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  overflow-x: auto;
 }
 
 .ja_table_main table{
   border-collapse: collapse;
   width: 100%;
+  min-width: 720px;
   font-size: 13px;
 }
 
 .ja_table_main table td{
-  border-top: 2px solid whitesmoke;
+  border-top: 1px solid #f2f2f2;
   text-align: left;
-  padding: 8px;
+  padding: 10px 12px;
+  color: #333;
 }
 
 .ja_table_main table th{
   text-align: left;
-  padding: 10px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 10px 12px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+  background: #faf7f7;
+  color: #8a8a8a;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.ja_table_main table tbody tr:hover{
+  background: #fbfbfb;
 }
 
 .ja_table_main table tr:last-child td{
-  padding: 8px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-top: 3px solid #d3d3d3b2;
+  padding: 10px 12px;
+  border-top: 1px solid #f2f2f2;
+}
+
+.ja_action_icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 6px;
+  color: #9a9a9a;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+
+.ja_action_icon:hover{
+  background: #fbeaea;
+  color: var(--redTheme);
+}
+
+.ja_chip{
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.ja_chip_positive{
+  background: #e6f6ec;
+  color: #1e9e52;
+}
+
+.ja_chip_pending{
+  background: #fdecec;
+  color: var(--redTheme);
+}
+
+.ja_empty_row td{
+  text-align: center;
+  padding: 26px 12px !important;
+  color: #9a9a9a;
+  font-size: 13px;
 }
 
 .ja_profile_user{

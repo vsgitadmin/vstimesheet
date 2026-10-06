@@ -9,9 +9,11 @@ import {
 import Image from "next/image";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { Tooltip } from "@mui/material";
+import { useRouter } from "next/router";
 
 function Table({ data, enableEditPopup, navId, hideEdit }) {
+  const router = useRouter();
+
   return (
     <Container>
       <StyledTable>
@@ -65,10 +67,13 @@ function Table({ data, enableEditPopup, navId, hideEdit }) {
               <tr
                 key={data._id}
                 className={navId == data._id ? "blinking" : ""}
+                onClick={() => data.projectId && router.push(`/admin/dashboard/projects/${data.projectId}`)}
+                style={{ cursor: data.projectId ? "pointer" : undefined }}
+                title={data.projectId ? "Open project" : undefined}
               >
                 {!hideEdit && (
                   <td
-                    onClick={() => enableEditPopup(data)}
+                    onClick={(e) => { e.stopPropagation(); enableEditPopup(data) }}
                     style={{ cursor: "pointer" }}
                   >
                     <EditOutlinedIcon />
@@ -188,19 +193,10 @@ function Table({ data, enableEditPopup, navId, hideEdit }) {
                 <td>
                   <Blockspan>
                     <Blockspan
-                      style={{ whiteSpace: "nowrap" }}
+                      style={{ whiteSpace: "normal", display: "block", minWidth: "200px", maxWidth: "320px" }}
                       className="tb-md-title"
                     >
-                      <Tooltip title={data?.notes || ""}>
-                        <div>
-                          {data.notes
-                            ? data.notes.length < 20
-                              ? data.notes
-                              : data.notes.slice(0, 20)
-                            : ""}
-                          {data.notes && data.notes.length > 20 && "..."}
-                        </div>
-                      </Tooltip>
+                      {data.notes || ""}
                     </Blockspan>
                   </Blockspan>
                 </td>

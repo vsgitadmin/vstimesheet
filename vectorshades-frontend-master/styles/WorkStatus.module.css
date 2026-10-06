@@ -1,0 +1,399 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.page {
+  width: 100%;
+  padding: 30px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---------- header ---------- */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.titleBlock h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.titleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: grey;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9a9a9a;
+  font-size: 20px;
+}
+
+.searchBox input {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px 10px 38px;
+  border-radius: 10px;
+  border: 1.5px solid #e9e9e9;
+  outline: none;
+  height: 2.6rem;
+  background: #fff;
+  transition: border-color .15s;
+}
+
+.searchBox input:focus {
+  border-color: var(--redTheme);
+}
+
+.viewToggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.viewToggleBtn {
+  height: 2.2rem;
+  width: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #8a8a8a;
+  transition: background .15s, color .15s;
+}
+
+.viewToggleBtn svg {
+  font-size: 20px;
+}
+
+.viewToggleBtnActive {
+  background: #fff;
+  color: var(--redTheme);
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px;
+}
+
+/* ---------- analytics ---------- */
+
+.analyticsCard {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+}
+
+.analyticsHeading h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.statTile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #faf7f7;
+}
+
+.statIcon {
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statIcon svg {
+  font-size: 20px;
+}
+
+.statIconGood {
+  background: #2e9e5b;
+}
+
+.statIconWarn {
+  background: #d98a00;
+}
+
+.statTile h4 {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  color: #999;
+  margin-bottom: 2px;
+}
+
+.statTile h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ---------- status pill ---------- */
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statusWorking {
+  background: rgba(46, 158, 91, 0.14);
+  color: #2e9e5b;
+}
+
+.statusIdle {
+  background: #eee;
+  color: #888;
+}
+
+/* ---------- grid view ---------- */
+
+.cardsGrid {
+  margin-top: 20px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.person h4 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.person h5 {
+  font-size: 12px;
+  font-weight: 400;
+  color: grey;
+}
+
+.taskRow {
+  display: flex;
+  gap: 18px;
+  padding-top: 10px;
+  border-top: 1px solid #f2f2f2;
+}
+
+.taskRow span {
+  font-size: 12.5px;
+  color: #555;
+}
+
+.taskRow span strong {
+  color: #222;
+}
+
+.currentTask {
+  padding: 10px 12px;
+  background: #faf7f7;
+  border-radius: 10px;
+}
+
+.currentTask p {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.currentTask p:last-child {
+  font-weight: 400;
+  color: grey;
+  margin-top: 2px;
+}
+
+/* ---------- list view ---------- */
+
+.rowsList {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.row:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.rowPerson {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 220px;
+  min-width: 200px;
+}
+
+.rowPerson h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.rowPerson h5 {
+  font-size: 12px;
+  font-weight: 400;
+  color: grey;
+}
+
+.rowStats {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.rowStats span {
+  font-size: 12.5px;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* ---------- empty state ---------- */
+
+.emptyState {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 50px 20px;
+  margin-top: 20px;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1.5px dashed #e6e6e6;
+  color: #9a9a9a;
+  text-align: center;
+}
+
+.emptyState svg {
+  font-size: 30px;
+  color: #cfcfcf;
+  margin-bottom: 6px;
+}
+
+.emptyState h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+
+  .searchBox {
+    max-width: none;
+    width: 100%;
+  }
+
+  .rowStats {
+    margin-left: 0;
+  }
+}

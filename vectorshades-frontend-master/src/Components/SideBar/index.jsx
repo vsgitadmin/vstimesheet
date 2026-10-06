@@ -58,12 +58,18 @@ function SideBar() {
     setTodoCount((todocount && todocount > 0) ? todocount : 0)
   }
 
+  // sidebar entries mix trailing-slash and non-trailing-slash URLs, but
+  // router.pathname never includes a trailing slash (next.config.js has no
+  // trailingSlash: true) - strip it from both sides so the comparison
+  // actually matches on refresh, not just after a click sets state directly
+  const normalizePath = (path) => path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path
+
   const SideLinks = ({ url, icon, label }) => {
     return (
-      <Link href={url} className={currentUrl === url ? "active" : ""} >
+      <Link href={url} className={normalizePath(currentUrl) === normalizePath(url) ? "active" : ""} >
         <div onClick={() => { setCurrentUrl(url) }} >
           {label === "To Do" && <Badge badgeContent={todoCount} color="error">{icon}</Badge>}
-          {label !== "To Do" && [icon]}
+          {label !== "To Do" && icon}
           <h4>{label}</h4>
         </div>
       </Link>
@@ -81,10 +87,11 @@ function SideBar() {
 
   return (
     <section className="sidebar" key={role}>
-      <div className="head">
-        <h1>VectorShades</h1>
+      <div className="head logo-container">
+        {/* <h1>VectorShades</h1> */}
+        <img src="/logo/vs-logo.png" className='vs_logo mb_3' alt="" />
       </div>
-      <div className="child mt_4">
+      <div className="child">
         {role !== undefined && roleArrays[role].map((item, index) => {
           if (item.url === "/admin/dashboard/employee/timesheet/") item.url = item.url + ParentState?.auth._id
           return <SideLinks url={item.url} icon={item.icon} label={item.heading} key={index} />

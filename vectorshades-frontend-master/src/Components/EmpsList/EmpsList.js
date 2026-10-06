@@ -1,11 +1,16 @@
 import ProfileImage from '../ProfileImage/Image';
-import styles from '../../../styles/Hr.module.css'
+import styles from '../../../styles/EmployeeList.module.css'
 import { useContext, useEffect, useState } from 'react';
 import { getAllBasicEmployees } from "../../Controllers/Employee/index"
-import { Button, IconButton } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ParentStore } from '../../../pages/_app';
 import { Download } from '@mui/icons-material';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import InboxIcon from '@mui/icons-material/Inbox';
 
 function EmpsList() {
   const { ParentState } = useContext(ParentStore)
@@ -31,63 +36,92 @@ function EmpsList() {
   }
 
   const isValidAdmin = () => {
-    return ['SA','STL','RB','PA'].includes( ParentState?.auth?.role)
+    return ['SA', 'STL', 'RB', 'PA'].includes(ParentState?.auth?.role)
   }
 
   return (
-    <div className='container' >
-      <h1>Production report</h1>
-      <p className='mt_1 grey' >View the list of employees and their details</p>
-      <div className={styles.em_search_filter_main}>
-        <div className={styles.ar_search_filter} >
-          <input placeholder='Search' type="text" onChange={searchEmployeeFunction} />
+    <div className={styles.page}>
+      <div className={styles.headerRow}>
+        <div className={styles.titleBlock}>
+          <h1><span className={styles.titleIcon}><GroupsOutlinedIcon /></span>Production report</h1>
+          <p className={styles.subtitle}>View the list of employees and their details</p>
         </div>
       </div>
 
-      <table className={styles.lvs_table} >
-        <tr>
-          <th>Employee Name</th>
-          <th>Designation</th>
-          <th>Department</th>
-          <th>Online/Offline</th>
-          <th>Phone</th>
-          <th>Email</th>
-          {isValidAdmin() && <>
-            <th>Projects assigned</th>
-            <th>Tasks assigned</th>
-            <th>Action</th>
-            <th>Download</th>
-          </>
-          }
-        </tr>
+      <div className={styles.toolbar}>
+        <div className={styles.searchBox}>
+          <SearchOutlinedIcon />
+          <input placeholder='Search employees...' type="text" onChange={searchEmployeeFunction} />
+        </div>
+        <span className={styles.countBadge}><strong>{employees.length}</strong> employee{employees.length === 1 ? '' : 's'}</span>
+      </div>
 
-        {
-          employees.map((emp) => {
-            return <tr>
-              <td>
-                <ProfileImage id={emp._id} size={45} />
-                <div>
-                  {emp.firstName} {emp.lastName}
-                </div>
-              </td>
-              <td>{emp.designation}</td>
-              <td>{emp.department}</td>
-              <td className={styles.view_button} >
-                {emp.online && <span style={{ background: 'green' }} className={styles.approved} >Online</span>}
-                {!emp.online && <span style={{ background: '#800000ac' }} className={styles.approved} >Offline</span>}
-              </td>
-              <td>{emp.phone}0000000000</td>
-              <td>{emp.personalEmail}</td>
-              {isValidAdmin() && <>
-                <td>{emp.projectsAssigned}</td>
-                <td>{emp.tasksAssigned}</td>
-              </>}
-              {isValidAdmin() && <td><Button variant='outlined' onClick={() => handleViewClick(emp._id)}>View</Button></td>}
-              {isValidAdmin() &&  <td><IconButton variant='outlined' ><Download /></IconButton></td>}
-            </tr>
-          })
-        }
-      </table>
+      {employees.length > 0 ? (
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Online/Offline</th>
+                <th>Phone</th>
+                <th>Email</th>
+                {isValidAdmin() && <>
+                  <th>Projects assigned</th>
+                  <th>Tasks assigned</th>
+                  <th>Action</th>
+                  <th>Download</th>
+                </>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              {
+                employees.map((emp) => {
+                  return <tr key={emp._id}>
+                    <td>
+                      <div className={styles.empCell}>
+                        <ProfileImage id={emp._id} size={38} />
+                        <span>{emp.firstName} {emp.lastName}</span>
+                      </div>
+                    </td>
+                    <td>{emp.designation}</td>
+                    <td>{emp.department}</td>
+                    <td>
+                      <span className={`${styles.statusPill} ${emp.online ? styles.statusOnline : styles.statusOffline}`}>
+                        <FiberManualRecordIcon />{emp.online ? 'Online' : 'Offline'}
+                      </span>
+                    </td>
+                    <td>{emp.phone || '—'}</td>
+                    <td>{emp.personalEmail}</td>
+                    {isValidAdmin() && <>
+                      <td>{emp.projectsAssigned}</td>
+                      <td>{emp.tasksAssigned}</td>
+                    </>}
+                    {isValidAdmin() && <td>
+                      <button type="button" className={styles.viewBtn} onClick={() => handleViewClick(emp._id)}>
+                        <VisibilityOutlinedIcon />View
+                      </button>
+                    </td>}
+                    {isValidAdmin() && <td>
+                      <Tooltip title="Download">
+                        <button type="button" className={styles.downloadBtn}><Download fontSize="small" /></button>
+                      </Tooltip>
+                    </td>}
+                  </tr>
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className={styles.emptyState}>
+          <InboxIcon />
+          <h4>No employees found</h4>
+          <p>Try adjusting your search</p>
+        </div>
+      )}
     </div>
   );
 }

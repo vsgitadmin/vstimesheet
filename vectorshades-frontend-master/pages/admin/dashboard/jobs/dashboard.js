@@ -1,37 +1,44 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import Table from '../../../../src/Components/Jobs/Dashboard/Table'
-import Link from 'next/link'
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined'
+import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined'
+import SearchIcon from '@mui/icons-material/Search'
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
+import PrecisionManufacturingOutlinedIcon from '@mui/icons-material/PrecisionManufacturingOutlined'
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom'
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled'
+import PaymentsIcon from '@mui/icons-material/Payments'
+import InboxIcon from '@mui/icons-material/Inbox'
 import { getAllDashboardJobsController, filterDashboardJobsController, generateDashboardReport } from '../../../../src/Controllers/Jobs/index'
-import EditDashboardJob from '../../../../src/Components/Popups/Jobs/Dashboard/editDashboardJob';
-import { updateDashboardJobsController, getTotalNumberOfJAwardedJobsController, getMonthlyDashboardJobAnalyticsController } from "../../../../src/Controllers/Jobs/index"
-import { toast } from 'react-toastify';
-import Paging from '../../../../src/Components/Pagination/Index';
-import VerticalCards from '../../../../src/Components/Jobs/Dashboard/Table/VerticalCards';
-import NoDataFound from '../../../../src/Components/NoDataFound/NoDataFound';
-import { Pagination, Tooltip } from '@mui/material';
-import { Download, Tune } from '@mui/icons-material';
-import ProjectDashboardFilter from '../../../../src/Components/Filters/ProjectDashboardFilter';
+import EditDashboardJob from '../../../../src/Components/Popups/Jobs/Dashboard/editDashboardJob'
+import { updateDashboardJobsController, getMonthlyDashboardJobAnalyticsController } from '../../../../src/Controllers/Jobs/index'
+import { toast } from 'react-toastify'
+import VerticalCards from '../../../../src/Components/Jobs/Dashboard/Table/VerticalCards'
+import { Tooltip } from '@mui/material'
+import { Download, Tune } from '@mui/icons-material'
+import ProjectDashboardFilter from '../../../../src/Components/Filters/ProjectDashboardFilter'
 import { filterAwardedJobsDashboardDynamicController } from '../../../../src/Controllers/Filters/index'
-import { animateScroll } from 'react-scroll'
 import Months from '../../../../src/Constants/months'
-import { useRouter } from 'next/router';
-import { ParentStore } from '../../../_app';
-import ReportView from '../../../../src/Components/General/ReportView';
+import { useRouter } from 'next/router'
+import { ParentStore } from '../../../_app'
+import ReportView from '../../../../src/Components/General/ReportView'
+import styles from '../../../../styles/AwardedJobs.module.css'
+import { useViewMode } from '../../../../src/Hooks/useViewMode'
 
+const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 
 function Dashboard() {
     const [InitialData, setInitialData] = useState([])
     const [dashboardJobs, setdashboardJobs] = useState([])
-    const [editPopupData, seteditPopupData] = useState(null);
-    const [Loading, setLoading] = useState(true);
-    const [yearlyRevenue, setyearlyRevenue] = useState(0);
-    const [noOfPages, setNoOfPages] = useState(null)
-    const [componentView, setComponentView] = useState(false)
+    const [editPopupData, seteditPopupData] = useState(null)
+    const [Loading, setLoading] = useState(true)
+    const [viewMode, setViewMode] = useViewMode()
+    const componentView = viewMode === 'grid'
+    const setComponentView = (isGrid) => setViewMode(isGrid ? 'grid' : 'list')
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [filterToggled, setfilterToggled] = useState(false)
-    const [selectedMonth, setselectedMonth] = useState(0);
+    const [selectedMonth, setselectedMonth] = useState(0)
     const [selectedYear, setSelectedyear] = useState(new Date().getFullYear())
     const [monthlyFilterToggled, setmonthlyFilterToggled] = useState(false)
     const [Analytics, setAnalytics] = useState({})
@@ -45,11 +52,6 @@ function Dashboard() {
         fetchDashboardJobs({ month, year: selectedYear })
     }, [])
 
-
-    const onPageChange = (event, value) => {
-        getAllDashboardJobsController(value).then((response) => { setdashboardJobs(response.response.jobs); setLoading(false) }).catch((err) => console.log(err))
-    }
-
     const handleMonthChange = (month) => {
         const filteredDashboardJobs = InitialData.filter((data) => data._id === month + 1)
         setdashboardJobs(filteredDashboardJobs)
@@ -58,13 +60,13 @@ function Dashboard() {
     }
 
     const generateDashboardReportFunction = (query) => {
-        reportViewRef.current.openView(generateDashboardReport,query)
+        reportViewRef.current.openView(generateDashboardReport, query)
     }
 
     const resetMonthFilter = () => {
         setdashboardJobs(InitialData)
         setmonthlyFilterToggled(false)
-        setselectedMonth(100)
+        setselectedMonth(-1)
     }
 
     const handleYearChange = (year) => {
@@ -75,9 +77,8 @@ function Dashboard() {
     const fetchDashboardJobs = (query) => {
         getAllDashboardJobsController(query)
             .then((res) => {
-                setdashboardJobs(res.response.jobs);
-                setInitialData(res.response.jobs);
-                setyearlyRevenue(res.response.yearly)
+                setdashboardJobs(res.response.jobs)
+                setInitialData(res.response.jobs)
                 setLoading(false)
             })
             .catch((err) => console.log(err))
@@ -96,7 +97,7 @@ function Dashboard() {
         updateDashboardJobsController(data)
             .then(() => {
                 fetchDashboardJobs({ month, year: selectedYear })
-                toast.success("Job dashboard updated")
+                toast.success('Job dashboard updated')
             })
             .catch((err) => toast.error('error occured while updating'))
     }
@@ -120,7 +121,6 @@ function Dashboard() {
             console.log(err)
             toast.error('error occured')
         }
-
     }
 
     const renderFilter = (query) => {
@@ -128,157 +128,170 @@ function Dashboard() {
         dynamicFilterJobs(query, 0)
     }
 
-    const noStyle = {
-        height: '76%',
-        display: 'flex',
-        alignItems: 'center'
-    }
+    const clearAllFilters = () => router.reload()
+
+    const STAT_TILES = [
+        { key: 'FABBacklog', label: 'Total Fab Backlog', icon: <PrecisionManufacturingOutlinedIcon /> },
+        { key: 'OFABacklog', label: 'Total OFA Backlog', icon: <Inventory2OutlinedIcon /> },
+        { key: 'backlogHours', label: 'Total Backlog Hours', icon: <HourglassBottomIcon /> },
+        { key: 'bidHours', label: 'Total Bid Hours', icon: <AccessTimeFilledIcon /> },
+        { key: 'po_price', label: 'Total PO Price', icon: <PaymentsIcon />, prefix: '$' },
+    ]
 
     const JobAnalytics = ({ Analytics, monthName }) => {
+        if (!Analytics || Object.keys(Analytics).length === 0) return null
         return (
-            <>
-                {Object.keys(Analytics).length > 0 && <div className='job_month_analytics' >
-                    <div className='job_analytics_title' >
-                        <h2>{monthName}</h2>
-                        <h3>Analytics</h3>
-                    </div>
-                    <div className='job_analytics_title' >
-                        <h3>Total FABBACKLOG</h3>
-                        <h2>{Analytics.FABBacklog}</h2>
-                    </div>
-                    <div className='job_analytics_title' >
-                        <h3>Total OFABacklog</h3>
-                        <h2>{Analytics.OFABacklog}</h2>
-                    </div>
-                    <div className='job_analytics_title' >
-                        <h3>Total backlogHours</h3>
-                        <h2>{Analytics.backlogHours}</h2>
-                    </div>
-                    <div className='job_analytics_title' >
-                        <h3>Total bidHours</h3>
-                        <h2>{Analytics.bidHours}</h2>
-                    </div>
-                    <div className='job_analytics_title' >
-                        <h3>Total PO Price</h3>
-                        <h2>{Analytics.po_price}</h2>
-                    </div>
+            <div className={styles.analyticsCard}>
+                <div className={styles.analyticsHeading}>
+                    <h3>{monthName} Analytics</h3>
                 </div>
-                }
-            </>
+                <div className={styles.analyticsGrid}>
+                    {STAT_TILES.map((tile) => (
+                        <div className={styles.statTile} key={tile.key}>
+                            <span className={styles.statIcon}>{tile.icon}</span>
+                            <div className={styles.statText}>
+                                <h4>{tile.label}</h4>
+                                <h2>{tile.prefix || ''}{Analytics[tile.key]}</h2>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         )
     }
 
     if (Loading) return <div className='loader_center_parent'><div className="lds-ring"><div></div><div></div><div></div><div></div></div></div>
 
-    else
-
-        return (
-            <section className='jobs'>
-                <div className="head">
-                    <h1>Project Dashboard</h1>
+    return (
+        <section className={styles.page}>
+            <div className={styles.headerRow}>
+                <div className={styles.titleBlock}>
+                    <h1><span className={styles.titleIcon}><DashboardCustomizeIcon /></span>Project Dashboard</h1>
+                    <p className={styles.subtitle}>Track awarded job billing, backlog and review status</p>
                 </div>
-                <p className='mt_1' >Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                <div className='crud'>
-                    <div style={{ display: "flex", alignItems: "center" }} >
-                        {!filterToggled ? <>
-                            <input type="text" placeholder='search awarded jobs' onChange={filterDashboardJobs} />
-                            <div style={{ backgroundColor: '#E64848', padding: '5px', borderRadius: '5px', width: "3rem", display: "flex", justifyContent: "center", alignItems: "center" }}><Tune onClick={() => setIsFilterOpen(!isFilterOpen)} style={{ fill: 'white' }} /></div></> :
-                            <div className='clear_filter' >
-                                <button onClick={() => router.reload()}>Clear filters</button>
-                                {!filterToggled && <button onClick={() => animateScroll.scrollToBottom(0)} >View Analytics</button>}
-                            </div>
-                        }
+            </div>
 
-                        <select style={{ marginLeft: "1rem" }} value={selectedYear} className='year_select_dropdown' onChange={(e) => handleYearChange(e.target.value)} >
-                            <option disabled >Select Year</option>
-                            <option value={2019}>2019</option>
-                            <option value={2020}>2020</option>
-                            <option value={2021}>2021</option>
-                            <option value={2022}>2022</option>
-                            <option value={2023}>2023</option>
-                            <option value={2024}>2024</option>
-                            <option value={2025}>2025</option>
-                            <option value={2026}>2026</option>
+            <div className={styles.toolbar}>
+                <div className={styles.toolbarLeft}>
+                    {!filterToggled ? <>
+                        <div className={styles.searchBox}>
+                            <SearchIcon />
+                            <input type="text" placeholder='Search dashboard jobs...' onChange={filterDashboardJobs} />
+                        </div>
+                        <div className={styles.filterWrap}>
+                            <Tooltip title="Filters">
+                                <button type="button" className={styles.iconBtn} onClick={() => setIsFilterOpen(!isFilterOpen)} aria-label="Open filters">
+                                    <Tune />
+                                </button>
+                            </Tooltip>
+                            {isFilterOpen && <ProjectDashboardFilter render={renderFilter} setIsFilterOpen={setIsFilterOpen} />}
+                        </div>
+                        <select value={selectedYear} className={styles.yearSelect} onChange={(e) => handleYearChange(e.target.value)}>
+                            <option disabled>Select Year</option>
+                            {YEARS.map((year) => <option key={year} value={year}>{year}</option>)}
                         </select>
-                    </div>
-                    <div style={{ display: "flex", gap: "10px" }}>
-                        <CreditCardOutlinedIcon style={{ cursor: "pointer" }} onClick={() => setComponentView(true)} />
-                        <TableChartOutlinedIcon style={{ cursor: "pointer" }} onClick={() => setComponentView(false)} />
-                    </div>
+                    </> : <button className={styles.clearBtn} onClick={clearAllFilters}>Clear filters</button>}
                 </div>
-                <div className='flt_main' >
-                    {isFilterOpen && <ProjectDashboardFilter render={renderFilter} setIsFilterOpen={setIsFilterOpen} />}
+                <div className={styles.viewToggle}>
+                    <Tooltip title="Card view">
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${componentView ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setComponentView(true)}
+                            aria-label="Card view"
+                        >
+                            <CreditCardOutlinedIcon />
+                        </button>
+                    </Tooltip>
+                    <Tooltip title="Table view">
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${!componentView ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setComponentView(false)}
+                            aria-label="Table view"
+                        >
+                            <TableChartOutlinedIcon />
+                        </button>
+                    </Tooltip>
                 </div>
+            </div>
 
-                {!filterToggled &&
-                    <div className='job_months' >
-                        <div className='job_months_main' >
-                            <ul>
-                                {Months.map((month, i) => {
-                                    return <li onClick={() => handleMonthChange(i)} className={` ${month.index === selectedMonth - 1 && `job_active_month`}`}>{month.name}</li>
-                                })}
-                                {monthlyFilterToggled && <button className='month_flt_clear' onClick={resetMonthFilter}>Clear filters</button>}
-                            </ul>
-                            <div className='year_finance' >
-                                <Tooltip title="Generate Report" >
-                                    <button className='generate_report' onClick={() => generateDashboardReportFunction()}><Download /></button>
+            {!filterToggled && <div className={styles.monthNav}>
+                <ul className={styles.monthPillList}>
+                    <li
+                        className={`${styles.monthPill} ${!monthlyFilterToggled ? styles.monthPillActive : ''}`}
+                        onClick={resetMonthFilter}
+                    >
+                        All
+                    </li>
+                    {Months.map((month, i) => (
+                        <li
+                            key={month.index}
+                            className={`${styles.monthPill} ${monthlyFilterToggled && month.index === selectedMonth - 1 ? styles.monthPillActive : ''}`}
+                            onClick={() => handleMonthChange(i)}
+                        >
+                            {month.name}
+                        </li>
+                    ))}
+                </ul>
+                <Tooltip title="Generate Report">
+                    <button onClick={() => generateDashboardReportFunction()} className={styles.reportBtn}><Download /></button>
+                </Tooltip>
+            </div>}
+
+            {dashboardJobs.length > 0 && !filterToggled ?
+                dashboardJobs.map((monthlyDashboard) => {
+                    const jobsInMonth = monthlyDashboard.jobs
+                    const hasJobs = jobsInMonth && jobsInMonth.length > 0
+                    return (
+                        <div className={styles.monthSection} key={monthlyDashboard._id}>
+                            <div className={styles.monthSectionHeader}>
+                                <div className={styles.monthSectionTitle}>
+                                    <h2>{monthlyDashboard.monthName}</h2>
+                                    <span className={styles.countBadge}>{jobsInMonth?.length || 0} job{jobsInMonth?.length === 1 ? '' : 's'}</span>
+                                </div>
+                                <Tooltip title="Generate Report">
+                                    <button onClick={() => generateDashboardReportFunction({ month: selectedMonth, year: selectedYear })} className={styles.reportBtn}><Download /></button>
                                 </Tooltip>
                             </div>
-                        </div>
-                    </div>
-                }
 
-                {dashboardJobs.length > 0 && !filterToggled ?
-                    <>
-                        {dashboardJobs.map((monthlyDashboard) => {
-                            let dashboardJobs = monthlyDashboard.jobs
-                            return (
+                            {hasJobs ?
                                 <>
-                                    <div className='job_months'>
-                                        <div className='job_months_title' >
-                                            <h1 key={selectedMonth}>{monthlyDashboard.monthName}</h1>
-                                            <Tooltip title="Generate Report" >
-                                                <button className='generate_report' onClick={() => generateDashboardReportFunction({ month: selectedMonth, year: selectedYear })}><Download /></button>
-                                            </Tooltip>
+                                    {componentView ?
+                                        <div className={styles.cardsWrap}>
+                                            <VerticalCards data={jobsInMonth} enableEditPopup={(data) => { seteditPopupData(data) }} />
                                         </div>
-                                    </div>
-                                    {componentView === true ?
-                                        <div className='job_list_main' >
-                                            <VerticalCards data={dashboardJobs} enableEditPopup={(data) => { seteditPopupData(data) }} />
-                                            {/* <div className='awarded_jobs_pagination' >
-                                                <Pagination count="1" onChange={onPageChange} />
-                                            </div> */}
-                                            <JobAnalytics Analytics={monthlyDashboard.analytics} monthName={monthlyDashboard.monthName} />
-                                        </div>
-                                        :
-                                        <div className='job_list_main' >
-                                            <Table update={updateDashboardData} hideEditIcon={ParentState?.auth?.role == 'SA' ? false : false} data={dashboardJobs} enableEditPopup={(data) => { seteditPopupData(data) }} completed={false} />
-                                            <JobAnalytics Analytics={monthlyDashboard.analytics} monthName={monthlyDashboard.monthName} />
-                                        </div>
-                                    }
-                                </>
-                            )
-                        })}
-                    </> :
-                    <>
-                        {componentView === true ?
-                            <div className='job_list_main' >
+                                        : <div className={styles.tableWrap}>
+                                            <Table update={updateDashboardData} hideEditIcon={ParentState?.auth?.role == 'SA' ? false : false} data={jobsInMonth} enableEditPopup={(data) => { seteditPopupData(data) }} completed={false} />
+                                        </div>}
+                                </> :
+                                <div className={styles.emptyMonth}>
+                                    <InboxIcon />
+                                    <h4>No jobs this month</h4>
+                                    <p>Nothing on the dashboard for {monthlyDashboard.monthName} yet</p>
+                                </div>
+                            }
+
+                            <JobAnalytics Analytics={monthlyDashboard.analytics} monthName={monthlyDashboard.monthName} />
+                        </div>
+                    )
+                })
+                : (
+                    dashboardJobs.length > 0
+                        ? (componentView
+                            ? <div className={styles.cardsWrap}>
                                 <VerticalCards data={dashboardJobs} enableEditPopup={(data) => { seteditPopupData(data) }} />
                             </div>
-                            :
-                            <div className='job_list_main' >
+                            : <div className={styles.tableWrap}>
                                 <Table update={updateDashboardData} hideEditIcon={ParentState?.auth?.role == 'SA' ? false : false} data={dashboardJobs} enableEditPopup={(data) => { seteditPopupData(data) }} completed={false} />
-                            </div>
-                        }
-                    </>
-                }
+                            </div>)
+                        : <div className={styles.emptyMonth}><InboxIcon /><h4>No jobs found</h4><p>Try adjusting your search or filters</p></div>
+                )}
 
-
-                {editPopupData && <EditDashboardJob closePopup={() => seteditPopupData(null)} submit={updateDashboardData} editPopupData={editPopupData} />}
-                {/* <Pagination count={noOfPages} className='pagination-center' onChange={onPageChange} /> */}
-                <ReportView ref={reportViewRef}/>
-            </section>
-        )
+            {editPopupData && <EditDashboardJob closePopup={() => seteditPopupData(null)} submit={updateDashboardData} editPopupData={editPopupData} />}
+            <ReportView ref={reportViewRef} />
+        </section>
+    )
 }
 
 export default Dashboard

@@ -3,8 +3,13 @@ import { useEffect, useState } from "react"
 import { presignGetUrl } from "../../Controllers/files/index"
 import { profilePictureKeysToTry } from "../../Helpers/Constants/profilePicture"
 
-const FALLBACK_URL =
-  "https://qph.cf2.quoracdn.net/main-qimg-6d72b77c81c9841bd98fc806d702e859-lq"
+// No external fallback image - hotlinking a third-party CDN (as this used to)
+// is unreliable (SSL/hotlink-protection errors) and adds a dependency on a
+// domain we don't control. `null` lets MUI's Avatar render its built-in
+// default person icon instead.
+const FALLBACK_URL = null
+// const FALLBACK_URL =
+//   "https://qph.cf2.quoracdn.net/main-qimg-6d72b77c81c9841bd98fc806d702e859-lq"
 
 const ProfileImage = ({ size, id, style, onClick, imageKey, version = 0 }) => {
   const [validUrl, setValidUrl] = useState(null)

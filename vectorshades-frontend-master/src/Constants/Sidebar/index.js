@@ -116,6 +116,11 @@ const SidebarDataSA = [
     heading: "Cloud Admin",
   },
   // {
+  //   url: "/admin/dashboard/employee/logs/punch-ins",
+  //   icon: <HomeOutlinedIcon />,
+  //   heading: "Punch Ins",
+  // },
+  // {
   //   url: "/admin/dashboard/chat",
   //   icon: <ChatIcon/>,
   //   heading: "Chat",
@@ -144,7 +149,17 @@ const SidebarDataSA = [
     url: "/admin/dashboard/work-status",
     icon: <DvrIcon />,
     heading: "Work Status",
-  }
+  },
+  {
+    url: "/admin/dashboard/settings",
+    icon: <Settings />,
+    heading: "Settings",
+  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // }
 ];
 
 const SidebarDataSTL = [
@@ -252,7 +267,12 @@ const SidebarDataSTL = [
     url: "/admin/dashboard/emps",
     icon: <BadgeOutlinedIcon />,
     heading: "Employees",
-  }
+  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // }
 ];
 
 const SidebarDataRB = [
@@ -355,7 +375,12 @@ const SidebarDataRB = [
     url: "/admin/dashboard/emps",
     icon: <BadgeOutlinedIcon />,
     heading: "Employees",
-  }
+  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // }
 ];
 
 const SidebarDataHR = [
@@ -409,11 +434,11 @@ const SidebarDataHR = [
     icon: <GridViewIcon />,
     heading: "Engage",
   },
-  {
-    url: "/admin/dashboard/employee/logs/punch-ins",
-    icon: <HomeOutlinedIcon />,
-    heading: "Punch Ins",
-  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punch-ins",
+  //   icon: <HomeOutlinedIcon />,
+  //   heading: "Punch Ins",
+  // },
   // {
   //   url: "/admin/dashboard/chat",
   //   icon: <ChatIcon/>,
@@ -434,6 +459,11 @@ const SidebarDataHR = [
     icon: <ListAltIcon />,
     heading: "To Do",
   },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // },
 ];
 
 const SidebarDataEMP = [
@@ -467,11 +497,11 @@ const SidebarDataEMP = [
     icon: <MilitaryTechIcon />,
     heading: "Performance",
   },
-  {
-    url: "/admin/dashboard/employee/logs/punch-ins",
-    icon: <HomeOutlinedIcon />,
-    heading: "Punch Ins",
-  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punch-ins",
+  //   icon: <HomeOutlinedIcon />,
+  //   heading: "Punch Ins",
+  // },
   {
     url: "/admin/dashboard/employee/notices/",
     icon: <CampaignIcon />,
@@ -521,7 +551,12 @@ const SidebarDataEMP = [
     url: "/admin/dashboard/emps",
     icon: <BadgeOutlinedIcon />,
     heading: "Employees",
-  }
+  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // }
 ];
 
 const SidebarDataPA = [
@@ -559,7 +594,12 @@ const SidebarDataPA = [
     url: "/admin/dashboard/emps",
     icon: <BadgeOutlinedIcon />,
     heading: "Employees",
-  }
+  },
+  // {
+  //   url: "/admin/dashboard/employee/logs/punching-info",
+  //   icon: <DvrIcon />,
+  //   heading: "Punching Info",
+  // }
 ];
 
 module.exports = { SidebarDataSA, SidebarDataHR, SidebarDataEMP, SidebarDataPA, SidebarDataRB, SidebarDataSTL };

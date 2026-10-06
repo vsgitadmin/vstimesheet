@@ -7,6 +7,7 @@ import { ParentStore } from "../../_app";
 import { useRouter } from "next/router";
 import { validateToken } from "../../../src/Helpers/General/JwtToken"
 import {Pagination} from "@mui/material";
+import styles from "../../../styles/CloudPage.module.css"
 
 
 function CloudPage() {
@@ -156,9 +157,9 @@ function CloudPage() {
   return (
     <>
       <Cloud getCloudObject={getCloudObject} currentPage={currentPage} viewer={viewer} data={Objects} forwardFile={forwardFile} loading={Loading} loadFile={uploadFile} deleteFunc={deleteFile} upload={uploadPercent} file={UploadedFile} uploading={Uploading} search={searchObjects} />
-      <div style={{width:'100%',display:'flex',marginTop:'20px',alignItems:'center',justifyContent:'center',alignContent:'center',marginBottom:'30px'}}>
-        <Pagination count={pageCount} onChange={handleCountChange}/>
-      </div>
+      {pageCount > 1 && <div className={styles.paginationWrap}>
+        <Pagination shape="rounded" count={pageCount} onChange={handleCountChange}/>
+      </div>}
     </>
   )
 }

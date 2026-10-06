@@ -4,6 +4,7 @@ import {getEmployeeTODOController,filterEmployeeTODOController} from '../../../s
 import Body from '../../../src/Components/Bord/Bord'
 import Head from '../../../src/Components/Bord/Head'
 import Loader from "../../../src/Components/Loader/loader"
+import styles from '../../../styles/TodoBoard.module.css'
 
 const ToDOPage = () => {
   const [data, setdata] = useState([])
@@ -36,10 +37,10 @@ const ToDOPage = () => {
   else
 
   return (
-    <>
+    <section className={styles.page}>
       <Head filter={filterToDoFunction} render={InitialLoad}/>
       <Body data={data} render={InitialLoad}/>
-    </>
+    </section>
   )
 }
 

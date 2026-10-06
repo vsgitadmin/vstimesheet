@@ -1,27 +1,34 @@
-import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import JobCard from '../../../../../src/Components/JobCard/job_comp_card'
+import RebarCard from '../../../../../src/Components/RebarCard/rebar_comp_card'
+import RebarListRow from '../../../../../src/Components/RebarCard/rebar_comp_list'
+import TuneIcon from '@mui/icons-material/Tune'
+import SearchIcon from '@mui/icons-material/Search'
+import PendingActionsIcon from '@mui/icons-material/PendingActions'
+import InboxIcon from '@mui/icons-material/Inbox'
+import ViewListIcon from '@mui/icons-material/ViewList'
+import GridViewIcon from '@mui/icons-material/GridView'
 import { toast } from 'react-toastify'
-import { getAllPendingjobsController, getTotalNumberOfJobsController, filterJobsController, getMonthlyJobAnalyticsController } from '../../../../../src/Controllers/Rebar/index'
-import AllJobsFilter from '../../../../../src/Components/Filters/AllJobsFilter';
+import { getAllPendingjobsController, getTotalNumberOfJobsController, filterJobsController } from '../../../../../src/Controllers/Rebar/index'
+import RebarJobsFilter from '../../../../../src/Components/Filters/rebarJobsFilter'
 import { filterJobsDynamicController } from '../../../../../src/Controllers/Filters/index'
-import { animateScroll } from 'react-scroll'
 import Months from '../../../../../src/Constants/months'
 import { useRouter } from 'next/router'
+import { Tooltip } from '@mui/material'
+import styles from '../../../../../styles/Job1.module.css'
+
+const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 
 function EstimatedJobs() {
   const [InitialData, setInitialData] = useState([])
   const [jobs, setJobs] = useState([])
-  const [JobFilter, setJobFilter] = useState('')
-  const [yearlyRevenue, setyearlyRevenue] = useState(0)
-  const [Loading, setLoading] = useState(true);
+  const [Loading, setLoading] = useState(true)
   const [noOfPages, setNoOfPages] = useState(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [selectedMonth, setselectedMonth] = useState(0);
+  const [selectedMonth, setselectedMonth] = useState(0)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [filterToggled, setfilterToggled] = useState(false)
-  const [Analytics, setAnalytics] = useState({})
   const [monthlyFilterToggled, setmonthlyFilterToggled] = useState(false)
+  const [viewMode, setViewMode] = useState('list')
   const router = useRouter()
 
   useEffect(() => {
@@ -40,10 +47,10 @@ function EstimatedJobs() {
       return
     }
 
-    const filtered = InitialData.filter((monthlyJobData) => monthlyJobData._id === month+1)
+    const filtered = InitialData.filter((monthlyJobData) => monthlyJobData._id === month + 1)
     if (filtered.length === 0) {
       toast.warning('no jobs found')
-      return;
+      return
     }
     setJobs(filtered)
     setselectedMonth(month + 1)
@@ -70,8 +77,8 @@ function EstimatedJobs() {
   const fetchJobsFunction = (query, page) => {
     getAllPendingjobsController({ ...query, page: page })
       .then((response) => {
-        setJobs(response.data[0]);
-        setLoading(false);
+        setJobs(response.data[0])
+        setLoading(false)
         setInitialData(response.data[0])
       })
       .catch((err) => {
@@ -79,7 +86,6 @@ function EstimatedJobs() {
         toast.error('error occured')
       })
   }
-
 
   const filterJobs = async (e) => {
     try {
@@ -92,6 +98,7 @@ function EstimatedJobs() {
   const dynamicFilterJobs = async (query, page) => {
     try {
       setLoading(true)
+      query.rebar = true
       const data = await filterJobsDynamicController({ ...query, page })
       setfilterToggled(true)
       setJobs(data.data.response.jobs)
@@ -100,7 +107,6 @@ function EstimatedJobs() {
       console.log(err)
       toast.error('error occured')
     }
-
   }
 
   const setTotalNumberOfJobs = async (month) => {
@@ -116,82 +122,148 @@ function EstimatedJobs() {
     dynamicFilterJobs(query, 0)
   }
 
-  const noStyle = {
-    height: '76%',
-    display: 'flex',
-    alignItems: 'center'
-  }
+  const clearAllFilters = () => router.reload()
 
-  const jobMaped = jobs.map((obj) => <JobCard key={obj._id} props={obj} />)
+  const jobMaped = jobs.map((obj) => viewMode === 'grid'
+    ? <RebarCard key={obj._id} props={obj} />
+    : <RebarListRow key={obj._id} props={obj} />)
 
-  const JobMonthlyMapper = (jobs) => jobs.map((obj) => <JobCard key={obj._id} props={obj} />)
+  const JobMonthlyMapper = (jobs) => jobs.map((obj) => viewMode === 'grid'
+    ? <RebarCard key={obj._id} props={obj} />
+    : <RebarListRow key={obj._id} props={obj} />)
 
-  if (Loading) return <div className='loader_center_parent'><div className="lds-ring"><div></div><div></div><div></div><div></div></div></div>
+  if (Loading) return <div className='loader_center_parent'>
+    <div className="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 
-  else
-
-    return (
-      <section className='jobs'>
-        <div className="head">
-          <h1>Estimated Jobs</h1>
+  return (
+    <section className={styles.page}>
+      <div className={styles.headerRow}>
+        <div className={styles.titleBlock}>
+          <h1><span className={styles.titleIcon}><PendingActionsIcon /></span>Rebar Estimated Jobs</h1>
+          <p className={styles.subtitle}>Estimated Rebar jobs by month and year</p>
         </div>
-        <p className='mt_1' >Estimated Rebar jobs by month and year.</p>
-        <div className='crud'>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {!filterToggled && 
-            <>
-              <input name='searchjobs' id='searchjobs' type="text" placeholder='search jobs' onChange={filterJobs} />
-            </>
-            }
-            <div className='clear_filter' >
-              {filterToggled && <button className="clear_filter_btn" onClick={() => router.reload()}>Clear filters</button>}
+      </div>
 
-              {!filterToggled && selectedYear &&
-                <select value={selectedYear} className='year_select_dropdown' onChange={(value) => handleYearChange(value.target.value)} >
-                  <option disabled >Select Year</option>
-                  <option value={2019}>2019</option>
-                  <option value={2020}>2020</option>
-                  <option value={2021}>2021</option>
-                  <option value={2022}>2022</option>
-                  <option value={2023}>2023</option>
-                  <option value={2024}>2024</option>
-                  <option value={2025}>2025</option>
-                  <option value={2026}>2026</option>
-                </select>
-              }
+      <div className={styles.toolbar}>
+        <div className={styles.toolbarLeft}>
+          {!filterToggled && <>
+            <div className={styles.searchBox}>
+              <SearchIcon />
+              <input
+                name='searchjobs'
+                id='searchjobs'
+                type="text"
+                placeholder='Search jobs by name, client...'
+                onChange={filterJobs}
+              />
             </div>
+            <div className={styles.filterWrap}>
+              <Tooltip title="Filters">
+                <button
+                  type="button"
+                  className={styles.iconBtn}
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  aria-label="Open filters"
+                >
+                  <TuneIcon />
+                </button>
+              </Tooltip>
+              {isFilterOpen && <RebarJobsFilter setIsFilterOpen={setIsFilterOpen} render={renderFilter} />}
+            </div>
+            {selectedYear && <select value={selectedYear} className={styles.yearSelect}
+              onChange={(value) => handleYearChange(value.target.value)}>
+              <option disabled>Select Year</option>
+              {YEARS.map((year) => <option key={year} value={year}>{year}</option>)}
+            </select>}
+          </>}
+          {filterToggled && <button className={styles.clearBtn} onClick={clearAllFilters}>
+            Clear filters
+          </button>}
+          <div className={styles.viewToggle}>
+            <Tooltip title="List view">
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setViewMode('list')}
+                aria-label="List view"
+              >
+                <ViewListIcon />
+              </button>
+            </Tooltip>
+            <Tooltip title="Grid view">
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setViewMode('grid')}
+                aria-label="Grid view"
+              >
+                <GridViewIcon />
+              </button>
+            </Tooltip>
           </div>
-          <Link href={'/admin/dashboard/jobs/add'}><button>add job</button></Link>
         </div>
-        <div className='flt_main' >
-          {isFilterOpen && <AllJobsFilter setIsFilterOpen={setIsFilterOpen} render={renderFilter} />}
-        </div>
-        {!filterToggled && <div className='job_months' >
-          <div className='job_months_main' >
-            <ul>
-              {Months.map((month, i) => {
-                return <li className={` ${month.index === selectedMonth - 1 && `job_active_month`}`} onClick={() => handleMonthChange(month.index)}>{month.name}</li>
-              })}
-              {monthlyFilterToggled && <button className='month_flt_clear' onClick={ResetMonthlyFilter} >Clear filters</button>} 
-            </ul>
-          </div>
-        </div>}
+      </div>
 
-        {jobs.map((MonthlyJobData) => {
-          return (
-            <div className='job_months'>
-              <h1 id={`${MonthlyJobData.monthName?.toLowerCase()}`} key={selectedMonth}>{MonthlyJobData.monthName}</h1>
-              <div className='job_list_main' >
-                <div className="list">
-                  {JobMonthlyMapper(MonthlyJobData.jobs)}
-                </div>
+      {!filterToggled && <div className={styles.monthNav}>
+        <ul className={styles.monthPillList}>
+          <li
+            className={`${styles.monthPill} ${!monthlyFilterToggled ? styles.monthPillActive : ''}`}
+            onClick={ResetMonthlyFilter}
+          >
+            All
+          </li>
+          {Months.map((month, i) => (
+            <li
+              key={month.index}
+              className={`${styles.monthPill} ${monthlyFilterToggled && month.index === selectedMonth - 1 ? styles.monthPillActive : ''}`}
+              onClick={() => handleMonthChange(month.index)}
+            >
+              {month.name}
+            </li>
+          ))}
+        </ul>
+      </div>}
+
+      {jobs.length > 0 ? jobs.map((MonthlyJobData) => {
+        const hasJobs = MonthlyJobData.jobs && MonthlyJobData.jobs.length > 0
+        return (
+          <div className={styles.monthSection} key={MonthlyJobData._id}>
+            <div className={styles.monthSectionHeader}>
+              <div className={styles.monthSectionTitle}>
+                <h2 id={`${MonthlyJobData.monthName?.toLowerCase()}`}>{MonthlyJobData.monthName}</h2>
+                <span className={styles.countBadge}>{MonthlyJobData.jobs?.length || 0} job{MonthlyJobData.jobs?.length === 1 ? '' : 's'}</span>
               </div>
             </div>
-          )
-        })}
-
-      </section>
-    )
+            <div className={styles.jobListMain}>
+              {hasJobs ? (
+                <div className={viewMode === 'grid' ? styles.jobGrid : styles.jobList}>
+                  {JobMonthlyMapper(MonthlyJobData.jobs)}
+                </div>
+              ) : (
+                <div className={styles.emptyMonth}>
+                  <InboxIcon />
+                  <h4>No estimated jobs this month</h4>
+                  <p>Nothing is pending estimate for {MonthlyJobData.monthName} yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }) : (
+        <div className={styles.emptyMonth}>
+          <InboxIcon />
+          <h4>No estimated jobs found</h4>
+          <p>Try adjusting your search, filters or the selected year</p>
+        </div>
+      )}
+    </section>
+  )
 }
 
 export default EstimatedJobs

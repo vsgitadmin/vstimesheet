@@ -811,6 +811,18 @@ a {
   padding-top: 1rem;
   padding-bottom: 1rem;
   position: relative;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+/* only added when the awarded job resolves to a real project - clicking
+   anywhere on the card (besides the edit/notes icons) opens it */
+.vertical_card_clickable {
+  cursor: pointer;
+}
+
+.vertical_card_clickable:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .vertical_titles_main {
@@ -883,6 +895,48 @@ a {
   position: absolute;
   right: 8px;
   cursor: pointer;
+}
+
+.vertical_card_notes_btn {
+  position: absolute;
+  top: 16px;
+  right: 52px;
+  cursor: pointer;
+  color: #999;
+  display: flex;
+  align-items: center;
+}
+
+.vertical_card_notes_btn:hover {
+  color: var(--redTheme);
+}
+
+.vertical_card_notes_popover {
+  position: absolute;
+  top: 44px;
+  right: 8px;
+  z-index: 5;
+  width: 220px;
+  max-width: calc(100% - 16px);
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #eee;
+}
+
+.vertical_card_notes_popover h5 {
+  font-weight: 600;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.vertical_card_notes_popover p {
+  font-size: 12px;
+  color: #333;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 /* awarded job card end */
@@ -1837,9 +1891,16 @@ a {
 
 .layout_inner {
   margin-left: 270px;
-  width: 100%;
+  /* the sidebar (270px) is position:fixed and out of flow, so this is the only
+     real child of the flex row - width:100% used to mean "100% of the full
+     viewport" *in addition to* the 270px margin, pushing every page's content
+     270px past the right edge (invisible on narrow content, but it clipped
+     anything - like a wide table - that actually used the available width) */
+  width: calc(100% - 270px);
+  max-width: calc(100% - 270px);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .layout_child {

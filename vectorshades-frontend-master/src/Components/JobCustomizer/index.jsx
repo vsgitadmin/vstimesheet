@@ -4,6 +4,7 @@ import DisplayPoints from './displayPoints/displayPoints';
 import { general } from "../../Helpers/Extractor/Extractor"
 import nextId from "react-id-generator";
 import { toast } from 'react-toastify';
+import styles from './JobCustomizer.module.css'
 
 function JobCustomizer({ setJobs, defaultData, setTotal }) {
   const [items, setitems] = useState([]);
@@ -129,12 +130,12 @@ function JobCustomizer({ setJobs, defaultData, setTotal }) {
   if (Loading) return <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
   else
     return (
-      <div className="job_customizer" key={items}>
-        <table>
+      <div className={styles.wrapper} key={items}>
+        <table className={styles.table}>
           <thead>
-            <tr>
+            <tr className={styles.headRow}>
               <th></th>
-              <th>point</th>
+              <th>Point</th>
               <th>Hours</th>
               <th>$ PH</th>
               <th>Cost</th>
@@ -145,10 +146,11 @@ function JobCustomizer({ setJobs, defaultData, setTotal }) {
             </tr>
           </thead>
           <tbody>
+            {items.length === 0 && <tr className={styles.emptyRow}><td colSpan={9}>No breakdown items added yet</td></tr>}
             {itemMaper}
             <AddPoints currentItems={items} setTotalBreakPoints={(data) => addTotalBreakPoints(data, true)} length={items.length} addNewPoint={addNewPoint} />
             {items.length > 0 &&
-              <tr className={'total_row'}>
+              <tr className={styles.totalRow}>
                 <th>
                 </th>
                 <th>Main Total</th>

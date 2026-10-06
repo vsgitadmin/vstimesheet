@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.page {
+  width: 100%;
+  padding: 30px;
+  padding-bottom: 60px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---------- header ---------- */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.titleBlock h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.titleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: grey;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 2.6rem;
+  width: 26rem;
+  max-width: 100%;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: #f5f5f7;
+  border: 1.5px solid transparent;
+  transition: border-color .15s, background .15s;
+}
+
+.searchBox:focus-within {
+  border-color: var(--redTheme);
+  background: #fff;
+}
+
+.searchBox svg {
+  color: grey;
+  font-size: 20px;
+}
+
+.searchBox input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.addBtn {
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  background-color: var(--redTheme);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter .15s, transform .15s;
+}
+
+.addBtn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.addBtn svg {
+  font-size: 18px;
+}
+
+/* ---------- board ---------- */
+
+.board {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.col {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 140px;
+  background: #f7f7f9;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.08) 0px 2px 8px -1px, rgba(0, 0, 0, 0.05) 0px 1px 3px -1px;
+  transition: background .15s;
+}
+
+.colDragOver {
+  background: #efefff;
+}
+
+.colHeader {
+  height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e9e9ee;
+}
+
+.colDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.colDotTD { background: #9aa0a6; }
+.colDotIP { background: #f5a524; }
+.colDotCP { background: #22c55e; }
+
+.colTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.colCount {
+  min-width: 26px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: #e9e9ee;
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.colAddBtn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e64848d5;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.colBody {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emptyCol {
+  padding: 20px 10px;
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 12.5px;
+}
+
+/* ---------- card ---------- */
+
+.card {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: rgba(50, 50, 93, 0.09) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  cursor: grab;
+}
+
+.card:hover {
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 4px 12px -1px, rgba(0, 0, 0, 0.08) 0px 2px 4px -1px;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cardTitle {
+  font-size: 15.5px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.priorityPill {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cardDate {
+  font-size: 11px;
+  color: grey;
+}
+
+.cardDesc {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.cardFooter {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.moveSelect {
+  height: 1.9rem;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 1.5px solid #eee;
+  background: #fafafa;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #555;
+  outline: none;
+  cursor: pointer;
+}
+
+.moveSelect:focus {
+  border-color: var(--redTheme);
+}
+
+.cardActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.card:hover .cardActions {
+  display: flex;
+}
+
+.cardActions svg {
+  fill: #9a9a9a;
+  font-size: 17px;
+  cursor: pointer;
+  transition: fill .15s;
+}
+
+.cardActions svg:hover {
+  fill: var(--redTheme);
+}
+
+/* ---------- edit mode ---------- */
+
+.editRow {
+  display: flex;
+  gap: 8px;
+}
+
+.editRow input {
+  flex: 1;
+  min-width: 0;
+  border: 1.5px solid #eee;
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+}
+
+.editRow input:focus {
+  border-color: var(--redTheme);
+}
+
+.editRow select {
+  border: 1.5px solid #eee;
+  border-radius: 8px;
+  outline: none;
+  font-size: 12px;
+  padding: 0 6px;
+}
+
+.editDesc {
+  width: 100%;
+  border: 1.5px solid #eee;
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 9px;
+  min-height: 44px;
+}
+
+.editDesc:focus {
+  border-color: var(--redTheme);
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.editActions button {
+  height: 2rem;
+  padding: 0 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--redTheme);
+  color: #fff;
+  border: none;
+}
+
+.editActions button:nth-of-type(2) {
+  background: #fff;
+  border: 1.5px solid var(--redTheme);
+  color: var(--redTheme);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .board {
+    flex-direction: column;
+  }
+
+  .col {
+    width: 100%;
+  }
+
+  .searchBox {
+    width: 100%;
+  }
+}

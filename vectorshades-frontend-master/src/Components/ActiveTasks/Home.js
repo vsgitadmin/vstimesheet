@@ -6,12 +6,35 @@ import { useRouter } from 'next/router'
 import projectSections from '../../Constants/projectSections'
 import { useContext, useState } from 'react'
 import { ParentStore } from '../../../pages/_app'
+import CreateTaskPopup from '../Popups/Project/CreateTaskPopup'
+import { createTaskController } from '../../Controllers/projects/index'
+import { toast } from 'react-toastify'
 
 const Home = ({ currentUserTasks, taskAnalytics, dashboardData, data }) => {
   const { ParentState } = useContext(ParentStore)
 
   const [sections, setsections] = useState(!data.rebar ? projectSections : data.linkedDepartments.map((e) => e.rebarType))
+  const [createTaskPopup, setCreateTaskPopup] = useState(false)
+  const [loadingApi, setLoadingApi] = useState(false)
   const router = useRouter();
+
+  // creation-only (no edit mode) - this page has no section tabs of its own,
+  // so a task created here goes into the first section, same as opening the
+  // Tasks tab fresh and hitting CREATE without switching sections
+  const createTaskFunction = async (taskData) => {
+    setLoadingApi(true)
+    taskData.projectId = data._id
+    try {
+      await createTaskController(taskData)
+      toast.success('Task Created Successfully')
+      setCreateTaskPopup(false)
+    } catch (err) {
+      console.log(err)
+      toast.error('error occured while creating task')
+    } finally {
+      setLoadingApi(false)
+    }
+  }
 
   const routeTask = (id) => {
     router.push({
@@ -27,9 +50,26 @@ const Home = ({ currentUserTasks, taskAnalytics, dashboardData, data }) => {
 
   return (
     <>
+      {createTaskPopup && <CreateTaskPopup
+        projectId={router.query.id}
+        loading={loadingApi}
+        edit={false}
+        submit={createTaskFunction}
+        section={sections[0]}
+        sections={sections}
+        createTaskPopup={createTaskPopup}
+        setCreateTaskPopup={setCreateTaskPopup}
+        defaultData={null}
+        members={data.membersByName}
+        projectData={data}
+      />}
+
       <div className={styles.milestones_main} >
         <div className={styles.task_summary_main} >
-          <h4>Your summary</h4>
+          <div className={styles.tasks_top_bar} style={{ marginTop: 0 }}>
+            <h4>Your summary</h4>
+            {isValidToCreateTask() && <button className={styles.create_task_btn} onClick={() => setCreateTaskPopup(true)}>CREATE TASK</button>}
+          </div>
           <div className={styles.task_summary_box} >
             <div className={styles.pro_est} >
               <div className={styles.pro_est_top} >

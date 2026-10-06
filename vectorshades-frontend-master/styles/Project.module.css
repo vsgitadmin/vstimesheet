@@ -2,60 +2,102 @@
 
 .pro_container {
   width: 100%;
-  height: 100vh;
   display: flex;
+  align-items: flex-start;
+  gap: 24px;
   font-family: "Roboto", sans-serif;
 }
 
 .pro_left {
-  width: 76%;
-  height: 100%;
+  /* flex (not a % guess) so this always gets exactly what's left after the
+     320px analytics panel - the old width:76% + the panel's position:fixed
+     were two independent sizing systems (76% of this flex row vs 20% of the
+     full viewport) that didn't actually add up, so they overlapped */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .pro_top {
   width: 100%;
   padding: 33.6px;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
-.pro_top h2 {
-  font-weight: 500;
+.pro_top h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.pro_title_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
 }
 
 .pro_filter {
-  width: 100%;
-  height: 90px;
+  /* width: 100%; */
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 33.6px;
-  padding-top: 0;
-  padding-right: 55px;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 22px 33.6px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
 }
 
 .pro_filter_search{
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  height: 2.5rem;
-  width: 35vw;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pro_search_box {
   position: relative;
+  flex: 1 1 200px;
+  max-width: 280px;
+}
+
+.pro_search_box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9a9a9a;
+  font-size: 20px;
 }
 
 .pro_filter_search input{
-height: 100%;
-width: 80%;
-padding: 0.5rem;
-border: none;
-outline: none;
-border-radius: 10px;
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px 10px 38px;
+  border-radius: 10px;
+  border: 1.5px solid #e9e9e9;
+  outline: none;
+  height: 2.6rem;
+  background: #fafafa;
+  transition: border-color .15s, background .15s;
+}
+
+.pro_filter_search input:focus {
+  border-color: var(--redTheme);
+  background: #fff;
 }
 
 .pro_other_filter {
-  width: 15.3%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -75,34 +117,194 @@ border-radius: 10px;
   font-size: 14px;
 }
 
+.pro_toolbar_right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 /* project cards start */
 .pro_cards {
   width: 100%;
   padding: 33.6px;
   padding-top: 0;
-  display: flex;
-  gap: 2%;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 20px;
   cursor: pointer;
 }
 
 .pro_card {
-  margin-top: 2%;
-  width: 48%;
+  width: auto;
+  margin-top: 0;
   background: white;
-  border-radius: 10px;
-  padding: 15px;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  padding: 16px;
   position: relative;
-  transition: ease-in-out 0.1s;
+  box-shadow: none;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
 }
 
 .pro_card:hover{
-  transform: scale(1.05);
+  transform: translateY(-3px);
+  border-color: #c2c2c2;
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+/* view toggle (grid / list) */
+
+.pro_view_toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.pro_view_toggle_btn {
+  height: 2.2rem;
+  width: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #8a8a8a;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pro_view_toggle_btn svg {
+  font-size: 20px;
+}
+
+.pro_view_toggle_btn_active {
+  background: #fff;
+  color: #e64848;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px;
+}
+
+/* list view */
+
+.pro_list {
+  width: 100%;
+  padding: 33.6px;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.pro_row {
+  background: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  padding: 14px 20px;
+  box-shadow: none;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.pro_row:hover {
+  transform: translateY(-2px);
+  border-color: #c2c2c2;
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.pro_row_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pro_row_title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pro_row_title h3 {
+  font-size: 17px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.pro_type_badge {
+  background: #f2f2f2;
+  color: #6b6b6b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.pro_row_top_right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pro_row_summary_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #888;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pro_row_summary_btn:hover {
+  background: #e64848eb;
+  color: #fff;
+}
+
+.pro_row_stats {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+}
+
+.pro_row_stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #444;
+  white-space: nowrap;
+}
+
+.pro_row_stat svg {
+  font-size: 17px;
+}
+
+.pro_row_bottom {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .pro_name {
   display: flex;
   justify-content: space-between;
+}
+
+.pro_name h2 {
+  text-transform: capitalize;
 }
 
 .pro_items {
@@ -138,13 +340,47 @@ border-radius: 10px;
     gap: 5px;
 }
 
-.labels span{
-  display: inline-block;
-  padding: 2px 6px;
-  color: white;
+/* status badges - colored pill + dot, one variant per status so a new
+   status not covered by completed/active still gets a (default) badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
   border-radius: 20px;
-  font-weight: bold;
-  font-size: 13px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+.badge_success {
+  background: #e5f7ec;
+  color: #1e9e52;
+}
+
+.badge_warning {
+  background: #fef1dd;
+  color: #c9820a;
+}
+
+.badge_danger {
+  background: #fbe6e6;
+  color: #d84343;
+}
+
+.badge_default {
+  background: #eef0f3;
+  color: #5b6472;
 }
 
 .pro_desc {
@@ -162,14 +398,32 @@ border-radius: 10px;
 /* project cards end */
 
 .pro_right {
+  /* plain flex sibling, no sticky/fixed - it scrolls in lockstep with
+     .pro_left so the two columns always stay aligned at the same top edge;
+     sticky positioning made it drift out of sync with the project list
+     the moment the page scrolled */
+  flex: 0 0 320px;
+  width: 320px;
+  align-self: flex-start;
   margin-top: 20px;
+  margin-right: 35px;
+  margin-bottom: 30px;
   border-radius: 30px;
-  width: 20%;
-  height: 100%;
   background: white;
-  position: fixed;
-  right: 35px;
   padding-top: 50px;
+  padding-bottom: 30px;
+}
+
+@media (max-width: 1100px) {
+  .pro_container {
+    flex-direction: column;
+  }
+
+  .pro_right {
+    width: 100%;
+    margin-right: 0;
+    position: static;
+  }
 }
 
 .pro_right_top {
@@ -217,34 +471,55 @@ border-radius: 10px;
 }
 
 .pro_right_det {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .pro_right_det_box {
-  width: 50%;
-  height: 80px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  background: #faf7f7;
+}
+
+.pro_stat_icon {
+  flex: 0 0 auto;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 9px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  color: #fff;
+}
+
+.pro_stat_icon svg {
+  font-size: 17px;
 }
 
 .pro_right_det_box div {
-  width: 70%;
+  min-width: 0;
 }
 
 .pro_right_det div h5 {
-  color: lightgrey;
-  font-size: 12px;
+  color: #999;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  white-space: nowrap;
 }
 
 .pro_right_det div h4 {
-  padding-left: 5px;
-  font-size: 22px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #222;
 }
 
 /* project list */
@@ -307,22 +582,28 @@ border-radius: 10px;
 }
 
 .ar_accept_review_btn{
-  width: 50%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 10px;
-  padding-right: 10px;
 }
 
 .ar_accept_review_btn button{
-  width: 10rem;
-  height: 2.5rem;
+  height: 2.6rem;
+  padding: 0 18px;
   border: none;
   outline: none;
   background:  #e64848eb;
   border-radius: 10px;
   color: white;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+
+.ar_accept_review_btn button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .ar_accept_review_btn a{

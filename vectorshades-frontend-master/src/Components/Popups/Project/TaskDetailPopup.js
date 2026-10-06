@@ -12,6 +12,7 @@ import Loader from '../../Loader/loader';
 import CheckCircleOutlineTwoToneIcon from '@mui/icons-material/CheckCircleOutlineTwoTone';
 import ActualHourPopup from './ActualHourPopup';
 import TaskActivity from '../../ActiveTasks/TaskActivity';
+import { broadcastTaskStatusUpdate, onTaskStatusUpdate } from '../../../Utils/taskStatusEvents';
 
 const TaskDetailPopup = ({ taskPopup, setTaskPopup, deleteTask, id, project, editTask, render, projectData }) => {
   const [showAddUser, setShowAddUser] = useState(false)
@@ -25,7 +26,7 @@ const TaskDetailPopup = ({ taskPopup, setTaskPopup, deleteTask, id, project, edi
   const due_date = formatDate(taskData?.dueDate);
   const [Activity, setActivity] = useState([])
   const [isClickCommentBox, setIsClickCommentBox] = useState(false);
-  const { ParentState } = useContext(ParentStore);
+  const { ParentState, setParentState } = useContext(ParentStore);
   const [activityMessage, setactivityMessage] = useState(null)
   const popupRef = useRef()
   const [selectedTab, setSelectedTab] = useState(0)
@@ -42,6 +43,16 @@ const TaskDetailPopup = ({ taskPopup, setTaskPopup, deleteTask, id, project, edi
       popupRef.current.scrollTop += 40;
     }
   }, [isClickCommentBox]);
+
+  // reflect status changes made elsewhere (e.g. pause/resume from the
+  // floating working widget) into this same popup, live, if it's open for
+  // that same task
+  useEffect(() => {
+    return onTaskStatusUpdate((changes) => {
+      if (!taskData || changes.id !== taskData._id) return
+      settaskData((prev) => ({ ...prev, ...changes }))
+    })
+  }, [taskData?._id]);
 
 
 
@@ -117,6 +128,7 @@ const TaskDetailPopup = ({ taskPopup, setTaskPopup, deleteTask, id, project, edi
         toast.success(message);
         settaskData({ ...taskData, ...body });
         setLoadAgain(true);
+        broadcastTaskStatusUpdate(body);
       })
       .catch((err) => {
         console.log(err.message);
@@ -145,25 +157,79 @@ const TaskDetailPopup = ({ taskPopup, setTaskPopup, deleteTask, id, project, edi
     return `${sign}${hours} h ${minutes} m`;
   }
 
-  const startWorkingFunction = () => editTaskHandler({ startedOn: new Date(), status: 'In Progress' }, 'Task moved to In Progress')
+  // pushes/updates the floating "currently working" widget (rendered globally
+  // in the Layout) so pause/resume stays reachable from any page, not just
+  // from this popup
+  const pushActiveWorkingTask = (status, startedOn) => {
+    setParentState(prev => ({
+      ...prev,
+      activeWorkingTask: {
+        id: taskData._id,
+        projectId: taskData.projectId,
+        projectName: projectData?.projectName,
+        taskName: taskData.name,
+        section: taskData.section,
+        status,
+        startedOn,
+      }
+    }))
+  }
 
-  const pauseWorkingFunction = () => editTaskHandler({ status: 'Paused' }, 'Task Paused Successfully')
+  const clearActiveWorkingTask = () => {
+    setParentState(prev => {
+      if (!prev?.activeWorkingTask || prev.activeWorkingTask.id !== taskData._id) return prev
+      const { activeWorkingTask, ...rest } = prev
+      return rest
+    })
+  }
 
-  const resumeWorkingFunction = () => editTaskHandler({ status: 'In Progress', startedOn: new Date() }, 'Task Resumed Successfully')
+  // if this popup is opened for a task that's already being worked on
+  // (in progress/paused, e.g. after a page reload), bring the widget back
+  useEffect(() => {
+    if (!taskData || taskData.completed) return
+    if (taskData.assignedTo !== ParentState?.auth?._id) return
+    if (['In Progress', 'Paused'].includes(taskData.status)) {
+      pushActiveWorkingTask(taskData.status, taskData.startedOn || new Date())
+    }
+  }, [taskData?._id, taskData?.status])
+
+  const startWorkingFunction = () => {
+    const startedOn = new Date()
+    editTaskHandler({ startedOn, status: 'In Progress' }, 'Task moved to In Progress')
+    pushActiveWorkingTask('In Progress', startedOn)
+  }
+
+  const pauseWorkingFunction = () => {
+    editTaskHandler({ status: 'Paused' }, 'Task Paused Successfully')
+    pushActiveWorkingTask('Paused', taskData.startedOn)
+  }
+
+  const resumeWorkingFunction = () => {
+    const startedOn = new Date()
+    editTaskHandler({ status: 'In Progress', startedOn }, 'Task Resumed Successfully')
+    pushActiveWorkingTask('In Progress', startedOn)
+  }
 
   const markAsCompleteFunction = () => {
     if (projectData.rebar === true) setactualHourPopup(true)
-    else editTaskHandler({ completed: true, status: "Completed" }, 'Task marked as completed')
+    else {
+      editTaskHandler({ completed: true, status: "Completed" }, 'Task marked as completed')
+      clearActiveWorkingTask()
+    }
   }
 
   const markAsReviewFunction = () => {
     if (projectData.rebar === true) setactualHourPopup(true)
-    else editTaskHandler({ status: "Review" }, 'Task marked as In Review')
+    else {
+      editTaskHandler({ status: "Review" }, 'Task marked as In Review')
+      clearActiveWorkingTask()
+    }
   }
 
   const markRebarTaskCompleted = (actualHours, tonsDetailed) => {
     setactualHourPopup(false)
     editTaskHandler({ completed: true, status: "Completed", actualHours, tonsDetailed }, 'Task marked as completed')
+    clearActiveWorkingTask()
   }
 
   function isUserRoleAD() {

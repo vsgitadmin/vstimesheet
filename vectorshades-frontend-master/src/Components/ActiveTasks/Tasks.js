@@ -32,11 +32,19 @@ import { useRouter } from "next/router";
 import projectSections from "../../Constants/projectSections";
 import { ParentStore } from "../../../pages/_app";
 import rebarSections from "../../Constants/rebarSections";
+import { onTaskStatusUpdate } from "../../Utils/taskStatusEvents";
 
 const Tasks = ({ project, projectDetails, generalOnly }) => {
   const { ParentState } = useContext(ParentStore)
-  const [sections, setSections] = useState(generalOnly === true ? ['General'] : !projectDetails.rebar ? projectSections : [...projectDetails.linkedDepartments.map((e) => e.rebarType), 'General'])
+  const [sections, setSections] = useState(generalOnly === true ? ['General'] : ['All', ...(!projectDetails.rebar ? projectSections : [...projectDetails.linkedDepartments.map((e) => e.rebarType), 'General'])])
   // const [sections, setSections] = useState(!projectDetails.rebar ? projectSections : rebarSections)
+  // real, creatable sections - excludes the synthetic "All" tab, since a
+  // task can't actually be created "in All"
+  const creatableSections = sections.filter((s) => s !== 'All')
+  // the backend treats "no section filter" (undefined) as "match every
+  // section", so the "All" tab has to translate to that rather than the
+  // literal string
+  const toSectionParam = (s) => (s === 'All' ? undefined : s)
   const [taskPopup, setTaskPopup] = useState(false);
   const [createTaskPopup, setCreateTaskPopup] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -89,13 +97,13 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
   }
 
   useEffect(() => {
-    fetchCountController(project, sections[selectedSection])
-    fetchProjectTasks(currentPage, sections[selectedSection]);
+    fetchCountController(project, toSectionParam(sections[selectedSection]))
+    fetchProjectTasks(currentPage, toSectionParam(sections[selectedSection]));
   }, [selectedSection, currentPage])
 
   useEffect(() => {
     if (yourTasksOpen) fetchYourTasks(1)
-    else fetchProjectTasks(1, sections[selectedSection]);
+    else fetchProjectTasks(1, toSectionParam(sections[selectedSection]));
   }, [yourTasksOpen])
 
   useEffect(() => {
@@ -105,7 +113,15 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
   }, [createTaskPopup]);
 
   useEffect(() => {
-    fetchSectionTasksCountController(project, sections)
+    fetchSectionTasksCountController(project, creatableSections)
+  }, [])
+
+  // patch a task's status in place wherever it was changed from (the task
+  // popup, or the floating working widget) instead of refetching the list
+  useEffect(() => {
+    return onTaskStatusUpdate((changes) => {
+      setTasks((prev) => prev.map((t) => (t._id === changes.id ? { ...t, ...changes } : t)))
+    })
   }, [])
 
   const createOrModifyTask = async (data) => {
@@ -114,7 +130,7 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
     if (editTaskDefaultData == null) {
       createTaskController(data).then(async () => {
         toast.success("Task Created Successfully");
-        await fetchProjectTasks(1, sections[selectedSection]);
+        await fetchProjectTasks(1, toSectionParam(sections[selectedSection]));
         setCreateTaskPopup(false);
         setloadingApi(false)
       });
@@ -123,7 +139,7 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
       editSingleTasksController(data, { project }).then(async () => {
         setEditTaskDefaultData(null);
         toast.success("Task Edited Successfully");
-        await fetchProjectTasks(1, sections[selectedSection]);
+        await fetchProjectTasks(1, toSectionParam(sections[selectedSection]));
         setCreateTaskPopup(false);
         setloadingApi(false)
       });
@@ -154,7 +170,7 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
       selectedTask.section = 'Closed'
       selectedTask.id = selectedTask._id
       await editSingleTasksController(selectedTask, { project })
-      await fetchProjectTasks(1, sections[selectedSection]);
+      await fetchProjectTasks(1, toSectionParam(sections[selectedSection]));
       setTaskPopup(false)
       toast.success('Task Closed Successfully')
     } catch (err) {
@@ -187,7 +203,7 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
   };
 
   const renderTasks = () => {
-    fetchProjectTasks(1, sections[selectedSection]);
+    fetchProjectTasks(1, toSectionParam(sections[selectedSection]));
   }
 
 
@@ -232,7 +248,8 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
           edit={editTaskDefaultData !== null ? true : false}
           submit={createOrModifyTask}
           generalOnly={generalOnly}
-          section={sections[selectedSection]}
+          section={sections[selectedSection] === 'All' ? creatableSections[0] : sections[selectedSection]}
+          sections={creatableSections}
           createTaskPopup={createTaskPopup}
           setCreateTaskPopup={setCreateTaskPopup}
           defaultData={editTaskDefaultData}
@@ -243,12 +260,17 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
         <div className={styles.tasks_main}>
           {!yourTasksOpen && <div className={styles.sub_secions}>
             {sections.map((section, index) => {
+              // "All" has no count of its own from the backend - it's the
+              // sum of every real section's count instead
+              const count = section === 'All'
+                ? Object.values(sectionTaskCounts).reduce((sum, c) => sum + c, 0)
+                : (sectionTaskCounts[section] || 0)
               return (
                 <h5
                   className={index === selectedSection && styles.active_link}
                   onClick={() => setSelectedSection(index)}
                 >
-                  {section}{` (${sectionTaskCounts[section] || 0})`}
+                  {section}{` (${count})`}
                 </h5>
               );
             })}
@@ -307,6 +329,9 @@ const Tasks = ({ project, projectDetails, generalOnly }) => {
                   <div className={styles.tb_3}>
                     <div className={styles.tb_title} >
                       <h4>{data.name}</h4>
+                      {sections[selectedSection] === 'All' &&
+                        <div className={styles.section_badge} >{data.section}</div>
+                      }
                       {data.completed === true &&
                         <div className={styles.labels} >Completed</div>
                       }

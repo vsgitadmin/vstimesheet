@@ -1,5 +1,5 @@
 import { useEffect, useRef ,useState} from 'react';
-import style from '../../../styles/Bord.module.css'
+import style from '../../../styles/TodoBoard.module.css'
 
 const EditTodo = ({ setEditClicked, data, edit }) => {
   const [Data, setData] = useState(data)
@@ -20,7 +20,7 @@ const EditTodo = ({ setEditClicked, data, edit }) => {
 
   return (
     <>
-      <div className={style.bord_inner_list_top} >
+      <div className={style.editRow} >
         <input type="text" defaultValue={data.title} onChange={(e) => Data.title = e.target.value} />
         <select defaultValue={data.priority} onChange={(e) => Data.priority = e.target.value}>
           <option value="Relaxed">Relaxed</option>
@@ -29,11 +29,9 @@ const EditTodo = ({ setEditClicked, data, edit }) => {
           <option value="Critical">Critical</option>
         </select>
       </div>
-      <div className={style.bord_inner_list_bottom}>
-        <textarea ref={textareaRef} onChange={handleChange}
-          defaultValue={data.description} />
-      </div>
-      <div className={style.todo_edit_save} >
+      <textarea className={style.editDesc} ref={textareaRef} onChange={handleChange}
+        defaultValue={data.description} />
+      <div className={style.editActions} >
         <button onClick={() => { edit(Data); setEditClicked("") }}>SAVE</button>
         <button onClick={() => setEditClicked("")} >CANCEL</button>
       </div>
@@ -41,4 +39,4 @@ const EditTodo = ({ setEditClicked, data, edit }) => {
   )
 }
 
-export default EditTodo 
+export default EditTodo

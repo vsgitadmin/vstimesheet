@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { AccountBox, ArrowForward, FiberManualRecord, Healing, } from '@mui/icons-material'
-import styles from '../../../../styles/Hr.module.css'
+import { ArrowForward, FiberManualRecord } from '@mui/icons-material'
+import styles from '../../../../styles/HrDashboard.module.css'
 import 'react-circular-progressbar/dist/styles.css'
 import { Bar, BarChart, Cell, Pie, PieChart, Tooltip, XAxis } from 'recharts'
 import { getEmployeeHRDashboardController } from '../../../Controllers/Employee/index'
@@ -8,6 +8,13 @@ import { toast } from 'react-toastify'
 import Loader from '../../Loader/loader'
 import ProfileImage from '../../ProfileImage/Image'
 import Link from 'next/link'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined'
+import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined'
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined'
+import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined'
+import AccountBox from '@mui/icons-material/AccountBox'
+import Healing from '@mui/icons-material/Healing'
 
 const Dashboard = () => {
   const [DashboardData, setDashboardData] = useState(null)
@@ -29,51 +36,7 @@ const Dashboard = () => {
         toast.error('failed to load dashboard data')
       })
   }, [])
-  //commenting for future reference
-  // const data = [
-  //     {
-  //         name: "Page A",
-  //         uv: 4000,
-  //         pv: 2400,
-  //         amt: 2400
-  //     },
-  //     {
-  //         name: "Page B",
-  //         uv: 3000,
-  //         pv: 1398,
-  //         amt: 2210
-  //     },
-  //     {
-  //         name: "Page C",
-  //         uv: 2000,
-  //         pv: 9800,
-  //         amt: 2290
-  //     },
-  //     {
-  //         name: "Page D",
-  //         uv: 2780,
-  //         pv: 3908,
-  //         amt: 2000
-  //     },
-  //     {
-  //         name: "Page E",
-  //         uv: 1890,
-  //         pv: 4800,
-  //         amt: 2181
-  //     },
-  //     {
-  //         name: "Page F",
-  //         uv: 2390,
-  //         pv: 3800,
-  //         amt: 2500
-  //     },
-  //     {
-  //         name: "Page G",
-  //         uv: 3490,
-  //         pv: 4300,
-  //         amt: 2100
-  //     }
-  // ];
+
   const data = DashboardData?.department?.map((item) => {
     return {
       name: item._id,
@@ -89,174 +52,168 @@ const Dashboard = () => {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
+  const STAT_TILES = [
+    { key: 'totalEmployees', label: 'Total Employees', icon: <GroupsOutlinedIcon /> },
+    { key: 'totalTodayLeaves', label: 'Number of Leave', icon: <EventBusyOutlinedIcon /> },
+    { key: 'totalNewEmployees', label: 'New Employees', icon: <PersonAddOutlinedIcon /> },
+  ]
+
   if (Loading) return <Loader />
   else
     return (
       <>
-        <div className={styles.hrdash_container}>
-          <div className={styles.hrdash_top}>
-            <h2>Dashboard</h2>
+        <div className={styles.page}>
+          <div className={styles.headerRow}>
+            <div className={styles.titleBlock}>
+              <h1><span className={styles.titleIcon}><HomeOutlinedIcon /></span>Dashboard</h1>
+              <p className={styles.subtitle}>An overview of your organization's workforce and activity</p>
+            </div>
           </div>
-          <div className={styles.top_boxes}>
-            <div className={styles.top_box}>
-              <h3>Total employees</h3>
-              <div>
-                <h2>{DashboardData.totalEmployees}</h2>
+
+          <div className={styles.statRow}>
+            {STAT_TILES.map((tile) => (
+              <div className={styles.statCard} key={tile.key}>
+                <span className={styles.statIconTile}>{tile.icon}</span>
+                <div>
+                  <h3>{tile.label}</h3>
+                  <h2>{DashboardData[tile.key]}</h2>
+                </div>
               </div>
-            </div>
-            <div className={styles.top_box}>
-              <h3>Number of Leave</h3>
+            ))}
+            <div className={styles.statCard}>
+              <span className={styles.statIconTile}><SentimentSatisfiedAltOutlinedIcon /></span>
               <div>
-                <h2>{DashboardData.totalTodayLeaves}</h2>
-              </div>
-            </div>
-            <div className={styles.top_box}>
-              <h3>New employees</h3>
-              <div>
-                <h2>{DashboardData.totalNewEmployees}</h2>
-              </div>
-            </div>
-            <div className={styles.top_box}>
-              <h3>Happiness rate</h3>
-              <div>
+                <h3>Happiness Rate</h3>
                 <h2>80%</h2>
               </div>
             </div>
           </div>
-          <div className={styles.mid_boxes}>
-            <div className={`${styles.mid_box} ${styles.mid_box_1}`}>
-              <h3>Working Format</h3>
-              <div className={styles.working_format} >
-                <PieChart width={300} height={300} >
-                  <Pie data={pieChartData} cx={150} cy={150} innerRadius={80} outerRadius={100} fill="#8884d8" paddingAngle={5} dataKey="value">
+
+          <div className={styles.midRow}>
+            <div className={styles.card}>
+              <div className={styles.cardTitle}><h3>Working Format</h3></div>
+              <div className={styles.pieWrap}>
+                <PieChart width={220} height={220} >
+                  <Pie data={pieChartData} cx={110} cy={110} innerRadius={60} outerRadius={80} fill="#8884d8" paddingAngle={5} dataKey="value">
                     {pieChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <text x={160} y={150} textAnchor="middle" fontSize={18} >Total</text>
-                  <text x={160} y={175} textAnchor="middle" fontSize={20} style={{ fontWeight: "bolder" }} >{DashboardData.totalEmployees}</text>
+                  <text x={110} y={104} textAnchor="middle" fontSize={13} fill="#999">Total</text>
+                  <text x={110} y={126} textAnchor="middle" fontSize={18} fontWeight="700" >{DashboardData.totalEmployees}</text>
                 </PieChart>
               </div>
-              <div className={styles.working_format_bottom}>
-                <div>
-                  <FiberManualRecord style={{ fill: "#0088FE" }} />
-                  <h5>Emp Working</h5>
-                </div>
-                <div>
-                  <FiberManualRecord style={{ fill: "#00C49F" }} />
-                  <h5>Emp On Leave</h5>
-                </div>
-                <div>
-                  <span style={{ background: "#" }} ></span>
-                  <FiberManualRecord style={{ fill: "#FFBB28" }} />
-                  <h5>Emp Not  Logged</h5>
-                </div>
+              <div className={styles.legend}>
+                <div><FiberManualRecord style={{ fill: "#0088FE" }} />Emp Working</div>
+                <div><FiberManualRecord style={{ fill: "#00C49F" }} />Emp On Leave</div>
+                <div><FiberManualRecord style={{ fill: "#FFBB28" }} />Emp Not Logged</div>
               </div>
             </div>
-            <div className={`${styles.mid_box} ${styles.mid_box_2}`}>
-              <div className={styles.emp_status}>
-                <h3>Employee Status</h3>
-              </div>
-              <div className={styles.emp_status_table_main} >
-                <table className={styles.emp_status_table}>
-                  <tr>
-                    <th>Employee Name</th>
-                    <th>Job Title</th>
-                    <th>Team Lead</th>
-                    <th>Status</th>
-                  </tr>
-                  {DashboardData.latestFewEmployees?.map((item) => {
-                    return (
-                      <tr>
-                        <td>
-                          <div>
-                            <ProfileImage size={35} id={item._id} />
-                            <h4>{item.firstName}</h4>
-                          </div>
-                        </td>
-                        <td>{item.designation}</td>
-                        <td>{item.department}</td>
-                        <td>
-                          <div>{item.working ? 'working' : 'not working'}</div>
-                        </td>
-                      </tr>
-                    )
-                  })}
+
+            <div className={styles.card}>
+              <div className={styles.cardTitle}><h3>Employee Status</h3></div>
+              <div className={styles.statusTableWrap}>
+                <table className={styles.statusTable}>
+                  <thead>
+                    <tr>
+                      <th>Employee Name</th>
+                      <th>Job Title</th>
+                      <th>Team Lead</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {DashboardData.latestFewEmployees?.map((item) => {
+                      return (
+                        <tr key={item._id}>
+                          <td>
+                            <div className={styles.statusPerson}>
+                              <ProfileImage size={30} id={item._id} />
+                              <span>{item.firstName}</span>
+                            </div>
+                          </td>
+                          <td>{item.designation}</td>
+                          <td>{item.department}</td>
+                          <td>
+                            <span className={`${styles.pill} ${item.working ? styles.pillGood : styles.pillMuted}`}>{item.working ? 'Working' : 'Not working'}</span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
                 </table>
               </div>
-              <div className={styles.mid_box_table_bottom}>
-                <h4>Showing latest employees</h4>
-                <div>
-                </div>
-              </div>
+              <div className={styles.cardFootnote}>Showing latest employees</div>
             </div>
-            <div className={`${styles.mid_box} ${styles.mid_box_3}`}>
-              <h3>Requests</h3>
-              <div className={styles.mid_box_3_list}>
-                <div>
-                  <AccountBox style={{ fill: 'grey' }} />
+
+            <div className={styles.card}>
+              <div className={styles.cardTitle}><h3>Requests</h3></div>
+              <div className={styles.requestList}>
+                <div className={styles.requestRow}>
+                  <span className={styles.requestIcon}><AccountBox /></span>
                   <h4>Profile Update</h4>
                   <h4>{DashboardData.activationRequest}</h4>
                 </div>
-                <div>
-                  <Healing style={{ fill: 'grey' }} />
+                <div className={styles.requestRow}>
+                  <span className={styles.requestIcon}><Healing /></span>
                   <h4>Sick Leaves</h4>
                   <h4>{DashboardData.leaveRequest}</h4>
                 </div>
               </div>
             </div>
           </div>
-          <div className={styles.bottom_boxes}>
-            <div className={styles.bottom_box_1}>
-              <div className={styles.bottom_box_1_title} >
-                <h3>Department Analytics</h3>
-              </div>
-              <BarChart
-                width={500}
-                height={300}
-                data={data}
-              >
-                <XAxis dataKey="name" />
-                <Tooltip />
-                <Bar dataKey="uv" fill="#8884d8" />
-              </BarChart>
-            </div>
-            <div className={styles.bottom_box_2}>
-              <div>
-                <h3>Recruitment progress</h3>
-                <h3>
-                  <Link href={"/admin/dashboard/hr/employees"}>View all <ArrowForward style={{ fill: 'var(--redTheme)' }} /></Link>
-                </h3>
-              </div>
-              <table>
-                <tr>
-                  {DashboardData.recruitement.length > 0 && <>
-                    <th>Full Name</th>
-                    <th>Designation</th>
-                  </>}
-                </tr>
-                {DashboardData.recruitement.length > 0 ? DashboardData.recruitement.map((item) => {
-                  return (
-                    <>
-                      <tr>
-                        <td>
-                          <div>
-                            <ProfileImage size={35} id={item?._id} />
-                            <h4>{`${item.firstName} ${item.lastName}`}</h4>
-                          </div>
-                        </td>
-                        <td>{item.designation}</td>
-                      </tr></>
-                  )
-                }) :
-                  <div className={styles.no_onboarding} >
-                    <img src="https://i.ibb.co/Z848pmN/png-transparent-onboarding-computer-icons-human-resource-management-others-miscellaneous-service-log.png" alt="" />
-                    <h3>No Onboarding</h3>
-                    <p>No onboarding process right now</p>
-                  </div>
-                }
 
-              </table>
+          <div className={styles.bottomRow}>
+            <div className={styles.card}>
+              <div className={styles.cardTitle}><h3>Department Analytics</h3></div>
+              <div className={styles.chartScroll}>
+                <BarChart
+                  width={480}
+                  height={280}
+                  data={data}
+                >
+                  <XAxis dataKey="name" />
+                  <Tooltip />
+                  <Bar dataKey="uv" fill="#8884d8" />
+                </BarChart>
+              </div>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.cardTitle}>
+                <h3>Recruitment Progress</h3>
+                <Link className={styles.cardLink} href={"/admin/dashboard/hr/employees"}>View all <ArrowForward /></Link>
+              </div>
+              {DashboardData.recruitement.length > 0 ? (
+                <div className={styles.chartScroll}>
+                  <table className={styles.recruitTable}>
+                    <thead>
+                      <tr>
+                        <th>Full Name</th>
+                        <th>Designation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {DashboardData.recruitement.map((item) => (
+                        <tr key={item._id}>
+                          <td>
+                            <div className={styles.recruitPerson}>
+                              <ProfileImage size={30} id={item?._id} />
+                              <span>{`${item.firstName} ${item.lastName}`}</span>
+                            </div>
+                          </td>
+                          <td>{item.designation}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className={styles.emptyState} >
+                  <img src="https://i.ibb.co/Z848pmN/png-transparent-onboarding-computer-icons-human-resource-management-others-miscellaneous-service-log.png" alt="" />
+                  <h3>No Onboarding</h3>
+                  <p>No onboarding process right now</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

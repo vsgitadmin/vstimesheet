@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+.page {
+  width: 100%;
+  padding: 30px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---------- header ---------- */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.titleBlock h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+}
+
+.titleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  background: var(--redTheme);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: grey;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  margin-top: 22px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.viewToggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.viewToggleBtn {
+  height: 2.2rem;
+  width: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #8a8a8a;
+  transition: background .15s, color .15s;
+}
+
+.viewToggleBtn svg {
+  font-size: 20px;
+}
+
+.viewToggleBtnActive {
+  background: #fff;
+  color: var(--redTheme);
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px;
+}
+
+.actionBtn {
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  background-color: var(--redTheme);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter .15s, transform .15s;
+}
+
+.actionBtn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.actionBtnOutline {
+  background: #fff;
+  border: 1.5px solid var(--redTheme);
+  color: var(--redTheme);
+}
+
+/* ---------- grid view ---------- */
+
+.cardsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.cardActions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.iconBtn {
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #888;
+  transition: background .15s, color .15s;
+}
+
+.iconBtn:hover {
+  background: #eee;
+  color: var(--redTheme);
+}
+
+.iconBtn svg {
+  font-size: 16px;
+}
+
+.fileIconWrap {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(230, 72, 72, 0.1);
+  color: var(--redTheme);
+}
+
+.fileIconWrap svg {
+  font-size: 24px;
+}
+
+.fileInfo h3 {
+  font-size: 14.5px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.fileInfo h4 {
+  font-size: 12px;
+  font-weight: 400;
+  color: grey;
+  margin-top: 2px;
+}
+
+.cardFooter {
+  padding-top: 8px;
+  border-top: 1px solid #f2f2f2;
+}
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--redTheme);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.viewLink svg {
+  font-size: 16px;
+}
+
+/* ---------- list view ---------- */
+
+.rowsList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: rgba(50, 50, 93, 0.1) 0px 2px 8px -1px, rgba(0, 0, 0, 0.06) 0px 1px 3px -1px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.row:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(50, 50, 93, 0.16) 0px 8px 18px -6px, rgba(0, 0, 0, 0.08) 0px 2px 6px -1px;
+}
+
+.rowInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowInfo h3 {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rowInfo h4 {
+  font-size: 12px;
+  font-weight: 400;
+  color: grey;
+  margin-top: 2px;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- empty / loading state ---------- */
+
+.emptyState {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 50px 20px;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1.5px dashed #e6e6e6;
+  color: #9a9a9a;
+  text-align: center;
+}
+
+.emptyState svg {
+  font-size: 30px;
+  color: #cfcfcf;
+  margin-bottom: 6px;
+}
+
+.emptyState h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+}
+
+/* ---------- pagination ---------- */
+
+.paginationWrap {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+}

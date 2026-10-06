@@ -5,6 +5,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import CurrencyExchangeRoundedIcon from '@mui/icons-material/CurrencyExchangeRounded';
 import { general } from "../../../Helpers/index"
 import nextId from "react-id-generator";
+import styles from '../JobCustomizer.module.css'
 
 function AddPoints({ addNewPoint, length, setTotalBreakPoints, currentItems }) {
     const [create, setcreate] = useState(false)
@@ -55,27 +56,31 @@ function AddPoints({ addNewPoint, length, setTotalBreakPoints, currentItems }) {
         setcreate(false);
     }
 
+    if (!create) return (
+        <tr className={styles.row}>
+            <td colSpan={9} className={styles.addRowCell}>
+                <span className={styles.addRowTrigger} onClick={() => setcreate(true)}><AddCircleOutlineRoundedIcon />Add Row</span>
+                {length !== 0 &&
+                    <span className={styles.addRowTrigger} onClick={() => setTotalBreakPoints(length)}><CurrencyExchangeRoundedIcon />Add Checkpoint Total</span>}
+            </td>
+        </tr>
+    )
+
     return (
-        <tr style={{ visibility: !create ? "hidden" : "visible" }} key={create}>
+        <tr className={styles.row}>
             <th>
-                {!create &&
-                    <div style={{ visibility: "visible", display: "flex" }}>
-                        <div onClick={() => setcreate(true)}><AddCircleOutlineRoundedIcon /></div>
-                        {length !== 0 && <div onClick={() => setTotalBreakPoints(length)}><CurrencyExchangeRoundedIcon /></div>}
-                    </div>
-                }
-                <div style={{ display: "flex" }}>
-                    <div onClick={() => setcreate(false)}><RemoveCircleOutlineRoundedIcon /></div>
-                    <div onClick={addNewPointFunction}><CheckCircleOutlineRoundedIcon /></div>
+                <div className={styles.rowActions}>
+                    <span className={styles.iconBtn} onClick={() => setcreate(false)}><RemoveCircleOutlineRoundedIcon /></span>
+                    <span className={`${styles.iconBtn} ${styles.iconBtnPositive}`} onClick={addNewPointFunction}><CheckCircleOutlineRoundedIcon /></span>
                 </div>
             </th>
-            <th><input type="text" placeholder='point name' defaultValue={defaultPointName} name='point' onChange={updateInputValue} /></th>
-            <th><input type="number" placeholder='hours worked' name='hours' onChange={updateInputValue} /></th>
-            <th><input type="number" value={objectValue.cost} readOnly /></th>
-            <th><input type="number" placeholder='cost' name='total_cost' value={TotalCost} readOnly /></th>
-            <th><input type="number" placeholder='0' name='bid' onChange={updateInputValue} /></th>
-            <th><input type="number" placeholder='0' name='bid_hour' value={bidCost} readOnly /></th>
-            <th><input type="number" placeholder='0' defaultValue={0} name='eng_fee' onChange={updateInputValue} /></th>
+            <th><input className={styles.cellInput} type="text" placeholder='point name' defaultValue={defaultPointName} name='point' onChange={updateInputValue} /></th>
+            <th><input className={styles.cellInput} type="number" placeholder='hours worked' name='hours' onChange={updateInputValue} /></th>
+            <th><input className={styles.cellInput} type="number" value={objectValue.cost} readOnly /></th>
+            <th><input className={styles.cellInput} type="number" placeholder='cost' name='total_cost' value={TotalCost} readOnly /></th>
+            <th><input className={styles.cellInput} type="number" placeholder='0' name='bid' onChange={updateInputValue} /></th>
+            <th><input className={styles.cellInput} type="number" placeholder='0' name='bid_hour' value={bidCost} readOnly /></th>
+            <th><input className={styles.cellInput} type="number" placeholder='0' defaultValue={0} name='eng_fee' onChange={updateInputValue} /></th>
             <th></th>
         </tr>
     )

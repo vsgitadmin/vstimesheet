@@ -1,109 +1,120 @@
-import React from 'react';
-import { FiberManualRecord, TrendingFlat, Tune, CreditCardOutlined, TableChartOutlined } from '@mui/icons-material';
-import style from '../../../../styles/Hr.module.css';
-import styles from '../../../../styles/Hr.module.css'
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Tune } from '@mui/icons-material';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
+import InboxIcon from '@mui/icons-material/Inbox';
+import styles from '../../../../styles/EmployeesList.module.css'
 import { useRouter } from 'next/router';
-import NoDataFound from '../../NoDataFound/NoDataFound';
 import EmployeeListFilter from '../../Filters/EmployeeListFilter';
 import ProfileImage from '../../ProfileImage/Image';
 import EmployeeTable from './EmployeeTable';
 
-function Employees({setOnFilters, InitialHydration, props, onChange, onFilter, setProfileOpen, selectEmployee, render }) {
-  //for create employee popup open
-  //for employee profile popup open
-  const handleProfileOpen = () => setProfileOpen(true);
+function Employees({ setOnFilters, InitialHydration, props, onChange, onFilter, setProfileOpen, selectEmployee, render, viewMode, setViewMode }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [switchTable, setSwitchTable] = useState(true)
   const router = useRouter()
 
-  const noStyle = {
-    height: '76%',
-    display: 'flex',
-    alignItems: 'center'
+  const StatusPill = ({ data }) => {
+    if (data.active === false && data.working === false) return <span className={`${styles.statusPill} ${styles.statusOnboarding}`}>Onboarding</span>
+    if (data.onBench === true) return <span className={`${styles.statusPill} ${styles.statusOnBench}`}>On Bench</span>
+    if (data.resigned === true) return <span className={`${styles.statusPill} ${styles.statusResigned}`}>Resigned</span>
+    return null
   }
-  
+
+  const formatJoinDate = (joining) => {
+    let dt = joining.substring(0, joining.indexOf('T'));
+    dt = new Date(dt);
+    return dt.toLocaleString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  const goToProfile = (id) => {
+    router.push(`/admin/dashboard/employee/profile/${id}`)
+    selectEmployee(id)
+  }
+
   return (
     <>
-      {/* search filter start */}
-      <div className={styles.em_search_filter_main}>
-        <div className={style.ar_search_filter} >
-          {onFilter === null ? <>
+      <div className={styles.headerRow}>
+        <div className={styles.titleBlock}>
+          <h1><span className={styles.titleIcon}><PeopleAltOutlinedIcon /></span>Employees</h1>
+          <p className={styles.subtitle}>View the list of employees and use the create button to add new members</p>
+        </div>
+      </div>
+
+      <div className={styles.toolbar}>
+        {onFilter === null ? <>
+          <div className={styles.searchBox}>
+            <SearchIcon />
             <input placeholder='Search' type="text" onChange={onChange} />
-            <div onClick={() => setIsFilterOpen(!isFilterOpen)}><Tune style={{ fill: 'white' }} /></div>
-          </> : <div className='clear_filter' onClick={() => {
-              setOnFilters(null)
-              InitialHydration()
-          }}>
-            <button className="clear_filter_btn" >Clear filters</button>
-            <span></span>
-          </div>}
+          </div>
+          <div className={styles.filterWrap}>
+            <button type="button" className={styles.iconBtn} onClick={() => setIsFilterOpen(!isFilterOpen)} aria-label="Open filters">
+              <Tune />
+            </button>
+            {isFilterOpen && <EmployeeListFilter render={(filter) => { setIsFilterOpen(false); render(filter) }} setIsFilterOpen={setIsFilterOpen} />}
+          </div>
+        </> : <button type="button" className={styles.clearBtn} onClick={() => { setOnFilters(null); InitialHydration() }}>Clear filters</button>}
 
-          
+        {props && <span className={styles.countBadge}><strong>{props.length}</strong> employee{props.length === 1 ? '' : 's'}</span>}
+
+        <div className={styles.viewToggle}>
+          <button
+            type="button"
+            className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+            onClick={() => setViewMode('grid')}
+            aria-label="Grid view"
+          >
+            <GridViewRoundedIcon />
+          </button>
+          <button
+            type="button"
+            className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
+            onClick={() => setViewMode('list')}
+            aria-label="List view"
+          >
+            <ViewListRoundedIcon />
+          </button>
         </div>
-        <div className={styles.create_button}>
-          <button onClick={()=> router.push('/admin/dashboard/hr/employees/create-employee')} >CREATE</button>
-        </div>
+
+        <button type="button" className={styles.addBtn} onClick={() => router.push('/admin/dashboard/hr/employees/create-employee')}>
+          <AddCircleOutlineIcon />CREATE
+        </button>
       </div>
 
-      <div className={styles.switch_table} >
-          <CreditCardOutlined  onClick={() => setSwitchTable(true)} />
-          <TableChartOutlined  onClick={() => setSwitchTable(false)} />
-      </div>
-
-      <div className='flt_main' >
-        {isFilterOpen && <EmployeeListFilter render={render} setIsFilterOpen={setIsFilterOpen} />}
-      </div>
-
-      {/* employees list end */}
-      {props.length > 0 && switchTable ? (
-        <div className={styles.em_list_container}>
-          {props.map((data, index) => {
-            let dt = data.joining.substring(0, data.joining.indexOf('T'));
-            dt = new Date(dt);
-            dt = dt.toLocaleString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            return (
-              <div className={styles.em_box} key={index} onClick={() => {
-                router.push(`/admin/dashboard/employee/profile/${data._id}`)
-                selectEmployee(data._id)
-              }} >
-                <div className={styles.em_profile}>
+      {props.length > 0 ? (
+        viewMode === 'grid' ? (
+          <div className={styles.cardsGrid}>
+            {props.map((data, index) => (
+              <div className={styles.card} key={data._id || index} onClick={() => goToProfile(data._id)}>
+                <div className={styles.avatarWrap}>
                   <ProfileImage id={data._id} size={45} />
-                  {data.online && <div><FiberManualRecord/></div>}
-                  {!data.online && <div style={{background:"none"}} ><FiberManualRecord style={{fill:"none"}} /></div>}
+                  <span className={`${styles.onlineDot} ${data.online ? styles.onlineDotActive : ''}`}></span>
                 </div>
-                <div className={styles.em_des_join}>
+                <div className={styles.cardBody}>
                   <h4>{`${data.firstName} ${data.lastName}`}</h4>
-                  <h4>{data.designation}</h4>
-                  <h6>Joined - {dt}</h6>
+                  <h5>{data.designation}</h5>
+                  <h6>Joined - {formatJoinDate(data.joining)}</h6>
                 </div>
-                {data.active == false && data.working == false &&
-                  <div className={styles.em_label} >
-                    <div>Onboarding</div>
-                  </div>
-                }
-                {data.onBench == true &&
-                  <div className={styles.em_label}>
-                    <div style={{background:'#fb5607'}}>On Bench</div>
-                  </div>
-                }
-                {data.resigned == true &&
-                  <div className={styles.em_label}>
-                    <div style={{background:'#ef233c'}}>Resigned</div>
-                  </div>
-                }
-                <div className={styles.em_view_icon}>
-                  <TrendingFlat />
+                <div className={styles.cardRight}>
+                  <StatusPill data={data} />
+                  <span className={styles.cardArrow}><TrendingFlatIcon /></span>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <EmployeeTable employeesData={props} />
+        )
       ) : (
-        props.length > 0 && !switchTable ? <EmployeeTable employeesData={props} /> : <div style={noStyle}><NoDataFound /></div>
+        <div className={styles.emptyState}>
+          <InboxIcon />
+          <h4>No employees found</h4>
+          <p>Try adjusting your search or filters</p>
+        </div>
       )}
-
-       {/* employees list end */}
     </>
   );
 }
