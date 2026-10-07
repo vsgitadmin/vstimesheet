@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavigateNext } from '@mui/icons-material';
 import styles from '../MultiForm.module.css'
 import { uploadS3Document , deleteS3Document} from '../../../Controllers/files/index'
@@ -8,6 +8,16 @@ import PresignedLink from '../../S3/PresignedLink';
 import { toast } from 'react-toastify';
 import Router from 'next/router';
 
+// maps a "present_*" field name to its "permanent_*" counterpart
+const PRESENT_TO_PERMANENT_FIELD = {
+  present_address: 'permanent_address',
+  present_district: 'permanent_district',
+  present_pin: 'permanent_pin',
+  present_state: 'permanent_state',
+  present_residential_telephone: 'permanent_residential_telephone',
+  present_mobile_number: 'permanent_mobile_number',
+}
+
 const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId , employeeDbId, section}) => {
   const [Step1Data, setStep1Data] = useState({})
   const [Gender, setGender] = useState('')
@@ -15,10 +25,21 @@ const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId , employeeDb
   const [dualnationality, setdualnationality] = useState('')
   const [imgSrc, setimgSrc] = useState(null)
   const [Img, setImg] = useState(null)
+  const [sameAsPresent, setSameAsPresent] = useState(false)
+
+  const permanentAddressRefs = {
+    permanent_address: useRef(null),
+    permanent_district: useRef(null),
+    permanent_pin: useRef(null),
+    permanent_state: useRef(null),
+    permanent_residential_telephone: useRef(null),
+    permanent_mobile_number: useRef(null),
+  }
 
   useEffect(() => {
     if (Data.personal_details !== undefined) {
       setStep1Data(Data.personal_details)
+      setSameAsPresent(Boolean(Data.personal_details.same_as_present))
       if (Data.personal_details.img !== undefined) {
         setimgSrc(Data.personal_details.img)
       }
@@ -58,6 +79,38 @@ const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId , employeeDb
 
   const changeInputValue = (e) => Step1Data[e.target.name] = e.target.value
 
+  // copies the current present-address values into the permanent-address
+  // fields, both in state and in the (uncontrolled) DOM inputs
+  const copyPresentToPermanentAddress = () => {
+    Object.entries(PRESENT_TO_PERMANENT_FIELD).forEach(([presentKey, permanentKey]) => {
+      const value = Step1Data[presentKey] || ''
+      Step1Data[permanentKey] = value
+      if (permanentAddressRefs[permanentKey]?.current) {
+        permanentAddressRefs[permanentKey].current.value = value
+      }
+    })
+  }
+
+  const sameAsPresentAddressFunction = (e) => {
+    const checked = e.target.checked
+    Step1Data['same_as_present'] = checked
+    setSameAsPresent(checked)
+    if (checked) copyPresentToPermanentAddress()
+  }
+
+  // present-address inputs use this instead of changeInputValue so the
+  // permanent-address fields stay in sync while "same as present" is checked
+  const changePresentInputValue = (e) => {
+    changeInputValue(e)
+    if (sameAsPresent) {
+      const permanentKey = PRESENT_TO_PERMANENT_FIELD[e.target.name]
+      Step1Data[permanentKey] = e.target.value
+      if (permanentAddressRefs[permanentKey]?.current) {
+        permanentAddressRefs[permanentKey].current.value = e.target.value
+      }
+    }
+  }
+
   return (
     <>
       <TopBar stepIndex={stepIndex} />
@@ -71,42 +124,48 @@ const FirstStep = ({ stepIndex, setStepIndex, setData, Data , empId , employeeDb
                 <h5>Present Address</h5>
               </div>
               <div className={styles.mf_form_group}>
-                <textarea placeholder='Present Address' defaultValue={Step1Data['present_address']} name='present_address' onChange={changeInputValue}></textarea>
+                <textarea placeholder='Present Address' defaultValue={Step1Data['present_address']} name='present_address' onChange={changePresentInputValue}></textarea>
               </div>
               <div className={styles.mf_form_flex_group} >
-                <input placeholder='District' type="text" defaultValue={Step1Data['present_district']} name='present_district' onChange={changeInputValue} />
-                <input placeholder='Pin' type="number" defaultValue={Step1Data['present_pin']} name='present_pin' onChange={changeInputValue} />
+                <input placeholder='District' type="text" defaultValue={Step1Data['present_district']} name='present_district' onChange={changePresentInputValue} />
+                <input placeholder='Pin' type="number" defaultValue={Step1Data['present_pin']} name='present_pin' onChange={changePresentInputValue} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='State' type="text" defaultValue={Step1Data['present_state']} name='present_state' onChange={changeInputValue} />
+                <input placeholder='State' type="text" defaultValue={Step1Data['present_state']} name='present_state' onChange={changePresentInputValue} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='Resi Tel' type="number" defaultValue={Step1Data['present_residential_telephone']} name='present_residential_telephone' onChange={changeInputValue} />
+                <input placeholder='Resi Tel' type="number" defaultValue={Step1Data['present_residential_telephone']} name='present_residential_telephone' onChange={changePresentInputValue} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='Mobile Number' type="number" defaultValue={Step1Data['present_mobile_number']} name='present_mobile_number' onChange={changeInputValue} />
+                <input placeholder='Mobile Number' type="number" defaultValue={Step1Data['present_mobile_number']} name='present_mobile_number' onChange={changePresentInputValue} />
               </div>
             </div>
 
             <div className={styles.mf_step_section} style={{ marginTop: "10px" }}  >
-              <div className={styles.mf_step_box_title} >
-                <h5>Permanent Address</h5>
+              <div className={styles.mf_section_title_row} >
+                <div className={styles.mf_step_box_title} >
+                  <h5>Permanent Address</h5>
+                </div>
+                <label className={styles.mf_same_address_label} >
+                  <input type="checkbox" checked={sameAsPresent} onChange={sameAsPresentAddressFunction} />
+                  Same as present address
+                </label>
               </div>
               <div className={styles.mf_form_group}>
-                <textarea placeholder='Permanent Address' defaultValue={Step1Data['permanent_address']} name='permanent_address' onChange={changeInputValue}></textarea>
+                <textarea ref={permanentAddressRefs.permanent_address} placeholder='Permanent Address' defaultValue={Step1Data['permanent_address']} name='permanent_address' onChange={changeInputValue} disabled={sameAsPresent}></textarea>
               </div>
               <div className={styles.mf_form_flex_group} >
-                <input placeholder='District' type="text" defaultValue={Step1Data['permanent_district']} name='permanent_district' onChange={changeInputValue} />
-                <input placeholder='Pin' type="number" defaultValue={Step1Data['permanent_pin']} name='permanent_pin' onChange={changeInputValue} />
+                <input ref={permanentAddressRefs.permanent_district} placeholder='District' type="text" defaultValue={Step1Data['permanent_district']} name='permanent_district' onChange={changeInputValue} disabled={sameAsPresent} />
+                <input ref={permanentAddressRefs.permanent_pin} placeholder='Pin' type="number" defaultValue={Step1Data['permanent_pin']} name='permanent_pin' onChange={changeInputValue} disabled={sameAsPresent} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='State' type="text" defaultValue={Step1Data['permanent_state']} name='permanent_state' onChange={changeInputValue} />
+                <input ref={permanentAddressRefs.permanent_state} placeholder='State' type="text" defaultValue={Step1Data['permanent_state']} name='permanent_state' onChange={changeInputValue} disabled={sameAsPresent} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='Resi Tel' type="number" defaultValue={Step1Data['permanent_residential_telephone']} name='permanent_residential_telephone' onChange={changeInputValue} />
+                <input ref={permanentAddressRefs.permanent_residential_telephone} placeholder='Resi Tel' type="number" defaultValue={Step1Data['permanent_residential_telephone']} name='permanent_residential_telephone' onChange={changeInputValue} disabled={sameAsPresent} />
               </div>
               <div className={styles.mf_form_group} >
-                <input placeholder='Mobile Number' type="number" defaultValue={Step1Data['permanent_mobile_number']} name='permanent_mobile_number' onChange={changeInputValue} />
+                <input ref={permanentAddressRefs.permanent_mobile_number} placeholder='Mobile Number' type="number" defaultValue={Step1Data['permanent_mobile_number']} name='permanent_mobile_number' onChange={changeInputValue} disabled={sameAsPresent} />
               </div>
             </div>
           </div>

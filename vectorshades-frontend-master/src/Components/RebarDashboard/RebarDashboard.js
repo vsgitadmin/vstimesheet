@@ -1,5 +1,4 @@
-import { AccessTimeOutlined, AccountBalanceOutlined, ArticleOutlined, AssignmentTurnedInOutlined, BadgeOutlined, CalendarMonthOutlined, CommentOutlined, CreditCardOutlined, FeedOutlined, KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, MonetizationOnOutlined, MoreVertOutlined, NotificationsOutlined, Tune } from '@mui/icons-material'
-import { Avatar } from '@mui/material'
+import { AccountBalanceOutlined, AccountBalanceWalletOutlined, BadgeOutlined, CalendarMonthOutlined, ChecklistOutlined, CreditCardOutlined, FeedOutlined, FolderOffOutlined, MonetizationOnOutlined, MoreVertOutlined, PaidOutlined, PendingActionsOutlined, PeopleAltOutlined, ReceiptLongOutlined, TrendingUpOutlined } from '@mui/icons-material'
 import styles from '../../../styles/Finance.module.css'
 import { getJobDashboardController } from '../../Controllers/Rebar/index'
 import { useState, useEffect, useContext } from 'react'
@@ -7,13 +6,31 @@ import Loader from '../Loader/loader'
 import { toast } from 'react-toastify'
 import DateToMonthYear from '../../Helpers/General/DateToMonthYear'
 import Link from 'next/link'
-import { Cell, Label, Pie, PieChart, Tooltip } from 'recharts'
+import { useRouter } from 'next/router'
 import months from '../../Constants/months'
 import { ParentStore } from '../../../pages/_app'
 import { useRebarClients } from '../../Constants/rebarClients'
 import AvTimerOutlinedIcon from '@mui/icons-material/AvTimerOutlined';
 
-const Finance = () => {
+const getStatusClass = (status, styles) => {
+    const value = (status || '').toString().toLowerCase()
+    if (value.includes('complete')) return styles.status_complete
+    if (value.includes('progress')) return styles.status_progress
+    if (value.includes('pending')) return styles.status_pending
+    if (value.includes('hold') || value.includes('cancel')) return styles.status_hold
+    return styles.status_default
+}
+
+const getInitials = (name) => {
+    if (!name) return '—'
+    const parts = name.trim().split(/\s+/)
+    return parts.slice(0, 2).map((p) => p[0]).join('').toUpperCase()
+}
+
+const formatMoney = (value) => Number(value || 0).toLocaleString('en-US')
+
+const RebarDashboard = () => {
+    const router = useRouter()
     const [Loading, setLoading] = useState(true)
     const [dashboardData, setdashboardData] = useState({})
     const currentYear = new Date().getFullYear()
@@ -33,97 +50,81 @@ const Finance = () => {
 
     if (Loading) return <Loader />
 
-    else return (
-        <>
-            <div className={styles.finance_container} >
-                <div className={styles.finance_left} >
-                    <div className={styles.fin_top}>
-                        {ParentState && <h2>Good morning, {ParentState.auth.firstName}  ! </h2>}
-                        <div>
-                        </div>
+    const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+
+    const STAT_CARDS = [
+        { key: 'awardedJobs', label: `Awarded ${months[currentMonth].name}`, icon: CreditCardOutlined, accent: 'icon_slate' },
+        { key: 'completedProjects', label: 'Completed Projects', icon: MonetizationOnOutlined, accent: 'icon_sage' },
+        { key: 'ongoingProjects', label: 'On Going Jobs', icon: BadgeOutlined, accent: 'icon_sand' },
+        { key: 'totalJobs', label: `Jobs ${months[currentMonth].name}`, icon: AccountBalanceOutlined, accent: 'icon_brand' },
+        { key: 'holdJobs', label: 'Jobs On Hold', icon: AvTimerOutlinedIcon, accent: 'icon_slate' },
+    ]
+
+    const latestProject = dashboardData?.latestSingleProject
+    const progressPercent = latestProject && latestProject.estimatedHours
+        ? Math.min(100, Math.round((latestProject.hours / latestProject.estimatedHours) * 100))
+        : 0
+    const isOffTime = latestProject && latestProject.hours > latestProject.estimatedHours
+
+    return (
+        <div className={styles.finance_container} >
+            <div className={styles.finance_left} >
+                <div className={styles.fin_top}>
+                    <div>
+                        {ParentState && <h2>Good morning, {ParentState.auth.firstName}</h2>}
+                        <p className={styles.fin_top_subtitle}>{todayLabel}</p>
                     </div>
-                    <div className={styles.fin_cards}>
-                        <div className={styles.fin_card}>
+                </div>
+
+                <div className={styles.fin_cards}>
+                    {STAT_CARDS.map(({ key, label, icon: Icon, accent }) => (
+                        <div className={styles.fin_card} key={key}>
                             <div className={styles.fin_card_top}>
-                                <CreditCardOutlined style={{ fontSize: "27px" }} />
-                                
+                                <div className={`${styles.icon_badge} ${styles[accent]}`}>
+                                    <Icon style={{ fontSize: "21px" }} />
+                                </div>
+                                <button className={styles.card_menu_btn} type="button" aria-label="More options">
+                                    <MoreVertOutlined style={{ fontSize: "19px" }} />
+                                </button>
                             </div>
                             <div className={styles.fin_card_mid} >
-                                <h2>{dashboardData.awardedJobs}</h2>
+                                <h2>{dashboardData[key]}</h2>
                             </div>
                             <div className={styles.fin_card_bottom} >
-                                <p>Awarded {months[new Date().getMonth()].name }</p>
+                                <p>{label}</p>
                             </div>
                         </div>
-                        <div className={styles.fin_card}>
-                            <div className={styles.fin_card_top}>
-                                <MonetizationOnOutlined style={{ fontSize: "27px" }} />
-                                
+                    ))}
+                </div>
+
+                <div className={styles.fin_mid} >
+                    <div className={styles.fin_mid_cards} >
+                        <div className={styles.fin_mid_card} >
+                            <div className={`${styles.icon_badge} ${styles.icon_slate}`}>
+                                <PeopleAltOutlined style={{ fontSize: "19px" }} />
                             </div>
-                            <div className={styles.fin_card_mid} >
-                                <h2>{dashboardData.completedProjects}</h2>
-                            </div>
-                            <div className={styles.fin_card_bottom} >
-                                <p>Completed Projects</p>
-                            </div>
-                        </div>
-                        <div className={styles.fin_card}>
-                            <div className={styles.fin_card_top}>
-                                <BadgeOutlined style={{ fontSize: "27px" }} />
-                                
-                            </div>
-                            <div className={styles.fin_card_mid} >
-                                <h2>{dashboardData.ongoingProjects}</h2>
-                            </div>
-                            <div className={styles.fin_card_bottom} >
-                                <p>On Going Jobs</p>
-                            </div>
-                        </div>
-                        <div className={styles.fin_card}>
-                            <div className={styles.fin_card_top}>
-                                <AccountBalanceOutlined style={{ fontSize: "27px" }} />
-                            </div>
-                            <div className={styles.fin_card_mid} >
-                                <h2>{dashboardData.totalJobs}</h2>
-                            </div>
-                            <div className={styles.fin_card_bottom} >
-                                <p>Jobs {months[new Date().getMonth()].name }</p>
-                            </div>
-                        </div>
-                        <div className={styles.fin_card}>
-                            <div className={styles.fin_card_top}>
-                                <AvTimerOutlinedIcon style={{ fontSize: "27px" }} />
-                                
-                            </div>
-                            <div className={styles.fin_card_mid} >
-                                <h2>{dashboardData.holdJobs}</h2>
-                            </div>
-                            <div className={styles.fin_card_bottom} >
-                                <p>Jobs On Hold</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.fin_mid} >
-                        <div className={styles.fin_mid_cards} >
-                            <div className={styles.fin_mid_card} >
+                            <div className={styles.fin_mid_card_text}>
                                 <h4>Total Client</h4>
-                                <div>
-                                    <h2>{Object.keys(RebarClients).length}</h2>
-                                </div>
-                            </div>
-                            <div className={styles.fin_mid_card} >
-                                <h4>Total Tons Detailed</h4>
-                                <div>
-                                    <h2>{dashboardData.totalSales[0].totalCost}</h2>
-                                </div>
+                                <h2>{Object.keys(RebarClients || {}).length}</h2>
                             </div>
                         </div>
-                        <div className={styles.latest_projects} >
-                            <div className={styles.table_top}>
-                                <h3>Latest Projects</h3>
+                        <div className={styles.fin_mid_card} >
+                            <div className={`${styles.icon_badge} ${styles.icon_sage}`}>
+                                <PaidOutlined style={{ fontSize: "19px" }} />
                             </div>
-                            <div className={styles.latest_projects_table_main} >
-                                <table className={styles.latest_projects_table} >
+                            <div className={styles.fin_mid_card_text}>
+                                <h4>Total Tons Detailed</h4>
+                                <h2>{formatMoney(dashboardData.totalSales?.[0]?.totalCost)}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.latest_projects} >
+                        <div className={styles.table_top}>
+                            <h3>Latest Projects</h3>
+                        </div>
+                        <div className={styles.latest_projects_table_main} >
+                            <table className={styles.latest_projects_table} >
+                                <thead>
                                     <tr>
                                         <th>Client</th>
                                         <th>Project Name</th>
@@ -133,132 +134,174 @@ const Finance = () => {
                                         <th>Hours</th>
                                         <th>Status</th>
                                     </tr>
-                                    {dashboardData?.latestProjects?.map((i) => {
+                                </thead>
+                                <tbody>
+                                    {dashboardData?.latestProjects?.length > 0 ? dashboardData.latestProjects.map((i) => {
                                         const created_at = DateToMonthYear(i.createdAt)
+                                        const goToProject = () => router.push(`/admin/dashboard/projects/${i._id}`)
                                         return (
-                                            <tr key={i._id} >
+                                            <tr
+                                                key={i._id}
+                                                className={styles.project_row}
+                                                onClick={goToProject}
+                                                role="link"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => { if (e.key === 'Enter') goToProject() }}
+                                            >
                                                 <td>{i.client}</td>
-                                                <td>{i.projectName}</td>
-                                                <td>{i.createdBy}</td>
-                                                <td>{created_at}</td>
-                                                <td>{i.estimatedHours}</td>
-                                                <td>{i.hours}</td>
+                                                <td className={styles.cell_strong}>{i.projectName}</td>
                                                 <td>
-                                                    <div>{i.status}</div>
+                                                    <div className={styles.creator_cell}>
+                                                        <span className={styles.avatar_badge}>{getInitials(i.createdBy)}</span>
+                                                        {i.createdBy}
+                                                    </div>
+                                                </td>
+                                                <td>{created_at}</td>
+                                                <td className={styles.cell_num}>{i.estimatedHours}</td>
+                                                <td className={styles.cell_num}>{i.hours}</td>
+                                                <td>
+                                                    <span className={`${styles.status_pill} ${getStatusClass(i.status, styles)}`}>{i.status}</span>
                                                 </td>
                                             </tr>
                                         )
-                                    })}
-                                </table>
-                            </div>
+                                    }) : (
+                                        <tr>
+                                            <td colSpan={7} className={styles.table_empty}>No projects to display yet</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                                        <div className={styles.fin_bottom} >
-                        <div className={styles.fin_sales_top}>
+                </div>
 
-                            <div className={styles.fin_sales_bottom} >
-                                <div>
-                                    <h3>Billing Backlog</h3>
-                                    <h1>${dashboardData.billingBacklog}</h1>
-                                </div>
-                                <div>
-                                    <h3>Work In Progress</h3>
-                                    <h1>${dashboardData.workInProgress}</h1>
-                                </div>
-                                <div>
-                                    <h3>Workable Backlog</h3>
-                                    <h1>${dashboardData.workableBacklog}</h1>
-                                </div>
-
+                <div className={styles.fin_bottom} >
+                    <div className={styles.fin_sales_bottom} >
+                        <div>
+                            <div className={`${styles.fin_sales_bottom_icon} ${styles.icon_slate}`}>
+                                <ReceiptLongOutlined style={{ fontSize: '18px' }} />
+                            </div>
+                            <div>
+                                <h3>Billing Backlog</h3>
+                                <h1>${formatMoney(dashboardData.billingBacklog)}</h1>
                             </div>
                         </div>
-                    </div>
-                    <div className={styles.fin_bottom} >
-                        <div className={styles.fin_sales_top}>
-                            <div className={styles.fin_sales_top_left} >
-                                <div>
-                                    <h2>Financials</h2>
-                                    <h4>Jan 1, {currentYear} - Dec 30, {currentYear}</h4>
-                                </div>
-                                <div>
-                                    <h4>Yearly Sales</h4>
-                                    <h2>${dashboardData.yearlySales[0].totalCost}</h2>
-                                </div>
+                        <div>
+                            <div className={`${styles.fin_sales_bottom_icon} ${styles.icon_sand}`}>
+                                <AvTimerOutlinedIcon style={{ fontSize: '18px' }} />
                             </div>
-                            <div className={styles.fin_sales_bottom} >
-                                <div>
-                                    <h3>{months[currentMonth].name} Financials</h3>
-                                    <h1>${dashboardData.monthlySales[0].totalCost}</h1>
-                                </div>
-                                <div>
-                                    <h3>Pending to be awarded</h3>
-                                    <h1>{dashboardData.pendingAwarded}</h1>
-                                </div>
-
+                            <div>
+                                <h3>Work In Progress</h3>
+                                <h1>${formatMoney(dashboardData.workInProgress)}</h1>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={`${styles.fin_sales_bottom_icon} ${styles.icon_sage}`}>
+                                <AccountBalanceWalletOutlined style={{ fontSize: '18px' }} />
+                            </div>
+                            <div>
+                                <h3>Workable Backlog</h3>
+                                <h1>${formatMoney(dashboardData.workableBacklog)}</h1>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className={styles.finance_right} >
-                    <div className={styles.fin_right_main} >
-                        <div className={styles.fin_right_title} >
-                            <h2>Your Management</h2>
+
+                <div className={styles.fin_bottom} >
+                    <div className={styles.fin_sales_top_left} >
+                        <div className={styles.fin_sales_top_left_header}>
+                            <h2>Financials</h2>
+                            <h4>Jan 1, {currentYear} – Dec 30, {currentYear}</h4>
                         </div>
-                        {dashboardData?.latestSingleProject !== null ?
-                            <div className={styles.formation_status} >
-                                <>
-                                    <div>
-                                        <h3>{dashboardData?.latestSingleProject.projectName}</h3>
-                                        <h4>created by : <span>{dashboardData?.latestSingleProject.createdBy}</span></h4>
-                                    </div>
-                                    <div className={styles.progress_bar}>
-                                        <div className={styles.progress_bar_fill} style={{ width: `${(dashboardData?.latestSingleProject.hours / dashboardData?.latestSingleProject.estimatedHours) * 100}` }} ></div>
-                                    </div>
-                                    <div>
-                                        <h4>Project Completed Successfully</h4>
-                                        <h4>{dashboardData?.latestSingleProject.hours > dashboardData?.latestSingleProject.estimatedHours ? 'Completed off time' : 'Completed On Time'}</h4>
-                                    </div>
-                                    <button><Link href={`/admin/dashboard/projects/${dashboardData?.latestSingleProject._id}`}>View project</Link></button>
-                                </>
+                        <div className={styles.fin_sales_top_left_figure}>
+                            <h4><TrendingUpOutlined style={{ fontSize: '16px', verticalAlign: 'middle', marginRight: '6px' }} />Yearly Sales</h4>
+                            <h2>${formatMoney(dashboardData.yearlySales?.[0]?.totalCost)}</h2>
+                        </div>
+                    </div>
+                    <div className={styles.fin_sales_bottom} >
+                        <div>
+                            <div className={`${styles.fin_sales_bottom_icon} ${styles.icon_slate}`}>
+                                <CalendarMonthOutlined style={{ fontSize: '18px' }} />
                             </div>
-                            : <div className={styles.project_not_found} >
-                                <img src="https://i.ibb.co/zXB719c/no-data-removebg-preview-1.png" alt="" />
-                                <h3>No Data</h3>
-                                <p>No completed projects to display</p>
-                            </div>}
-                        <div className={styles.to_do_list}>
-                            <h3>To Do list</h3>
-                            {dashboardData?.employeeTODO?.map((i) => {
-                                return (
-                                    <div className={styles.to_do}>
-                                        <div><FeedOutlined /></div>
-                                        <div>
-                                            <h4>{i.title}</h4>
-                                            <h5>{DateToMonthYear(i.createdAt)}</h5>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-
-                            {dashboardData?.employeeTODO.length === 0 && <div className={`${styles.project_not_found} ${styles.no_todos}`} >
-                                <img src="https://cdn-icons-png.flaticon.com/512/1950/1950715.png" alt="" />
-                                <div>
-                                    <h3>No To Do List</h3>
-                                    <p>You don't have a to-do list right now</p>
-                                </div>
-                            </div>}
-
+                            <div>
+                                <h3>{months[currentMonth].name} Financials</h3>
+                                <h1>${formatMoney(dashboardData.monthlySales?.[0]?.totalCost)}</h1>
+                            </div>
                         </div>
-                        {/* <div className={styles.board_meeting}>
-                            <h4>Board meeting</h4>
-                            <h5>Feb 22 at 6:00 PM</h5>
-                            <p>You have been invited to attend a <br /> meeting of the Board Directors</p>
-                        </div> */}
+                        <div>
+                            <div className={`${styles.fin_sales_bottom_icon} ${styles.icon_sand}`}>
+                                <PendingActionsOutlined style={{ fontSize: '18px' }} />
+                            </div>
+                            <div>
+                                <h3>Pending to be awarded</h3>
+                                <h1>${formatMoney(dashboardData.pendingAwarded)}</h1>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </>
+
+            <div className={styles.finance_right} >
+                <div className={styles.fin_right_main} >
+                    <div className={styles.fin_right_title} >
+                        <h2>Your Management</h2>
+                    </div>
+                    {latestProject ?
+                        <div className={styles.formation_status} >
+                            <div>
+                                <h3>{latestProject.projectName}</h3>
+                                <h4>created by <span>{latestProject.createdBy}</span></h4>
+                            </div>
+                            <div className={styles.progress_bar_row}>
+                                <div className={styles.progress_bar}>
+                                    <div className={styles.progress_bar_fill} style={{ width: `${progressPercent}%` }} ></div>
+                                </div>
+                                <span className={styles.progress_bar_value}>{progressPercent}%</span>
+                            </div>
+                            <div className={styles.formation_status_footer}>
+                                <h4>Project Completed Successfully</h4>
+                                <span className={`${styles.time_pill} ${isOffTime ? styles.time_pill_off : styles.time_pill_on}`}>
+                                    {isOffTime ? 'Completed off time' : 'Completed on time'}
+                                </span>
+                            </div>
+                            <Link href={`/admin/dashboard/projects/${latestProject._id}`}>
+                                <button>View project</button>
+                            </Link>
+                        </div>
+                        : <div className={styles.project_not_found} >
+                            <div className={styles.empty_icon}><FolderOffOutlined style={{ fontSize: '22px' }} /></div>
+                            <h3>No Data</h3>
+                            <p>No completed projects to display</p>
+                        </div>}
+                    <div className={styles.to_do_list}>
+                        <div className={styles.to_do_list_header}>
+                            <h3>To Do list</h3>
+                            {dashboardData?.employeeTODO?.length > 0 && <span className={styles.to_do_count}>{dashboardData.employeeTODO.length}</span>}
+                        </div>
+                        {dashboardData?.employeeTODO?.map((i) => {
+                            return (
+                                <div className={styles.to_do} key={i._id || i.title}>
+                                    <div><FeedOutlined style={{ fontSize: '17px' }} /></div>
+                                    <div>
+                                        <h4>{i.title}</h4>
+                                        <h5>{DateToMonthYear(i.createdAt)}</h5>
+                                    </div>
+                                </div>
+                            )
+                        })}
+
+                        {dashboardData?.employeeTODO?.length === 0 && <div className={`${styles.project_not_found} ${styles.no_todos}`} >
+                            <div className={styles.empty_icon}><ChecklistOutlined style={{ fontSize: '19px' }} /></div>
+                            <div>
+                                <h3>No To Do List</h3>
+                                <p>You don't have a to-do list right now</p>
+                            </div>
+                        </div>}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 
-export default Finance
+export default RebarDashboard

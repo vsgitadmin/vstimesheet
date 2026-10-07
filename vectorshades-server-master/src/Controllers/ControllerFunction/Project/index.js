@@ -293,6 +293,7 @@ const refreshTaskHrsFunction = async (id) => {
 
 const editSingleTasks = async (body, user, source) => {
     try {
+        let emailSendFailed = false;
         let userTask = await taskModel.findOne({ _id: body.id });
         const project = await projectModel.findById(userTask.projectId).select('projectName rebar')
         if (!project.rebar && userTask.status !== 'Review' && body.status === 'Completed') body.status === 'Review'
@@ -364,7 +365,12 @@ const editSingleTasks = async (body, user, source) => {
                     message,
                     link: `https://vectorshades-frontend.vercel.app/admin/dashboard/projects/${userTask.projectId}?taskpopup=${userTask._id}&group=${userTask.section}`
                 }));
-                await sendEmailFunction({ to: employee.email, subject, html: templateCode });
+                try {
+                    await sendEmailFunction({ to: employee.email, subject, html: templateCode });
+                } catch (err) {
+                    console.log('Failed to send task notification email:', err);
+                    emailSendFailed = true;
+                }
                 await createNotification({ text: subject, reciever: employee._id, link: `/admin/dashboard/projects/${userTask.projectId}?taskpopup=${userTask._id}&group=${userTask.section}` })
             }
 
@@ -475,7 +481,7 @@ const editSingleTasks = async (body, user, source) => {
             { $set: { logs } }
         );
 
-        return userTask
+        return { ...userTask.toObject(), emailSendFailed }
     }
     catch (err) {
         throw err
@@ -1008,7 +1014,19 @@ const getAssignedTasks = async (id, pageNumber, project, filterObj) => {
         const limit = 20;
         let filter = { assignedTo: id, projectId: project };
 
-        if (employee.role === 'SA' && ['all', 'count'].includes(project)) {
+        if (filterObj?.assignedByMe && ['all', 'count'].includes(project)) {
+            filter = { assignedBy: id };
+            if (filterObj?.statusFilter) {
+                if (filterObj.statusFilter === 'Due') {
+                    filter.$expr = { $gt: ["$completedHours", "$allocatedHours"] };
+                } else {
+                    filter.status = filterObj.statusFilter;
+                }
+            }
+            if (filterObj?.assignedTo) {
+                filter.assignedTo = filterObj.assignedTo;
+            }
+        } else if (employee.role === 'SA' && ['all', 'count'].includes(project)) {
             filter = {};
             if (filterObj?.statusFilter) {
                 if (filterObj.statusFilter === 'Due') {
@@ -1033,7 +1051,7 @@ const getAssignedTasks = async (id, pageNumber, project, filterObj) => {
 
         if (project == 'count') {
             const total = await taskModel.countDocuments(filter);
-            return total / limit;
+            return Math.ceil(total / limit);
         }
 
         if (project == 'all') {

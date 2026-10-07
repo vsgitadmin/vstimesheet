@@ -8,6 +8,7 @@ import EmpAnalytics from '../../../src/Components/EmpAnalytics/EmpAnalytics'
 import SalesDashboard from '../../../src/Components/SalesDashboard/SalesDashboard';
 import RebarDashboard from "../../../src/Components/RebarDashboard/RebarDashboard"
 import SteelDashboard from '../../../src/Components/Steel Dashboard';
+import AssignedByMeTasks from '../../../src/Components/Dashboard/AssignedByMeTasks';
 
 function DashBoard() {
   const context = useContext(ParentStore);
@@ -22,7 +23,12 @@ function DashBoard() {
     RB: <RebarDashboard />
   }
 
-  return roleComponent[role];
+  return (
+    <>
+      {roleComponent[role]}
+      {role && role !== 'EMP' && <AssignedByMeTasks />}
+    </>
+  );
 
 }
 

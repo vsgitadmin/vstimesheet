@@ -39,11 +39,9 @@ const validateUserloginDetails = async ({ type, email, pwd, token }) => {
         const user = await employeeModel.findOne(queryObj);
         if (!user.active && user.onBoarded && !user.working) throw new Error("Incorrect password")
         if (user !== null) {
-            if (user.pwd != 'initial') {
-                // let matchPassword = await comparePassword(pwd, user.pwd)
-                if (user.pwd !== pwd) {
-                    throw new Error("Incorrect password")
-                }
+            // let matchPassword = await comparePassword(pwd, user.pwd)
+            if (user.pwd !== pwd) {
+                throw new Error("Incorrect password")
             }
             const token = encryptDataToJwt({ id: user._id, email: user.email, role: user.role, name: user.firstName + " " + user.lastName });
             if (user.logedIn) {

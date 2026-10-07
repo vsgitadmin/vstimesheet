@@ -22,6 +22,12 @@ const generateTimerTokenController = async (req, res) => {
 }
 
 const deleteEmployeeController = async (req, res) => {
+    // Deletion cascades across every record tied to the employee, so it is
+    // restricted to HR/Super Admin here regardless of the (currently disabled)
+    // global role middleware - this endpoint is too destructive to leave open.
+    if (!['HR', 'SA'].includes(req.headers.data?.role)) {
+        return res.status(403).json(new employeeResponse("You do not have permission to delete an employee", null, true))
+    }
     const response = await deleteEmployee(req.query.id)
         .then((emp) => new employeeResponse("employee deleted", { id: req.query.id }, false))
         .catch((err) => new employeeResponse(err.message, null, true))

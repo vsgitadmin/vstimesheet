@@ -629,6 +629,8 @@
   position: absolute;
   right: 0;
   top: -8px;
+  display: flex;
+  gap: 8px;
 }
 
 .sub_menu ul li:last-child button{
@@ -640,6 +642,19 @@
   gap: 10px;
   border: 1px solid lightgrey;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+.sub_menu ul li:last-child button.delete_btn{
+  width: 5.5rem;
+  border: 1px solid var(--redTheme);
+  color: var(--redTheme);
+  background: white;
+}
+
+.sub_menu ul li:last-child button.delete_btn:hover{
+  background: var(--redTheme);
+  color: white;
 }
 
 .active {

@@ -1018,9 +1018,9 @@ async function generateTimesheetDataFromDB(body) {
       }));
     }
 
-    // fetch tasks with taskIndex, actualHours (CO Hours) and tonsDetailed (Tonnage)
+    // fetch tasks with taskIndex, actualHours (CO Hours), tonsDetailed (Tonnage) and section (Task Name)
     const tasks = await taskModel.find({ _id: { $in: taskIds } })
-      .select('_id projectId taskIndex actualHours tonsDetailed')
+      .select('_id projectId taskIndex actualHours tonsDetailed section')
       .lean();
 
     const projectIds = [...new Set(tasks.map(t => t.projectId).filter(Boolean))];
@@ -1057,7 +1057,8 @@ async function generateTimesheetDataFromDB(body) {
         projectNo,
         taskIndex: (typeof task.taskIndex === 'number' ? task.taskIndex : null),
         coHours: (typeof task.actualHours === 'number' ? task.actualHours : null),
-        tonnage: (typeof task.tonsDetailed === 'number' ? task.tonsDetailed : null)
+        tonnage: (typeof task.tonsDetailed === 'number' ? task.tonsDetailed : null),
+        taskName: task.section || ''
       };
       return map;
     }, {});
@@ -1082,13 +1083,14 @@ async function generateTimesheetDataFromDB(body) {
       const dateKey = toIsoDate(date);
       if (!logsByEmployee[employeeId] || !logsByEmployee[employeeId][dateKey]) return;
       (logs || []).forEach(({ taskId, name, workedTime }) => {
-        const projectInfo = taskMap[taskId] || { projectName: 'Unknown Project', projectNo: 'Unknown', taskIndex: null };
+        const projectInfo = taskMap[taskId] || { projectName: 'Unknown Project', projectNo: 'Unknown', taskIndex: null, taskName: '' };
         const idx = projectInfo.taskIndex;
         const activityLabel = idx ? `${name} #${idx}` : `${name}`;
         logsByEmployee[employeeId][dateKey].push({
           project: projectInfo.projectName,
           projectNo: projectInfo.projectNo,
           activityName: activityLabel,
+          taskName: projectInfo.taskName,
           isBillable: "Y",
           hours: workedTime,
           coHours: projectInfo.coHours,
@@ -1113,6 +1115,7 @@ async function generateTimesheetDataFromDB(body) {
                 project: t.project,
                 projectNo: t.projectNo,
                 activityName: t.activityName,
+                taskName: t.taskName,
                 isBillable: t.isBillable,
                 coHours: t.coHours,
                 tonnage: t.tonnage,
@@ -1150,6 +1153,7 @@ function validateTimesheetData(timesheetArray, startDateStr, endDateStr) {
     project: "",
     projectNo: "",
     activityName: "",
+    taskName: "",
     isBillable: "NA",
     coHours: null,
     tonnage: null,

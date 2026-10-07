@@ -3,20 +3,22 @@ import MultiForm from '../MultiForm/MultiForm'
 import styles from '../../../styles/Employee.module.css'
 import style from '../MultiForm/MultiForm.module.css'
 import EmployeeDetails from '../Employee Profile Sections/details'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import EmployeeTimeSheetDetails from '../../../pages/admin/dashboard/employee/timesheet/[id]'
 import { useRouter } from 'next/router'
 import EmpAnalytics from '../EmpAnalytics/EmpAnalytics'
-import { getEmployeeBasicDetailsController, updateEmployeeWithBasicDataController } from '../../Controllers/Employee/index'
+import { getEmployeeBasicDetailsController, updateEmployeeWithBasicDataController, deleteEmployeeController } from '../../Controllers/Employee/index'
 import Loader from '../Loader/loader'
 import { toast } from 'react-toastify'
 import EmployeePerformance from '../../../pages/admin/dashboard/employee/performance'
 import oldDateFormatter from '../../Helpers/Functions/General/oldDateFormatter'
 import ConfirmationPopup from '../Popups/Hr/ConfirmationPopup'
+import DeleteEmployeeConfirmation from '../Popups/Hr/DeleteEmployeeConfirmation'
 import EmployeerResignationPopup from '../Popups/General/EmployeeResignationPopup'
 import Notices from '../../../pages/admin/dashboard/employee/notices/index'
 import PerformanceReviewMain from '../../../pages/admin/dashboard/performance-review'
 import Activity from './Activity'
+import { ParentStore } from '../../../pages/_app'
 
 const EmployeeProfile = () => {
     const [section, setsection] = useState('details');
@@ -28,6 +30,24 @@ const EmployeeProfile = () => {
     const [confirmPopupOpen, setConfirmPopupOpen] = useState(false)
     const [ResignationPopup, setResignationPopup] = useState(false)
     const [resignationReasonBody, setResignationReasonBody] = useState('')
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const { ParentState } = useContext(ParentStore)
+    const canDeleteEmployee = ['HR', 'SA'].includes(ParentState?.auth?.role)
+
+    const confirmDeleteEmployee = () => {
+        setIsDeleting(true)
+        return deleteEmployeeController(Employee._id)
+            .then(() => {
+                toast.success("Employee Deleted Successfully")
+                router.push('/admin/dashboard/hr/employees')
+            })
+            .catch((err) => toast.error(err?.response?.data?.message || "Employee Deletion Failed"))
+            .finally(() => {
+                setIsDeleting(false)
+                setDeleteConfirmOpen(false)
+            })
+    }
 
     const updateEmployee = async (data) => {
         updateEmployeeWithBasicDataController(data, { id: router.query.id })
@@ -76,6 +96,7 @@ const EmployeeProfile = () => {
         <>
             {confirmPopupOpen && <ConfirmationPopup text={confirmationText} confirmPopupOpen={confirmPopupOpen} setConfirmPopupOpen={setConfirmPopupOpen} title={'Are You Sure'} action={markEmployeeAsResigned} />}
             {ResignationPopup && <EmployeerResignationPopup submit={triggerResignationConfirmationPopup} createNoticePopup={ResignationPopup} setcreateNoticePopup={setResignationPopup} />}
+            {canDeleteEmployee && <DeleteEmployeeConfirmation open={deleteConfirmOpen} setOpen={setDeleteConfirmOpen} employee={Employee} onConfirm={confirmDeleteEmployee} isDeleting={isDeleting} />}
             <div className={styles.emp_profile_container} >
                 <div className={styles.emp_profile_section} >
                     <ProfileImage
@@ -100,7 +121,10 @@ const EmployeeProfile = () => {
                                 <li className={section === name.toLocaleLowerCase() ? styles.active : null} onClick={() => setsection(name.toLocaleLowerCase())}>{name}</li>
                             )
                         })}
-                        <li onClick={() => router.push(`/admin/dashboard/employee/profile/edit/${router.query.id}`)}><button>Edit</button></li>
+                        <li>
+                            <button onClick={() => router.push(`/admin/dashboard/employee/profile/edit/${router.query.id}`)}>Edit</button>
+                            {canDeleteEmployee && <button className={styles.delete_btn} onClick={() => setDeleteConfirmOpen(true)}>Delete</button>}
+                        </li>
                     </ul>
                 </div>
                 <div className={styles.emp_details_main} >

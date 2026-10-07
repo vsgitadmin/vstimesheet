@@ -122,10 +122,26 @@ function Login() {
     return (
         <>
             {loginLoading && (<div className="login-animation">
+                <img src="/logo/vs-logo.png" alt="VectorShades" />
                 <h2>Welcome {employeeDataR.data.response.emp.firstName}!</h2>
+                <div className="login-animation_bar"><span></span></div>
             </div>)}
             <section className='auth_container'>
-                <section className='left_section'></section>
+                <section className='left_section'>
+                    <div className="left_section_badge">
+                        <img src="/logo/vs-logo.png" alt="VectorShades" />
+                    </div>
+                    <div className="left_section_content">
+                        <h2>Manage your workforce with clarity and control.</h2>
+                        <p>Track jobs, timesheets, and teams in one unified platform built for VectorShades.</p>
+                        <ul className="left_section_features">
+                            <li>Real-time job &amp; task tracking</li>
+                            <li>Streamlined HR &amp; payroll workflows</li>
+                            <li>Insightful dashboards for every role</li>
+                        </ul>
+                    </div>
+                    <div className="left_section_footer">© {new Date().getFullYear()} VectorShades. All rights reserved.</div>
+                </section>
                 <section className='right_section'>
                     <LoginCard onSubmit={loginuser} isLoading={isLoading} pageLoading={pageLoading}
                         setPageLoading={setPageLoading} />

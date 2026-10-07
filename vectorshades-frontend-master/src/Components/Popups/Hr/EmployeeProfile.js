@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { DeleteOutline, TrendingFlat } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
@@ -8,10 +8,25 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recha
 import { getEmployeeProfileController } from '../../../Controllers/Employee/index'
 import { toast } from 'react-toastify';
 import Loader from '../../../Helpers/Loader';
+import DeleteEmployeeConfirmation from './DeleteEmployeeConfirmation';
+import { ParentStore } from '../../../../pages/_app';
 
 const EmployeeProfile = ({ profileOpen, setProfileOpen, selectedEmp, deleteEmp }) => {
     const [profileData, setprofileData] = useState(null)
     const [Loading, setLoading] = useState(true)
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const { ParentState } = useContext(ParentStore)
+    const canDeleteEmployee = ['HR', 'SA'].includes(ParentState?.auth?.role)
+
+    const confirmDeleteEmployee = () => {
+        setIsDeleting(true)
+        Promise.resolve(deleteEmp())
+            .finally(() => {
+                setIsDeleting(false)
+                setDeleteConfirmOpen(false)
+            })
+    }
 
     useEffect(() => {
         const month = new Date().getMonth()
@@ -39,9 +54,9 @@ const EmployeeProfile = ({ profileOpen, setProfileOpen, selectedEmp, deleteEmp }
         <>
             <Modal open={profileOpen} onClose={handleClose} >
                 <div className={styles.ep_popup} >
-                    <div className={styles.ep_delete_icon} onClick={deleteEmp}>
+                    {canDeleteEmployee && <div className={styles.ep_delete_icon} onClick={() => setDeleteConfirmOpen(true)} title="Delete Employee">
                         <DeleteOutline fontSize='large' style={{ fill: "#E64848" }} />
-                    </div>
+                    </div>}
                     <div className={styles.ep_left}>
                         <div className={styles.ep_profile} >
                             <ProfileImage size="150px" />
@@ -131,6 +146,13 @@ const EmployeeProfile = ({ profileOpen, setProfileOpen, selectedEmp, deleteEmp }
                     </div>
                 </div>
             </Modal>
+            <DeleteEmployeeConfirmation
+                open={deleteConfirmOpen}
+                setOpen={setDeleteConfirmOpen}
+                employee={selectedEmp}
+                onConfirm={confirmDeleteEmployee}
+                isDeleting={isDeleting}
+            />
         </>
     )
 }

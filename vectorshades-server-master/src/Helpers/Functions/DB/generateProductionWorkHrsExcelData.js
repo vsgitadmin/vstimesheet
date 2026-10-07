@@ -17,7 +17,7 @@ function generateProductionHoursExcelData(timesheetData) {
 
   // Rebar employees get CO Hours (task.actualHours) and Tonnage Detailed (task.tonsDetailed) columns
   const hasRebar = timesheetData.some(user => user.isRebar);
-  const leadingCols = hasRebar ? 9 : 7; // Date, ID, Name, Project No, Project, Activity Name, Is Billable [, CO Hours, Tonnage Detailed]
+  const leadingCols = hasRebar ? 10 : 8; // Date, ID, Name, Project No, Project, Activity Name, Task Name, Is Billable [, CO Hours, Tonnage Detailed]
 
   const headers = [
     "Date",
@@ -26,6 +26,7 @@ function generateProductionHoursExcelData(timesheetData) {
     "Project No",
     "Project",
     "Activity Name",
+    "Task Name",
     "Is Billable",
     ...(hasRebar ? ["CO Hours", "Tonnage Detailed"] : []),
     ...dateHeaders,
@@ -47,6 +48,7 @@ function generateProductionHoursExcelData(timesheetData) {
       row.push(entry.projectNo);
       row.push(entry.project);
       row.push(entry.activityName);
+      row.push(entry.taskName);
       row.push(entry.isBillable);
 
       if (hasRebar) {

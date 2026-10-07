@@ -195,6 +195,10 @@ const CreateEmployee = ({ createEmp }) => {
                 <option value={'STL'}>Steel User</option>
               </select>
             </div>
+            <div className={`${styles.ce_form_group} ${styles.ce_label}`} >
+              <label>Date of Joining</label>
+              <input required placeholder='Date of Joining' type="date" onChange={(e) => body.joining = e.target.value} />
+            </div>
           </div>
 
           {/* <div className={styles.ce_form_group_main} >

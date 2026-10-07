@@ -70,13 +70,13 @@ function Index() {
   }
 
   const deleteEmp = () => {
-    deleteEmployeeController(selectedProfile._id)
+    return deleteEmployeeController(selectedProfile._id)
       .then(() => {
         setProfileOpen(false)
         toast.success("Employee Deleted Successfully")
         InitialHydration()
       })
-      .catch((err) => toast.error("Employee Deletion Failed"))
+      .catch((err) => toast.error(err?.response?.data?.message || "Employee Deletion Failed"))
   }
 
   const selectEmployee = (id) => {

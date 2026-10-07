@@ -1,9 +1,19 @@
 const {
-    employee: { employeeModel, employeeTodoModel, employeeBasicDetailsModel, employeeActivityModel },
-    timesheet: { absenteesModel, attendenceModel },
-    management: { employeeActivationRequest },
-    projects: { projectModel, taskModel }
+    employee: { employeeModel, employeeTodoModel, employeeBasicDetailsModel, employeeActivityModel, employeeLogsModel },
+    timesheet: { absenteesModel, attendenceModel, timeSheetModel, timeSheetActivityModel },
+    management: { employeeActivationRequest, noticeModel },
+    projects: { projectModel, taskModel, taskActivityModel },
+    communication: { notificationModel },
+    cloud: { cloudFilesModel },
+    reviews: { employeeAnalyticsModel, employeeReviewsModel, reviewRequestsModel },
+    training: { TrainingModel },
+    billing: { billingModel },
+    jobs: { jobModel },
+    rebarJobs: { jobModel: rebarJobModel }
 } = require("../../../Models/Extractor/index")
+const { chatListModel, messagesModel, groupModel, chatFilesModel } = require("../../../Models/Messaging/index")
+const { punchingInfoModel } = require("../../../Models/PunchingInfo/index")
+const { deleteS3Document, getS3 } = require("../../../Helpers/Functions/S3/index")
 const { auth: { JWTtoDecoder }, employee: { sendEmployeeActivationMail } } = require("../../../Helpers/Extractor/index");
 const moment = require("moment");
 const getBusinessDays = require("../../../Helpers/Functions/General/getBussinessDays");
@@ -82,8 +92,110 @@ const createEmployee = async (body) => {
     }
 }
 
+// deletes every S3 object under a given key prefix (used to wipe an employee's
+// onboarding/activation documents, which are all stored under `${activationId}/`)
+const deleteS3ObjectsByPrefix = async (prefix) => {
+    if (!prefix) return
+    try {
+        const s3 = getS3()
+        const Bucket = process.env.BUCKET_NAME
+        let ContinuationToken
+        do {
+            const listed = await s3.listObjectsV2({ Bucket, Prefix: prefix, ContinuationToken }).promise()
+            const objects = (listed.Contents || []).map((o) => ({ Key: o.Key }))
+            if (objects.length) {
+                await s3.deleteObjects({ Bucket, Delete: { Objects: objects } }).promise()
+            }
+            ContinuationToken = listed.IsTruncated ? listed.NextContinuationToken : undefined
+        } while (ContinuationToken)
+    } catch (err) {
+        console.error(`[deleteEmployee] failed clearing S3 prefix "${prefix}":`, err.message)
+    }
+}
+
+// best-effort delete of a single S3 object - never blocks the employee deletion
+const safeDeleteS3Document = async (fileRef) => {
+    if (!fileRef) return
+    try {
+        await deleteS3Document(fileRef)
+    } catch (err) {
+        console.error(`[deleteEmployee] failed deleting S3 object "${fileRef}":`, err.message)
+    }
+}
+
+// Completely removes an employee and everything owned by / specific to them:
+//  - their personal/HR records (basic details, todos, activities, activation
+//    request, notices, notifications, reviews, review requests, analytics)
+//  - their attendance, leave, timesheet, timesheet-activity and punching records
+//  - their personal cloud files, chat history and uploaded chat files (+ the
+//    underlying S3 objects, including their onboarding documents & profile photo)
+//  - their own task/work-item records
+// For records shared with other employees (projects, training assignments,
+// billing access, job sales-assignments, chat groups) it only removes the
+// employee's reference instead of deleting the shared record, so other
+// people's data and company business records are left intact.
 const deleteEmployee = async (id) => {
     try {
+        const employee = await employeeModel.findOne({ _id: id })
+        if (!employee) throw new Error('Employee not found')
+
+        const basicDetails = await employeeBasicDetailsModel.findOne({ employeeId: id })
+        const uid = basicDetails?.uid
+
+        // collect S3 objects owned by this employee before wiping the DB rows that point to them
+        const [ownedCloudFiles, ownedChatFiles] = await Promise.all([
+            cloudFilesModel.find({ employeeId: id }),
+            chatFilesModel.find({ employeeId: id }),
+        ])
+        const ownedFileRefs = [...ownedCloudFiles, ...ownedChatFiles].map((f) => f.attributes?.key || f.location)
+
+        await Promise.all([
+            ...ownedFileRefs.map(safeDeleteS3Document),
+            safeDeleteS3Document(employeeProfilePictureKey(id)),
+            deleteS3ObjectsByPrefix(employee.activationId ? `${employee.activationId}/` : null),
+        ])
+
+        // task records are singularly "owned" (one assignee per task) - clear their activity log too
+        const ownedTasks = await taskModel.find({ assignedTo: id }).select('_id')
+        const ownedTaskIds = ownedTasks.map((t) => t._id)
+
+        await Promise.all([
+            employeeBasicDetailsModel.deleteMany({ employeeId: id }),
+            employeeTodoModel.deleteMany({ employeeId: id }),
+            employeeActivityModel.deleteMany({ employeeId: id }),
+            employeeLogsModel.deleteMany({ employeeId: id }),
+            employeeActivationRequest.deleteMany({ empId: id }),
+            noticeModel.deleteMany({ empId: id }),
+            notificationModel.deleteMany({ reciever: id }),
+            cloudFilesModel.deleteMany({ employeeId: id }),
+            chatListModel.deleteMany({ employeeId: id }),
+            messagesModel.deleteMany({ $or: [{ employeeId: id }, { reciver: id }] }),
+            chatFilesModel.deleteMany({ employeeId: id }),
+            groupModel.updateMany({ 'groupMembers.id': id }, { $pull: { groupMembers: { id }, groupAdmins: { id } } }),
+            employeeAnalyticsModel.deleteMany({ employeeId: id }),
+            employeeReviewsModel.deleteMany({ $or: [{ employeeId: id }, { reviewBy: id }] }),
+            reviewRequestsModel.deleteMany({ $or: [{ requestedBy: id }, { requestedFrom: id }, { requestedTo: id }] }),
+            attendenceModel.deleteMany({ employeeId: id }),
+            absenteesModel.deleteMany({ employeeId: id }),
+            timeSheetModel.deleteMany({ empId: id }),
+            timeSheetActivityModel.deleteMany({ employeeId: id }),
+            punchingInfoModel.deleteMany({ $or: [{ user: id }, ...(uid ? [{ uid }] : [])] }),
+            taskActivityModel.deleteMany({ taskId: { $in: ownedTaskIds } }),
+            taskModel.deleteMany({ assignedTo: id }),
+            projectModel.updateMany({ members: id }, { $pull: { members: id, admin: id } }),
+            TrainingModel.updateMany({ assignedTo: id }, { $pull: { assignedTo: id, assignedToNames: { id } } }),
+            billingModel.updateMany({ accessIds: id }, { $pull: { accessIds: id } }),
+            jobModel.updateMany({ assignedSales: id }, { $set: { assignedSales: '', assignedSalesBYName: '' } }),
+            jobModel.updateMany({ assignedSecondarySales: id }, { $set: { assignedSecondarySales: '', assignedSecondarySalesBYName: '' } }),
+            jobModel.updateMany({ assignedThirdSales: id }, { $set: { assignedThirdSales: '', assignedThirdSalesBYName: '' } }),
+            jobModel.updateMany({ assignedConnectionEngineer: id }, { $set: { assignedConnectionEngineer: '', assignedConnectionEngineerBYName: '' } }),
+            rebarJobModel.updateMany({ assignedSales: id }, { $set: { assignedSales: '', assignedSalesBYName: '' } }),
+        ])
+
+        // rebuild membersByName on any project the employee was removed from
+        const affectedProjects = await projectModel.find({ 'membersByName._id': id }).select('_id')
+        await Promise.all(affectedProjects.map((p) => refreshProjectMembersDetails(p._id)))
+
         const response = await employeeModel.deleteOne({ _id: id })
         return response;
     } catch (err) {
@@ -162,6 +274,9 @@ const updateEmployeeDetailsAndBasicDetails = async (body, params, authUser) => {
     try {
         if (authUser?.role !== 'HR' && body.role) {
             delete body.role;
+        }
+        if (authUser?.role !== 'HR' && body.joining) {
+            delete body.joining;
         }
         body.rebar = body.department == "Rebar"
         const employee = await employeeModel.findByIdAndUpdate(params.id, { $set: { ...body, uid: body.basicDetails ? body.basicDetails.uid : '' } });

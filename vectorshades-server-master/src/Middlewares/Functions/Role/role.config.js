@@ -22,7 +22,7 @@ const roleConfig = [
     },
     {
         path: '/employee/delete',
-        permissions: ['SA', 'HR', 'EMP', 'PA', 'RB', 'STL']
+        permissions: ['SA', 'HR']
     },
     {
         path: '/employee/all',

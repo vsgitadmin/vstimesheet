@@ -23,6 +23,13 @@ export default function Layout({ children }) {
                     <div className="layout_child" >
                         {children}
                     </div>
+                    <footer className="layout_footer">
+                        <span>© {new Date().getFullYear()} Vectorshades LLC. All rights reserved.</span>
+                        <span className="layout_footer_divider">|</span>
+                        <span>Timesheet Version 2.0</span>
+                        <span className="layout_footer_divider">|</span>
+                        <span>⚡ Developed by R &amp; D Department, Vectorshades LLC</span>
+                    </footer>
                 </div>
                 <SettingPopup open={openSettings} onClose={()=>setOpenSettings(false)} />
                 <ActiveWorkingWidget />

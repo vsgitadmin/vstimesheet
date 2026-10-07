@@ -91,7 +91,7 @@ const getSingleTasksController = async (req, res) => {
 const editSingleTasksController = async (req, res) => {
     checkProjectPermission(req.headers.data, req.query.project).then(async (data) => {
         const response = await editSingleTasks(req.body, req.headers.data,'++')
-            .then((data) => new projectResponse("task updated successfully", { id: req.body.id }, false))
+            .then((data) => new projectResponse(data?.emailSendFailed ? "task completed, mail not sent" : "task updated successfully", { id: req.body.id }, false))
             .catch((err) => new projectResponse(err.message, null, true))
         res.status(response.failed ? 400 : 200).json(response)
     }).catch((err) => res.status(400).json(err))
@@ -114,7 +114,7 @@ const getGeneralProjectController = async (req, res) => {
 const editSingleTimerTasksController = async (req, res) => {
     const user = await validateTimerToken(req.body.user)
     const response = await editSingleTasks(req.body, { id: user._id },'++')
-        .then((data) => new projectResponse("task updated successfully", { id: req.body.id }, false))
+        .then((data) => new projectResponse(data?.emailSendFailed ? "task completed, mail not sent" : "task updated successfully", { id: req.body.id }, false))
         .catch((err) => new projectResponse(err.message, null, true))
     res.status(response.failed ? 400 : 200).json(response)
 }

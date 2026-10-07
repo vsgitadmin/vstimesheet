@@ -12,6 +12,7 @@ function validateCreateEmployeeBody(actualBody) {
     endTime: "<endTime>",
     uid: "<uid>",
     role: "<role>",
+    joining: "<joining>",
     personalEmail: "email@example.com",
     email: "email@example.com",
     aadhar: "<aadhar>",

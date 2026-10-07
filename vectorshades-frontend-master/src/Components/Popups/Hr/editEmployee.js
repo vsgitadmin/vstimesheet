@@ -190,6 +190,15 @@ const EditEmployee = ({ employeeData, basicData, onFormSubmitAction, setBasicDat
                         <option value={'STL'}>Steel Employee</option>
                       </select>
                     </div>
+                    <div className={`${styles.ce_form_group} ${styles.ce_label}`} >
+                      <label>Joining Date</label>
+                      <input
+                        defaultValue={employeeData.joining ? employeeData.joining.substring(0, employeeData.joining.indexOf('T')) : ''}
+                        required
+                        type="date"
+                        onChange={(e) => employeeData.joining = e.target.value}
+                      />
+                    </div>
                   </div>
                 }
               </>
