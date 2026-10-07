@@ -285,6 +285,14 @@ const filterSteelAwardedJobs = async (query, pageNumber, report) => {
       awardeJobs = awardeJobs.filter(j => new Date(j.date).getFullYear() == query.yearFilter);
     }
 
+    // an awarded job has no project id of its own - resolve it via the
+    // project that was created off the same original job (projects.job ===
+    // awardedJob.jobId), so the frontend can link to the project page
+    const jobIds = awardeJobs.map(j => j.jobId).filter(Boolean);
+    const linkedProjects = await projectModel.find({ job: { $in: jobIds } }).select('_id job').lean();
+    const projectIdByJobId = Object.fromEntries(linkedProjects.map(p => [p.job, p._id]));
+    awardeJobs = awardeJobs.map(job => ({ ...job, projectId: projectIdByJobId[job.jobId] }));
+
     if (report) {
       return awardeJobs.map(job => {
         const { jobData, _id, __v, ...rest } = job;
@@ -359,6 +367,14 @@ const filterRebarAwardedJobs = async (query, pageNumber, report) => {
     if (query.yearFilter) {
       awardeJobs = awardeJobs.filter(j => new Date(j.date).getFullYear() == query.yearFilter);
     }
+
+    // an awarded job has no project id of its own - resolve it via the
+    // project that was created off the same original job (projects.job ===
+    // awardedJob.jobId), so the frontend can link to the project page
+    const jobIds = awardeJobs.map(j => j.jobId).filter(Boolean);
+    const linkedProjects = await projectModel.find({ job: { $in: jobIds } }).select('_id job').lean();
+    const projectIdByJobId = Object.fromEntries(linkedProjects.map(p => [p.job, p._id]));
+    awardeJobs = awardeJobs.map(job => ({ ...job, projectId: projectIdByJobId[job.jobId] }));
 
     if (report) {
       return awardeJobs.map(job => {
@@ -997,13 +1013,14 @@ async function generateTimesheetDataFromDB(body) {
         date: fromDate,
         id: emp.uid,
         name: `${emp.firstName} ${emp.lastName}`,
+        isRebar: !!emp.rebar,
         entries: []
       }));
     }
 
-    // fetch tasks with taskIndex
+    // fetch tasks with taskIndex, actualHours (CO Hours) and tonsDetailed (Tonnage)
     const tasks = await taskModel.find({ _id: { $in: taskIds } })
-      .select('_id projectId taskIndex')
+      .select('_id projectId taskIndex actualHours tonsDetailed')
       .lean();
 
     const projectIds = [...new Set(tasks.map(t => t.projectId).filter(Boolean))];
@@ -1038,7 +1055,9 @@ async function generateTimesheetDataFromDB(body) {
         projectId: task.projectId,
         projectName,
         projectNo,
-        taskIndex: (typeof task.taskIndex === 'number' ? task.taskIndex : null)
+        taskIndex: (typeof task.taskIndex === 'number' ? task.taskIndex : null),
+        coHours: (typeof task.actualHours === 'number' ? task.actualHours : null),
+        tonnage: (typeof task.tonsDetailed === 'number' ? task.tonsDetailed : null)
       };
       return map;
     }, {});
@@ -1071,7 +1090,9 @@ async function generateTimesheetDataFromDB(body) {
           projectNo: projectInfo.projectNo,
           activityName: activityLabel,
           isBillable: "Y",
-          hours: workedTime
+          hours: workedTime,
+          coHours: projectInfo.coHours,
+          tonnage: projectInfo.tonnage
         });
       });
     });
@@ -1093,6 +1114,8 @@ async function generateTimesheetDataFromDB(body) {
                 projectNo: t.projectNo,
                 activityName: t.activityName,
                 isBillable: t.isBillable,
+                coHours: t.coHours,
+                tonnage: t.tonnage,
                 days: new Array(dayCount).fill(0)
               };
             }
@@ -1105,6 +1128,7 @@ async function generateTimesheetDataFromDB(body) {
         date: dateList[0],
         id: emp.uid,
         name: `${emp.firstName} ${emp.lastName}`,
+        isRebar: !!emp.rebar,
         entries: Object.values(activityMap)
       };
     });
@@ -1127,6 +1151,8 @@ function validateTimesheetData(timesheetArray, startDateStr, endDateStr) {
     projectNo: "",
     activityName: "",
     isBillable: "NA",
+    coHours: null,
+    tonnage: null,
     days: Array(daysCount).fill(0),
   };
 
@@ -1208,20 +1234,20 @@ const employeesWorkHrsFunction = async (body) => {
   if (body.filterByDept === 'rebarOrSteel') {
     employees = await employeeModel
       .find({ rebar: body.department === 'rebar', role: 'EMP' ,active:true})
-      .select('_id firstName uid lastName email code role designation department')
+      .select('_id firstName uid lastName email code role designation department rebar')
       .lean();
   }
   else if (body.employees === undefined) {
     employeesIds = await getFilteredEmployeeIds(body)
     employees = await employeeModel
       .find({ _id: { $in: employeesIds } , active:true })
-      .select('_id firstName uid code lastName email role designation department')
+      .select('_id firstName uid code lastName email role designation department rebar')
       .lean();
   }
   else {
     employees = await employeeModel
       .find({ _id: { $in: body.employees.map((emp) => emp._id) } })
-      .select('_id firstName uid code lastName email role designation department')
+      .select('_id firstName uid code lastName email role designation department rebar')
       .lean();
   }
   body.employees = employees.sort((a, b) => {

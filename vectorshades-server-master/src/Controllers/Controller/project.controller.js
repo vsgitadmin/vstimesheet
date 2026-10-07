@@ -324,11 +324,13 @@ const getProjectSummaryController = async (req, res) => {
 }
 
 const getEmployeePerformanceController = async (req, res) => {
-    let controller;
-    if (req.headers.data.role !== 'PA') controller = req.headers.data.role === 'SA' ? employeePerformanceBySA : employeePerformanceByEMP
-    else controller = req.query.metric === 'billing' ? employeePerformanceBySA : employeePerformanceByEMP
+    // whichever controller actually runs determines the shape of the returned analytics
+    // (cost-based fields for the SA view, hours-based fields for the EMP view) - the
+    // reported `role` must track that choice so the frontend reads the matching fields
+    const useSAView = req.headers.data.role !== 'PA' ? req.headers.data.role === 'SA' : req.query.metric === 'billing'
+    const controller = useSAView ? employeePerformanceBySA : employeePerformanceByEMP
     const response = await controller(req.headers.data, req.query)
-        .then((data) => new projectResponse("employee performance fetched successfully", { data, role: req.query !== null ? 'EMP' : req.headers.data.role }, false))
+        .then((data) => new projectResponse("employee performance fetched successfully", { data, role: useSAView ? 'SA' : 'EMP' }, false))
         .catch((err) => new projectResponse(err.message, null, true))
     res.status(response.failed ? 400 : 200).json(response)
 }

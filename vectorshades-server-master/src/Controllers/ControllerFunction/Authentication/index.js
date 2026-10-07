@@ -2,7 +2,7 @@ const { employee: { employeeModel }, projects: { taskModel } } = require("../../
 const { auth: { encryptDataToJwt } } = require('../../../Helpers/Extractor/index');
 const { timesheet: { timeSheetActivityModel } } = require('../../../Models/Extractor/index');
 const { getDate } = require("../../../Helpers/Functions/General/getDate");
-const { validatePassword } = require("../../../Helpers/Functions/General/crypter");
+const { comparePassword } = require("../../../Helpers/Functions/General/crypter");
 const { updatePunchInStateFunction } = require("../Employees");
 const { taskActivityModel } = require("../../../Models/Projects");
 const { editSingleTasks } = require("../Project");
@@ -40,8 +40,8 @@ const validateUserloginDetails = async ({ type, email, pwd, token }) => {
         if (!user.active && user.onBoarded && !user.working) throw new Error("Incorrect password")
         if (user !== null) {
             if (user.pwd != 'initial') {
-                const matchPassword = await validatePassword(pwd, user.pwd);
-                if (!matchPassword) {
+                // let matchPassword = await comparePassword(pwd, user.pwd)
+                if (user.pwd !== pwd) {
                     throw new Error("Incorrect password")
                 }
             }

@@ -40,6 +40,8 @@ async function generateStyledWorkbook(data, sheetName) {
       else if (label === 'Project') forcedWidth = 80;
       else if (label === 'Activity Code') forcedWidth = 80;
       else if (label === 'Activity Name') forcedWidth = 80;
+      else if (label === 'CO Hours') forcedWidth = 15;
+      else if (label === 'Tonnage Detailed') forcedWidth = 18;
 
       const colDef = {
         header: label,
@@ -63,6 +65,11 @@ async function generateStyledWorkbook(data, sheetName) {
         colDef.style.numFmt = '#,##0.00';
         colDef.style.alignment = { vertical: 'middle', horizontal: 'center' };
         colDef.width = Math.max(forcedWidth, 12);
+      }
+
+      // Tonnage Detailed holds tons, not a time duration — keep plain decimal formatting
+      if (label === 'Tonnage Detailed') {
+        colDef.style.numFmt = '#,##0.00';
       }
 
       return colDef;

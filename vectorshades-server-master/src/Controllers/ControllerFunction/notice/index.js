@@ -20,7 +20,7 @@ const getNoticeBYEmp = async (user, pageNumber, emp) => {
     try {
         let page = pageNumber >= 1 ? pageNumber : 1;
         page = page - 1
-        const limit = 4
+        const limit = 12
         const notice = await noticeModel.find({ empId: emp ? emp : user }).limit(limit).skip(limit * page).sort({ createdAt: -1 })
         return notice;
     } catch (err) {
@@ -31,7 +31,7 @@ const getNoticeByHR = async (pageNumber) => {
     try {
         let page = pageNumber >= 1 ? pageNumber : 1;
         page = page - 1
-        const limit = 4
+        const limit = 12
         const notice = await noticeModel.find().limit(limit).skip(limit * page).sort({ createdAt: -1 })
         return notice;
     } catch (err) {

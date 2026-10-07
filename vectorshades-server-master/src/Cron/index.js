@@ -10,5 +10,6 @@ const EmployeeSecondLogsCron = require('./EmployeeSecondLogs')
 const taskDueCron = require('./overDue')
 const dashboardHrsCron = require('./dashboardHrs')
 const workHoursCron = require('./workHoursCron')
+const backupCron = require('./backupCron')
 
-module.exports = [attendenceCron, taskDueCron, EmployeeMorningLogsCron, EmployeeGeneralLogsCron, EmployeeSecondLogsCron, projectCron, todoCron, reviewRequestCron, PerformanceCron, dashboardHrsCron, workHoursCron] 
+module.exports = [attendenceCron, taskDueCron, EmployeeMorningLogsCron, EmployeeGeneralLogsCron, EmployeeSecondLogsCron, projectCron, todoCron, reviewRequestCron, PerformanceCron, dashboardHrsCron, workHoursCron, backupCron]

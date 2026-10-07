@@ -15,6 +15,10 @@ function generateProductionHoursExcelData(timesheetData) {
     return d.toLocaleDateString("en-GB").split("/").join("-");
   });
 
+  // Rebar employees get CO Hours (task.actualHours) and Tonnage Detailed (task.tonsDetailed) columns
+  const hasRebar = timesheetData.some(user => user.isRebar);
+  const leadingCols = hasRebar ? 9 : 7; // Date, ID, Name, Project No, Project, Activity Name, Is Billable [, CO Hours, Tonnage Detailed]
+
   const headers = [
     "Date",
     "ID",
@@ -23,10 +27,12 @@ function generateProductionHoursExcelData(timesheetData) {
     "Project",
     "Activity Name",
     "Is Billable",
+    ...(hasRebar ? ["CO Hours", "Tonnage Detailed"] : []),
     ...dateHeaders,
     "Total"
   ];
   rows.push(headers);
+  const tonnageColIndex = hasRebar ? headers.indexOf("Tonnage Detailed") : -1;
 
   // Initialize grand totals
   const grandTotalPerDay = new Array(maxDays).fill(0);
@@ -42,6 +48,11 @@ function generateProductionHoursExcelData(timesheetData) {
       row.push(entry.project);
       row.push(entry.activityName);
       row.push(entry.isBillable);
+
+      if (hasRebar) {
+        row.push(user.isRebar && typeof entry.coHours === "number" ? entry.coHours : "");
+        row.push(user.isRebar && typeof entry.tonnage === "number" ? entry.tonnage : "");
+      }
 
       let total = 0;
       for (let i = 0; i < maxDays; i++) {
@@ -67,7 +78,7 @@ function generateProductionHoursExcelData(timesheetData) {
     });
 
     // User total row
-    const totalRow = new Array(6 + maxDays + 1).fill("");
+    const totalRow = new Array((leadingCols - 1) + maxDays + 1).fill("");
     const userTotal = new Array(maxDays).fill(0);
 
     user.entries.forEach(entry => {
@@ -77,11 +88,22 @@ function generateProductionHoursExcelData(timesheetData) {
     });
 
     userTotal.forEach((val, i) => {
-      totalRow[6 + i] = Number(val.toFixed(2));
+      totalRow[(leadingCols - 1) + i] = Number(val.toFixed(2));
     });
-    totalRow[6 + maxDays] = Number(
+    totalRow[(leadingCols - 1) + maxDays] = Number(
       userTotal.reduce((a, b) => a + b, 0).toFixed(2)
     );
+
+    if (hasRebar) {
+      const userCoHoursTotal = user.entries.reduce(
+        (sum, e) => sum + (typeof e.coHours === "number" ? e.coHours : 0), 0
+      );
+      const userTonnageTotal = user.entries.reduce(
+        (sum, e) => sum + (typeof e.tonnage === "number" ? e.tonnage : 0), 0
+      );
+      totalRow[headers.indexOf("CO Hours") - 1] = Number(userCoHoursTotal.toFixed(2));
+      totalRow[headers.indexOf("Tonnage Detailed") - 1] = Number(userTonnageTotal.toFixed(2));
+    }
 
     // add an empty leading cell (you used unshift before)
     totalRow.unshift('');
@@ -95,12 +117,26 @@ function generateProductionHoursExcelData(timesheetData) {
   rows.push(new Array(headers.length).fill(""));
 
   // Add final Grand Total Row
-  const grandRow = new Array(6 + maxDays + 1).fill("");
+  const grandRow = new Array((leadingCols - 1) + maxDays + 1).fill("");
   grandRow[5] = ""; // keeping same structure as your original
   for (let i = 0; i < maxDays; i++) {
-    grandRow[6 + i] = Number(grandTotalPerDay[i].toFixed(2));
+    grandRow[(leadingCols - 1) + i] = Number(grandTotalPerDay[i].toFixed(2));
   }
-  grandRow[6 + maxDays] = Number(grandTotal.toFixed(2));
+  grandRow[(leadingCols - 1) + maxDays] = Number(grandTotal.toFixed(2));
+
+  if (hasRebar) {
+    let grandCoHoursTotal = 0;
+    let grandTonnageTotal = 0;
+    timesheetData.forEach(user => {
+      user.entries.forEach(entry => {
+        if (typeof entry.coHours === "number") grandCoHoursTotal += entry.coHours;
+        if (typeof entry.tonnage === "number") grandTonnageTotal += entry.tonnage;
+      });
+    });
+    grandRow[headers.indexOf("CO Hours") - 1] = Number(grandCoHoursTotal.toFixed(2));
+    grandRow[headers.indexOf("Tonnage Detailed") - 1] = Number(grandTonnageTotal.toFixed(2));
+  }
+
   grandRow.unshift('');
   rows.push(grandRow);
 
@@ -125,10 +161,12 @@ function generateProductionHoursExcelData(timesheetData) {
     return `${sign}${hours}h ${String(minutes).padStart(2, "0")}m`;
   }
 
-  // Walk through rows (skip header row at index 0) and convert numbers
+  // Walk through rows (skip header row at index 0) and convert numbers.
+  // Tonnage Detailed is tons, not a duration, so it's left as a plain number.
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
     for (let c = 0; c < row.length; c++) {
+      if (c === tonnageColIndex) continue;
       const cell = row[c];
       if (typeof cell === "number" && !isNaN(cell)) {
         row[c] = decimalHoursToHm(cell);

@@ -119,7 +119,7 @@ const getAllLeavByHR = async (query) => {
     try {
         let page = pageNumber >= 1 ? pageNumber : 1;
         page = page - 1
-        const limit = 7
+        const limit = 16
 
         let response
         if (filterMode) response = await absenteesModel.find()

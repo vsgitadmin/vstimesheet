@@ -44,7 +44,7 @@ const UpdateActivationRequest = async (id, data) => {
 const getAllEmpActivationRequests = async (pageNumber) => {
     let page = pageNumber >= 1 ? pageNumber : 1;
     page = page - 1
-    const empPerPage = 6
+    const empPerPage = 15
     const allActivationRequest = employeeActivationRequest.find().limit(empPerPage).skip(page * empPerPage).sort({ requestedDate: -1 })
     return allActivationRequest;
 }

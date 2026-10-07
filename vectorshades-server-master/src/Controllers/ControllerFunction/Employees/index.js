@@ -843,13 +843,15 @@ const getAllEmployeesBasicData = async ({ search }) => {
         let employees;
         const projects = await projectModel.find({}).select('members');
         const tasks = await taskModel.find({}).select('assignedTo');
-        if (search) employees = await employeeModel.find({ role: 'EMP', $or: [{ firstName: { $regex: search, $options: 'i' } }, { lastName: { $regex: search, $options: 'i' } }] }).select('firstName lastName designation department online personalEmail');
-        else employees = await employeeModel.find({ role: 'EMP' }).select('firstName lastName designation department online personalEmail');
+        if (search) employees = await employeeModel.find({ role: 'EMP', $or: [{ firstName: { $regex: search, $options: 'i' } }, { lastName: { $regex: search, $options: 'i' } }] }).select('firstName lastName designation department online personalEmail publicDetails');
+        else employees = await employeeModel.find({ role: 'EMP' }).select('firstName lastName designation department online personalEmail publicDetails');
 
         employees = employees.map((employee) => {
             let projectsAssigned = projects.filter((project) => project.members.includes(employee._id)).length;
             let tasksAssigned = tasks.filter((task) => task.assignedTo == employee._id).length;
-            return { ...employee._doc, projectsAssigned, tasksAssigned };
+            const personalDetails = employee.publicDetails?.personal_details || {};
+            const phone = personalDetails.present_mobile_number || personalDetails.permanent_mobile_number || '';
+            return { ...employee._doc, projectsAssigned, tasksAssigned, phone, publicDetails: undefined };
         });
 
         return employees

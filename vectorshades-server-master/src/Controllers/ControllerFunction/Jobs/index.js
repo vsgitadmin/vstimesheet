@@ -409,6 +409,20 @@ const GetAwardedJobs = async (pageNumber, query) => {
         const awarded = await awardedJobsModel
             .aggregate([
                 { $match: { date: { $gte: new Date(year, 0, 1), $lt: new Date(parseInt(year) + 1, 0, 1) } } },
+                // an awarded job has no project id of its own - resolve it
+                // via the project that was created off the same original
+                // job (projects.job === awardedJob.jobId), so the frontend
+                // can link straight to /admin/dashboard/projects/<projectId>
+                {
+                    $lookup: {
+                        from: 'projects',
+                        localField: 'jobId',
+                        foreignField: 'job',
+                        as: 'linkedProject'
+                    }
+                },
+                { $addFields: { projectId: { $arrayElemAt: ['$linkedProject._id', 0] } } },
+                { $project: { linkedProject: 0 } },
                 { $group: { _id: { $month: '$date' }, jobs: { $push: '$$ROOT' } } },
                 { $sort: { createdAt: -1 } },
             ])
@@ -596,16 +610,14 @@ const getFilterdJobs = async (query) => {
                     project: { $regex: query.job, $options: "i" },
                 },
             },
+            { $group: { _id: { $month: '$date' }, jobs: { $push: '$$ROOT' } } },
+            { $sort: { _id: 1 } },
         ]);
 
         const jobsProcessed = await Promise.all(
-            jobs.map(async (job) => {
-                const monthObj = {
-                    _id: new Date(job.date).getMonth() + 1,
-                    jobs: [job],
-                };
+            jobs.map(async (monthObj) => {
                 monthObj.analytics = await getMonthlyJobAnalytics(monthObj._id)
-                monthObj.monthName = new Date(2000, monthObj._id).toLocaleString(
+                monthObj.monthName = new Date(2000, monthObj._id - 1).toLocaleString(
                     "en-US",
                     { month: "long" }
                 );
@@ -630,7 +642,15 @@ const getFilterdAwardedJobs = async (query) => {
     try {
         const awarded = await awardedJobsModel.find({
             'jobData.project': { $regex: query.job, $options: 'i' },
-        });
+        }).lean();
+
+        // an awarded job has no project id of its own - resolve it via the
+        // project that was created off the same original job (projects.job
+        // === awardedJob.jobId), so the frontend can link to the project page
+        const jobIds = awarded.map((j) => j.jobId).filter(Boolean);
+        const linkedProjects = await projectModel.find({ job: { $in: jobIds } }).select('_id job').lean();
+        const projectIdByJobId = Object.fromEntries(linkedProjects.map((p) => [p.job, p._id]));
+        awarded.forEach((job) => { job.projectId = projectIdByJobId[job.jobId] });
 
         const groupedByMonth = {};
 

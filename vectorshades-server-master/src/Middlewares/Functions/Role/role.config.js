@@ -1221,6 +1221,54 @@ const roleConfig = [
     {
         path: "/config/delete",
         permissions: ["SA", "HR", "PA", "EMP", "STL"],
+    },
+    // ================= Punching Info Section ======================== //
+    {
+        path: '/punching-info/create',
+        permissions: ['SA', 'HR', 'EMP', 'PA', 'RB', 'STL']
+    },
+    {
+        path: '/punching-info/list',
+        permissions: ['SA', 'HR', 'EMP', 'PA', 'RB', 'STL']
+    },
+    {
+        path: '/punching-info/update',
+        permissions: ['SA', 'HR', 'EMP', 'PA', 'RB', 'STL']
+    },
+    {
+        path: '/punching-info',
+        permissions: ['SA', 'HR', 'EMP', 'PA', 'RB', 'STL']
+    },
+    // ================= Backup & Restore Section ======================== //
+    // Full-database backup/restore is destructive and exposes every record,
+    // so it stays Super Admin only even if role checks get re-enabled.
+    {
+        path: '/backup/create',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/list',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/restore',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/progress',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/download',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/upload',
+        permissions: ['SA']
+    },
+    {
+        path: '/backup/delete',
+        permissions: ['SA']
     }
 ]
 

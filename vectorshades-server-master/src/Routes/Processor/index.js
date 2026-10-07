@@ -18,7 +18,9 @@ const {
     reviewRoute,
     trainingRouter,
     rebarJobsRoute,
-    billingRoute
+    billingRoute,
+    punchingInfoRoute,
+    backupRoute
 } = require("../Extractor/Extractor")
 
 let routes = []
@@ -44,6 +46,8 @@ PushRoute('/review', reviewRoute)
 PushRoute("/trainings", trainingRouter);
 PushRoute("/billing", billingRoute);
 PushRoute('/config', configRoute)
+PushRoute('/punching-info', punchingInfoRoute)
+PushRoute('/backup', backupRoute)
 
 // Public test endpoints
 PushRoute('/public', publicRoute)

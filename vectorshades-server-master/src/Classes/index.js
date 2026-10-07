@@ -10,6 +10,7 @@ const cloudResponse = require("../Classes/Responses/cloud.type")
 const TrainingResponse = require("./Responses/training.type");
 const billingResponse = require("./Responses/billing.type");
 const configResponse = require('./Responses/configResponse.type')
+const backupResponse = require('./Responses/backup.type')
 
 module.exports = {
     response:{
@@ -24,6 +25,7 @@ module.exports = {
         communicationResponse,
         TrainingResponse,
         billingResponse,
-        configResponse
+        configResponse,
+        backupResponse
     }
 }

@@ -18,6 +18,8 @@ const trainingRouter = require("../Route/training");
 const rebarJobsRoute = require("../Route/rebar")
 const billingRoute = require("../Route/billing")
 const configRoute = require('../Route/config')
+const punchingInfoRoute = require('../Route/punchingInfo')
+const backupRoute = require('../Route/backup')
 
 const AllRoutes = {
     employeeRoute,
@@ -39,7 +41,9 @@ const AllRoutes = {
     trainingRouter,
     rebarJobsRoute,
     billingRoute,
-    configRoute
+    configRoute,
+    punchingInfoRoute,
+    backupRoute
 }
 
 module.exports = AllRoutes

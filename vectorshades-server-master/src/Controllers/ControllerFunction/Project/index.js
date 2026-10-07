@@ -607,7 +607,11 @@ const getAllProjectTasks = async (projectId, pageNumber, section) => {
         let page = pageNumber >= 1 ? pageNumber : 1;
         page = page - 1
         const limit = 6
-        const tasks = await taskModel.find({ projectId, section }).limit(limit).skip(page * limit).sort({ createdAt: -1 })
+        // no section (the "All" tab) - match every section for the project
+        // instead of filtering on one, rather than relying on the driver
+        // dropping an undefined key
+        const filter = section ? { projectId, section } : { projectId }
+        const tasks = await taskModel.find(filter).limit(limit).skip(page * limit).sort({ createdAt: -1 })
         return tasks
     }
     catch (err) {
@@ -617,7 +621,8 @@ const getAllProjectTasks = async (projectId, pageNumber, section) => {
 
 const getAllProjectTasksCount = async (projectId, section) => {
     try {
-        const count = await taskModel.find({ projectId, section }).count()
+        const filter = section ? { projectId, section } : { projectId }
+        const count = await taskModel.find(filter).count()
         return count
     }
     catch (err) {
@@ -885,8 +890,15 @@ const employeePerformanceBySA = async (user, query) => {
             const rebarProject = project.rebar
             const model = project.rebar ? rebarJobs.jobModel : jobModel
             let costPH = await model.findOne({ _id: project.job }).select('total_breakpoints perHour').lean()
-            let revenue = rebarProject ? costPH.total_breakpoints.amountBilled : costPH.total_breakpoints.cost * costPH.total_breakpoints.hours
-            costPH = rebarProject ? costPH.perHour : costPH.total_breakpoints.cost
+            // a project can exist without a resolvable linked job (deleted/never-linked job) -
+            // fall back to zeroed figures instead of throwing and breaking the whole response
+            let revenue = 0
+            if (costPH) {
+                revenue = rebarProject ? costPH.total_breakpoints.amountBilled : costPH.total_breakpoints.cost * costPH.total_breakpoints.hours
+                costPH = rebarProject ? costPH.perHour : costPH.total_breakpoints.cost
+            } else {
+                costPH = 0
+            }
             const groupByMember = await taskModel.aggregate([
                 { $match: { assignedTo: userId, projectId: project._id } },
                 {
